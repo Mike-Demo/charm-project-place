@@ -30,7 +30,7 @@ declare global {
   }
 }
 
-const clientToken: string | undefined = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN;
+const clientToken: string | undefined = import.meta.env['VITE_PAYMENTS_CLIENT_TOKEN'] as string | undefined;
 
 export function getPaddleEnvironment(): "sandbox" | "live" {
   return clientToken?.startsWith("test_") ? "sandbox" : "live";
