@@ -9,7 +9,7 @@ import {
   buildAvailability,
   formatLongDate,
   formatPhone,
-  fromDateKey,
+
   generateVerificationCode,
   isDayFull,
   isSlotTaken,
@@ -21,7 +21,6 @@ import {
 import { ConfirmedPass } from "@/components/ConfirmedPass";
 import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
-import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startLineBoil } from "@/lib/motion";
 import { NEEDLE_MARK_D } from "@/lib/logo-marks";
 
@@ -330,6 +329,7 @@ function TattooAtelier() {
 
   const resetFlow = () => {
     setConfirmed(null);
+    setPassToken(null);
     setStep(1);
     setDirection("forward");
     setName("");
