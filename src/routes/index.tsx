@@ -265,7 +265,7 @@ function TattooAtelier() {
 
       <header ref={headerRef} className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
         <div className="group flex flex-col items-center">
-          <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-16 w-16 opacity-95 mix-blend-multiply" src={LOGO_URL} />
+          <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-48 w-48 opacity-95 mix-blend-multiply" src={LOGO_URL} />
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink &amp; Needle</span>
         </div>
       </header>
