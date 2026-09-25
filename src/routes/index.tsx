@@ -16,9 +16,10 @@ import {
   startOfDay,
   toDateKey,
 } from "@/lib/atelier";
-import { fetchUnavailableSlots, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
+import { fetchUnavailableSlots, fetchConfirmedBooking, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
-import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startLineBoil } from "@/lib/motion";
+import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
+import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startLineBoil } from "@/lib/motion";
 import { NEEDLE_MARK_D } from "@/lib/logo-marks";
 
 const stepMeta = [
