@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import {
+  PRONOUN_OPTIONS,
   TIME_SLOTS,
   addDays,
   buildAvailability,
@@ -20,11 +21,12 @@ const LOGO_URL =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
 
 const stepMeta = [
-  { badge: "Step 01 // 05", hint: "Your name", title: "Step 1: Name" },
-  { badge: "Step 02 // 05", hint: "Preferred day", title: "Step 2: Day" },
-  { badge: "Step 03 // 05", hint: "Date & time", title: "Step 3: Date & Time" },
-  { badge: "Step 04 // 05", hint: "Phone verification", title: "Step 4: Phone" },
-  { badge: "Step 05 // 05", hint: "Digital stencil", title: "Step 5: Email" },
+  { badge: "Step 01 // 06", hint: "Your name", title: "Step 1: Name" },
+  { badge: "Step 02 // 06", hint: "Your pronouns", title: "Step 2: Pronouns" },
+  { badge: "Step 03 // 06", hint: "Preferred day", title: "Step 3: Day" },
+  { badge: "Step 04 // 06", hint: "Date & time", title: "Step 4: Date & Time" },
+  { badge: "Step 05 // 06", hint: "Phone verification", title: "Step 5: Phone" },
+  { badge: "Step 06 // 06", hint: "Digital stencil", title: "Step 6: Email" },
   { badge: "Review // Final", hint: "Ready to ink", title: "Review & Lock In" },
 ] as const;
 
@@ -80,6 +82,8 @@ function TattooAtelier() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [pronounChoice, setPronounChoice] = useState<string | null>(null);
+  const [customPronouns, setCustomPronouns] = useState("");
   const [dayChoice, setDayChoice] = useState<DayChoice | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -101,7 +105,11 @@ function TattooAtelier() {
   const phoneValid = phone.replace(/\D/g, "").length >= 10;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
   const scheduleValid = selectedDate !== null && selectedTime !== null;
-  const allValid = nameValid && scheduleValid && phoneValid && emailValid;
+  const pronounsValid = pronounChoice !== null && (pronounChoice !== "custom" || customPronouns.trim().length > 0);
+  const pronounsValue =
+    pronounChoice === null ? "" : pronounChoice === "custom" ? customPronouns.trim() : pronounChoice === "private" ? "" : pronounChoice;
+  const pronounsLabel = pronounChoice === "private" ? "Prefer not to say" : pronounsValue;
+  const allValid = nameValid && pronounsValid && scheduleValid && phoneValid && emailValid;
   const currentMeta = stepMeta[step - 1] ?? stepMeta[0];
 
   const sessionLabel = selectedDate && selectedTime ? `${formatLongDate(selectedDate)} @ ${selectedTime}` : "Not picked yet";
@@ -208,13 +216,14 @@ function TattooAtelier() {
   };
 
   const continueFlow = () => {
-    const blocked = (step === 1 && !nameValid) || (step === 4 && !phoneValid) || (step === 5 && !emailValid);
+    const blocked = (step === 1 && !nameValid) || (step === 2 && !pronounsValid) || (step === 5 && !phoneValid) || (step === 6 && !emailValid);
     if (blocked) shakeField(paneRef.current?.querySelector("input"));
     if (step === 1 && !nameValid) return;
-    if (step === 2 && dayChoice === null) return;
-    if (step === 3 && !scheduleValid) return;
-    if (step === 4 && !phoneValid) return;
-    if (step === 5 && !emailValid) return;
+    if (step === 2 && !pronounsValid) return;
+    if (step === 3 && dayChoice === null) return;
+    if (step === 4 && !scheduleValid) return;
+    if (step === 5 && !phoneValid) return;
+    if (step === 6 && !emailValid) return;
     if (step === TOTAL_STEPS) {
       if (!allValid || selectedDate === null || selectedTime === null) return;
       setBookingError(null);
@@ -224,6 +233,7 @@ function TattooAtelier() {
         email: email.trim(),
         date: selectedDate,
         timeSlot: selectedTime,
+        pronouns: pronounsValue,
       });
       return;
     }
@@ -235,7 +245,13 @@ function TattooAtelier() {
   };
 
   const currentValid =
-    step === 1 ? nameValid : step === 2 ? dayChoice !== null : step === 3 ? scheduleValid : step === 4 ? phoneValid : step === 5 ? emailValid : allValid;
+    step === 1 ? nameValid
+      : step === 2 ? pronounsValid
+      : step === 3 ? dayChoice !== null
+      : step === 4 ? scheduleValid
+      : step === 5 ? phoneValid
+      : step === 6 ? emailValid
+      : allValid;
 
   const calendarCells = useMemo(() => {
     const firstOfMonth = new Date(monthCursor.getFullYear(), monthCursor.getMonth(), 1);
@@ -288,7 +304,7 @@ function TattooAtelier() {
         <div ref={paneRef} onClick={handlePaneClick} className="step-pane min-h-[300px]" key={step}>
           {step === 1 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 06</p>
               <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">What should we call you?</h2>
                 <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : name.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -304,7 +320,44 @@ function TattooAtelier() {
 
           {step === 2 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 06</p>
+              <h2 className="mb-2 text-3xl font-normal leading-snug sm:text-4xl">What are your pronouns{firstName ? `, ${firstName}` : ""}?</h2>
+              <p className="mb-5 text-sm text-ink-pencil">So your artist addresses you right from the first sketch.</p>
+              <div className="flex flex-wrap gap-2">
+                {PRONOUN_OPTIONS.map((option) => {
+                  const active = pronounChoice === option;
+                  return (
+                    <button key={option} type="button" aria-pressed={active}
+                      onClick={() => { setPronounChoice(option); setCustomPronouns(""); }}
+                      className={`rounded-full border px-4 py-2 text-lg transition-all ${active ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                      {option}
+                    </button>
+                  );
+                })}
+                <button type="button" aria-pressed={pronounChoice === "custom"} onClick={() => setPronounChoice("custom")}
+                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "custom" ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                  ✎ Something else
+                </button>
+                <button type="button" aria-pressed={pronounChoice === "private"} onClick={() => { setPronounChoice("private"); setCustomPronouns(""); }}
+                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "private" ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                  Prefer not to say
+                </button>
+              </div>
+              {pronounChoice === "custom" && (
+                <span className={`mt-5 inline-block w-fit border-b-2 text-2xl sm:text-3xl ${customPronouns.trim() ? "border-foreground/70" : "border-ink-dim/40"}`}>
+                  <input autoFocus aria-label="Your pronouns" className="paper-inline-input font-bold" onChange={(e) => setCustomPronouns(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. ze / hir" style={{ width: `${Math.max(12, customPronouns.length + 1)}ch` }} value={customPronouns} />
+                </span>
+              )}
+              <p className="mt-4 flex items-center gap-1.5 text-sm text-ink-pencil">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-pencil-green" />
+                {pronounsValid ? (pronounChoice === "private" ? "Noted — we'll keep it neutral." : `Noted — we'll use ${pronounsValue}.`) : "Pick one so we get it right."}
+              </p>
+            </section>
+          )}
+
+          {step === 3 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 06</p>
               <h2 className="mb-6 text-3xl font-normal leading-snug sm:text-4xl">What day do you want?</h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {DAY_OPTIONS.map((option) => {
@@ -327,9 +380,9 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 06</p>
               <h2 className="mb-5 text-3xl font-normal leading-snug sm:text-4xl">Pick your exact date &amp; time</h2>
 
               <div className="rounded-2xl border border-ink-dim/30 bg-paper-deep/50 p-4">
@@ -403,9 +456,9 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 4 && (
+          {step === 5 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 05 of 06</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where can we text your reminder?</h2>
                 <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : phone.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -417,9 +470,9 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 5 && (
+          {step === 6 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 05 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 06 of 06</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where should we send your stencil &amp; guide?</h2>
                 <span className={`relative inline-block border-b-2 ${emailValid ? "border-pencil-green" : email.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -431,13 +484,14 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 6 && (
+          {step === TOTAL_STEPS && (
             <section className="flex min-h-[280px] flex-col justify-center">
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Review // Final Protocol</p>
               <h2 className="mb-4 text-3xl font-normal leading-snug sm:text-4xl">Almost ready to ink{firstName ? `, ${firstName}` : ""} <span className="animate-pulse text-2xl">✨</span></h2>
               <div className="space-y-3 rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-4 text-lg">
                 <ReviewRow label="Session:" value={scheduleValid ? `${sessionLabel} (Station 03)` : "—"} />
                 <ReviewRow label="Client:" value={name.trim() || "—"} />
+                <ReviewRow label="Pronouns:" value={pronounsValid ? pronounsLabel : "—"} />
                 <ReviewRow label="SMS Reminder:" value={phone.trim() || "—"} />
                 <ReviewRow label="Linework & Stencil:" value={email.trim() || "—"} last />
               </div>

@@ -336,6 +336,11 @@ function SlotRow({
       {appointment && (
         <div className="mt-1">
           <strong className="text-lg">{appointment.client_name}</strong>
+          {appointment.pronouns && (
+            <span className="ml-2 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 font-mono text-xs text-ink-pencil">
+              {appointment.pronouns}
+            </span>
+          )}
           <p className="text-sm text-ink-pencil">
             {appointment.phone} · {appointment.email}
           </p>

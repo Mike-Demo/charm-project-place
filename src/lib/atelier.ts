@@ -26,8 +26,17 @@ export interface Appointment {
   time_slot: string;
   status: string;
   notes: string | null;
+  pronouns: string | null;
   created_at: string;
 }
+
+export const PRONOUN_OPTIONS = [
+  "they / them",
+  "she / her",
+  "he / him",
+  "she / they",
+  "he / they",
+] as const;
 
 export interface BlockedSlot {
   id: string;
