@@ -305,13 +305,17 @@ function TattooAtelier() {
         </svg>
       </div>
 
-      <header ref={headerRef} className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
+      <header ref={headerRef} className="relative z-10 flex flex-1 flex-col items-center justify-center pt-2 text-center">
         <div className="group flex flex-col items-center">
-          <svg aria-hidden="true" className="doodle-hover mb-1 h-48 w-48 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
+          <svg aria-hidden="true" className="doodle-hover mb-1 h-56 w-56 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
             <defs>
               <filter id="atelier-line-boil" x="-5%" y="-5%" width="110%" height="110%">
                 <feTurbulence ref={boilTurbulenceRef} type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="1" result="noise" />
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+              <filter id="atelier-boil-fine" x="-20%" y="-150%" width="140%" height="400%">
+                <feTurbulence data-boil-seed="" type="fractalNoise" baseFrequency="0.09" numOctaves="1" seed="1" result="fine-noise" />
+                <feDisplacementMap in="SourceGraphic" in2="fine-noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
               </filter>
             </defs>
             <path ref={logoPathRef} d={NEEDLE_MARK_D} fill="currentColor" filter="url(#atelier-line-boil)" className="text-foreground" />
@@ -319,7 +323,7 @@ function TattooAtelier() {
         </div>
       </header>
 
-      <main ref={paperRef} className="relative z-10 mx-auto my-auto w-full max-w-2xl py-8 sm:py-12">
+      <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl py-8 sm:py-12">
         <div ref={indicatorRef} className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
           <div className="flex min-w-0 items-center gap-2">
             <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
