@@ -189,6 +189,9 @@
 
 .paper-inline-input { margin: 0; min-width: 7rem; border: 0; background: transparent; padding: 0 0.25rem 0.125rem; color: var(--foreground); outline: none; font: inherit; }
 .paper-inline-input:focus { outline: none; box-shadow: none; }
+/* Keyboard users get a visible dashed focus ring on the hand-inked writing lines. */
+.paper-inline-input:focus-visible { outline: 2px dashed var(--cyan-draft); outline-offset: 3px; border-radius: 6px 10px 8px 9px / 9px 8px 10px 7px; }
+
 /* Hand-inked credit card: uneven frame on paper, like .code-box but roomier. */
 .sketch-card { border: 2px solid var(--ink-dim); border-radius: 14px 18px 12px 16px / 16px 12px 18px 14px; background: var(--paper-deep); box-shadow: 2px 3px 0 var(--paper-line); }
 /* Sketchy pass-code boxes: uneven hand-inked frame, green when filled, red when the pass fails. */
