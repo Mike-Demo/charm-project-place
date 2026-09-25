@@ -232,14 +232,15 @@ function TattooAtelier() {
 
   // Once all six digits are in: stamp through and glide on, or shake and flag the sketch.
   useEffect(() => {
-    if (step !== 6 || smsCode === null || joinedCode.length < 6) return;
-    if (joinedCode === smsCode) {
-      setCodeError(false);
-      const timer = setTimeout(() => goToStep(7), 450);
-      return () => clearTimeout(timer);
+    if (step !== 6 || smsCode === null || joinedCode.length < 6) return undefined;
+    if (joinedCode !== smsCode) {
+      setCodeError(true);
+      shakeField(codeInputRefs.current[0]);
+      return undefined;
     }
-    setCodeError(true);
-    shakeField(codeInputRefs.current[0]);
+    setCodeError(false);
+    const timer = setTimeout(() => goToStep(7), 450);
+    return () => clearTimeout(timer);
   }, [step, smsCode, joinedCode]);
 
   const handlePaneClick = (event: MouseEvent<HTMLDivElement>) => {
