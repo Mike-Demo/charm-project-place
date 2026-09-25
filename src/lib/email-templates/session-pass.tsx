@@ -12,6 +12,7 @@ import {
   Section,
   Text,
 } from "@react-email/components";
+import needleAsset from "@/assets/email-needle.png.asset.json";
 
 import type { TemplateEntry } from "./registry";
 
@@ -28,7 +29,7 @@ const cyan = "#237590";
 const paper = "#f9f7f1";
 const hand = '"Segoe Print", "Comic Sans MS", cursive';
 const mono = '"Courier New", Courier, monospace';
-const needleUrl = "https://freshink.art/email-needle.png";
+const needleUrl = needleAsset.url;
 
 function displayDate(value?: string): string {
   if (!value) return "Your session date";
