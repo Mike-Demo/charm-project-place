@@ -727,16 +727,14 @@ function TattooAtelier() {
           <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />$1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies</a> locks in your slot</span>
           <span>Free rescheduling up to 24h prior</span>
         </div>
+        </>
+        )}
       </main>
 
       <footer className="relative z-10 mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-3 border-t border-ink-dim/20 pb-2 pt-4 text-xs text-ink-pencil">
         <span className="font-mono text-[11px] uppercase tracking-wider text-ink-dim">Tattoo Atelier // Novo // P. 02</span>
         <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink &amp; Needle</span>
       </footer>
-
-      <div ref={toastRef} role="status" aria-live="polite" className={`fixed left-1/2 top-8 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl border-2 border-foreground bg-paper-sheet px-6 py-3 shadow-2xl transition-all duration-300 ${toast ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"}`}>
-        <span className="h-3 w-3 animate-ping rounded-full bg-cyan-draft" /><strong className="text-xl">Booking locked in{firstName ? ` for ${firstName}` : ""}!</strong>
-      </div>
     </div>
   );
 }
