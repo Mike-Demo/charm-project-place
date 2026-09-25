@@ -434,14 +434,14 @@ function TattooAtelier() {
           <path data-draft-stroke="" d="M 48 40 H 18 V 72 M 952 40 H 982 V 72 M 18 928 V 960 H 48 M 982 928 V 960 H 952" />
           <path data-draft-stroke="" d="M 50 64 H 105 M 895 64 H 950 M 50 936 H 105 M 895 936 H 950" strokeDasharray="3 5" />
         </svg>
-        <svg className="absolute left-[calc(50%+2.5rem)] top-8 h-7 w-7 text-cyan-draft/60 sm:top-10" viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+        <svg className="pointer-events-none absolute right-6 top-1/3 hidden h-7 w-7 text-cyan-draft/60 lg:block" viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
           <path data-draft-stroke="" d="M 7 28 L 28 7 M 22 8 L 28 7 L 27 13 M 5 30 L 8 27 M 12 29 L 17 34" />
         </svg>
       </div>
 
-      <header ref={headerRef} className="relative z-10 flex flex-1 flex-col items-center justify-center pt-2 text-center">
+      <header ref={headerRef} className="relative z-10 flex flex-col items-center text-center">
         <div className="group flex flex-col items-center">
-          <svg aria-hidden="true" className="doodle-hover mb-1 h-56 w-56 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
+          <svg aria-hidden="true" className="doodle-hover mb-1 h-48 w-36 opacity-95 mix-blend-multiply" viewBox="69.4 34.1 318 424">
             <defs>
               <filter id="atelier-line-boil" x="-5%" y="-5%" width="110%" height="110%">
                 <feTurbulence ref={boilTurbulenceRef} type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="1" result="noise" />
@@ -457,15 +457,15 @@ function TattooAtelier() {
         </div>
       </header>
 
-      <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl py-8 sm:py-12">
+      <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl pb-8 sm:pb-12">
         {confirmed ? <ConfirmedPass booking={confirmed} onReset={resetFlow} /> : (
         <>
-        <div ref={indicatorRef} className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
+        <div ref={indicatorRef} className="mb-8 flex flex-wrap items-center justify-between gap-3 gap-y-3 font-mono text-xs text-ink-pencil/70">
           <div className="flex min-w-0 items-center gap-2">
             <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
             <span className="hidden font-hand text-sm text-ink-pencil sm:inline">• {currentMeta.hint}</span>
           </div>
-          <div ref={pillsRef} className="flex shrink-0 items-center gap-1 sm:gap-1.5" aria-label="Appointment steps">
+          <div ref={pillsRef} className="flex w-full shrink-0 items-center justify-end gap-1 sm:w-auto sm:gap-1.5" aria-label="Appointment steps">
             {stepMeta.map((item, index) => (
               <Button key={item.title} variant="ghost" size="icon" onClick={() => goToStep(index + 1)} title={item.title} aria-label={item.title}
                 className={`h-7 w-7 rounded-full p-0 font-mono text-xs shadow-none ${step === index + 1 ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/40 hover:bg-foreground hover:text-background" : "bg-paper-deep/80 text-ink-pencil hover:bg-paper-line hover:text-foreground"}`}>
