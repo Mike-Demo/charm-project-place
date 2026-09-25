@@ -56,7 +56,7 @@ function AttendanceBar({ token }: { token: string }) {
   return (
     <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-ink-dim/50 pb-4">
       <p className="font-hand text-lg">Still good for your session?</p>
-      <button type="button" disabled={confirm.isPending} onClick={() => confirm.mutate()} className="min-h-11 rounded border border-ink-pencil bg-ink-pencil px-4 font-hand text-lg text-paper-sheet">
+      <button type="button" disabled={confirm.isPending} onClick={() => confirm.mutate()} className="min-h-11 rounded border border-foreground bg-foreground px-4 font-hand text-lg text-background">
         Yes, I&apos;ll be there
       </button>
       {confirm.isError && <p className="w-full text-sm text-pencil-red" role="alert">Could not confirm. Please try again.</p>}
