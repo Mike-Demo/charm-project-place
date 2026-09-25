@@ -136,20 +136,6 @@ function TattooAtelier() {
           {step === 1 && (
             <section className="flex min-h-[280px] flex-col justify-center">
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 04</p>
-              <h2 className="mb-6 text-3xl font-normal leading-snug sm:text-4xl">When do you want to book?</h2>
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-4 py-2 shadow-xs">
-                  <span className="text-cyan-draft">✦</span><strong className="text-xl sm:text-3xl">{date}</strong>
-                  <Button variant="link" className="h-auto p-0 font-mono text-xs text-cyan-draft sm:text-sm" onClick={() => setDate(date.includes("Oct 25") ? "Saturday, Oct 26 @ 2:00 PM" : "Friday, Oct 25 @ 11:30 AM")}>(change)</Button>
-                </div>
-              </div>
-              <p className="mt-4 flex items-center gap-1.5 text-sm text-ink-pencil"><span className="h-2 w-2 rounded-full bg-pencil-green" />90 min custom linework session at Station 03 • Studio Downtown</p>
-            </section>
-          )}
-
-          {step === 2 && (
-            <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 04</p>
               <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">What should we call you?</h2>
                 <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : "border-pencil-red"}`}>
@@ -160,6 +146,20 @@ function TattooAtelier() {
                 {nameValid ? `(looking great, ${firstName}! ✨)` : "(let us know who to ink for ✏️)"}
               </p>
               <p className="mt-3 text-xs text-ink-pencil sm:text-sm">Press Enter ↵ or click Continue below when ready.</p>
+            </section>
+          )}
+
+          {step === 2 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 04</p>
+              <h2 className="mb-6 text-3xl font-normal leading-snug sm:text-4xl">When do you want to book?</h2>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-4 py-2 shadow-xs">
+                  <span className="text-cyan-draft">✦</span><strong className="text-xl sm:text-3xl">{date}</strong>
+                  <Button variant="link" className="h-auto p-0 font-mono text-xs text-cyan-draft sm:text-sm" onClick={() => setDate(date.includes("Oct 25") ? "Saturday, Oct 26 @ 2:00 PM" : "Friday, Oct 25 @ 11:30 AM")}>(change)</Button>
+                </div>
+              </div>
+              <p className="mt-4 flex items-center gap-1.5 text-sm text-ink-pencil"><span className="h-2 w-2 rounded-full bg-pencil-green" />90 min custom linework session at Station 03 • Studio Downtown</p>
             </section>
           )}
 
