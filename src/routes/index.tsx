@@ -380,7 +380,7 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <section className="flex min-h-[280px] flex-col justify-center">
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 06</p>
               <h2 className="mb-5 text-3xl font-normal leading-snug sm:text-4xl">Pick your exact date &amp; time</h2>
