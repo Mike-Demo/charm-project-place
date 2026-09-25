@@ -7,6 +7,7 @@ const PER_CLIENT_DAILY = 6;
 const GLOBAL_DAILY = 150;
 
 export const Route = createFileRoute("/api/sketch-concept")({
+  staticData: { sitemap: false },
   server: {
     handlers: {
       POST: async ({ request }) => {

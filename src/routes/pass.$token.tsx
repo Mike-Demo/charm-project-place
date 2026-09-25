@@ -4,6 +4,7 @@ import { ConfirmedPass } from "@/components/ConfirmedPass";
 import { fetchBookingByToken } from "@/lib/atelier-service";
 
 export const Route = createFileRoute("/pass/$token")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Session Pass — Fresh Ink: Book your session" },

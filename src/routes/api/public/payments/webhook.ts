@@ -5,6 +5,7 @@ const envSchema = z.enum(["sandbox", "live"]);
 const customDataSchema = z.object({ appointmentId: z.string().uuid() });
 
 export const Route = createFileRoute("/api/public/payments/webhook")({
+  staticData: { sitemap: false },
   server: {
     handlers: {
       POST: async ({ request }) => {

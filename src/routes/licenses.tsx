@@ -139,6 +139,7 @@ const GROUPS: readonly LicenseGroup[] = [
 ];
 
 export const Route = createFileRoute("/licenses")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Open Source & Credits — Fresh Ink: Book your session" },

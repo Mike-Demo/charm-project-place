@@ -66,6 +66,7 @@ function resolveChoiceDate(choice: DayChoice, today: Date): Date {
 }
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Fresh Ink: Book your session" },

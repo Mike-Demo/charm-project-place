@@ -32,6 +32,7 @@ import {
 import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Studio Ledger — Fresh Ink: Book your session" },
