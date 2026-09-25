@@ -491,7 +491,7 @@ function TattooAtelier() {
         </svg>
       </div>
 
-      <header ref={headerRef} className="relative z-10 flex flex-col items-center text-center">
+      <header ref={headerRef} className="relative z-10 flex flex-col items-center pb-2.5 text-center">
         <div className="group flex flex-col items-center">
           <StepArtwork step={step} direction={direction} />
         </div>
