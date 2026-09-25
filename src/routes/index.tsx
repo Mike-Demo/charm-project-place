@@ -163,12 +163,13 @@ function TattooAtelier() {
       const status = await getBookingStatus(id).catch(() => null);
       if (status === "confirmed") {
         const booking = await fetchConfirmedBooking(id).catch(() => null);
-        setPaymentState("idle");
         heldIdRef.current = null;
         if (booking) {
+          setPaymentState("idle");
           setConfirmed(booking);
           void fetchBookingToken(id).then(setPassToken).catch(() => undefined);
         } else {
+          setPaymentState("failed");
           setBookingError("Payment received, but we couldn't load your confirmation pass. We'll email you the details.");
         }
         void availabilityQuery.refetch();
@@ -176,9 +177,10 @@ function TattooAtelier() {
       }
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
-    setPaymentState("idle");
-    setBookingError("Payment received, but confirmation is taking a while. We'll email you once it's locked in.");
+    setPaymentState("failed");
+    setBookingError("Payment received, but confirmation is taking a while. We'll email you your session pass once it's locked in.");
   };
+
 
   useEffect(() => {
     setPaddleEventListener((event) => {
