@@ -1,6 +1,19 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  TIME_SLOTS,
+  addDays,
+  buildAvailability,
+  formatLongDate,
+  isDayFull,
+  isSlotTaken,
+  sameDay,
+  startOfDay,
+  toDateKey,
+} from "@/lib/atelier";
+import { bookAppointment, fetchUnavailableSlots } from "@/lib/atelier-service";
 
 const LOGO_URL =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
@@ -16,8 +29,6 @@ const stepMeta = [
 
 const TOTAL_STEPS = stepMeta.length;
 
-const TIME_SLOTS = ["10:00 AM", "11:30 AM", "1:00 PM", "2:30 PM", "4:00 PM", "6:30 PM"] as const;
-
 type DayChoice = "today" | "tomorrow" | "weekend" | "other";
 
 const DAY_OPTIONS: ReadonlyArray<{ id: DayChoice; label: string; note: string; mark: string }> = [
@@ -28,26 +39,6 @@ const DAY_OPTIONS: ReadonlyArray<{ id: DayChoice; label: string; note: string; m
 ];
 
 const WEEKDAY_MARKS = ["S", "M", "T", "W", "T", "F", "S"] as const;
-
-function startOfDay(value: Date): Date {
-  const next = new Date(value);
-  next.setHours(0, 0, 0, 0);
-  return next;
-}
-
-function addDays(value: Date, amount: number): Date {
-  const next = startOfDay(value);
-  next.setDate(next.getDate() + amount);
-  return next;
-}
-
-function sameDay(a: Date, b: Date): boolean {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-}
-
-function formatLongDate(value: Date): string {
-  return value.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
-}
 
 function resolveChoiceDate(choice: DayChoice, today: Date): Date {
   if (choice === "today") return today;
@@ -93,6 +84,7 @@ function TattooAtelier() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [monthCursor, setMonthCursor] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [toast, setToast] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const firstName = name.trim().split(/\s+/)[0] || "";
@@ -104,6 +96,35 @@ function TattooAtelier() {
   const currentMeta = stepMeta[step - 1] ?? stepMeta[0];
 
   const sessionLabel = selectedDate && selectedTime ? `${formatLongDate(selectedDate)} @ ${selectedTime}` : "Not picked yet";
+
+  const rangeEnd = useMemo(() => addDays(today, 120), [today]);
+  const availabilityQuery = useQuery({
+    queryKey: ["availability", toDateKey(today), toDateKey(rangeEnd)],
+    queryFn: () => fetchUnavailableSlots(today, rangeEnd),
+    refetchOnWindowFocus: true,
+  });
+  const availability = useMemo(
+    () => buildAvailability(availabilityQuery.data ?? []),
+    [availabilityQuery.data],
+  );
+
+  const bookingMutation = useMutation({
+    mutationFn: bookAppointment,
+    onSuccess: () => {
+      showConfirmation();
+      void availabilityQuery.refetch();
+    },
+    onError: (error: Error) => setBookingError(error.message),
+  });
+
+  const firstOpenDate = (from: Date): Date => {
+    let candidate = from;
+    for (let index = 0; index < 60; index += 1) {
+      if (!isDayFull(availability, candidate)) return candidate;
+      candidate = addDays(candidate, 1);
+    }
+    return from;
+  };
 
   useEffect(() => () => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -117,7 +138,8 @@ function TattooAtelier() {
 
   const pickDayChoice = (choice: DayChoice) => {
     setDayChoice(choice);
-    const target = resolveChoiceDate(choice, today);
+    const requested = resolveChoiceDate(choice, today);
+    const target = choice === "other" ? requested : firstOpenDate(requested);
     setMonthCursor(new Date(target.getFullYear(), target.getMonth(), 1));
     if (choice === "other") {
       setSelectedDate(null);
@@ -140,7 +162,15 @@ function TattooAtelier() {
     if (step === 4 && !phoneValid) return;
     if (step === 5 && !emailValid) return;
     if (step === TOTAL_STEPS) {
-      if (allValid) showConfirmation();
+      if (!allValid || selectedDate === null || selectedTime === null) return;
+      setBookingError(null);
+      bookingMutation.mutate({
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        date: selectedDate,
+        timeSlot: selectedTime,
+      });
       return;
     }
     goToStep(step + 1);
@@ -264,14 +294,16 @@ function TattooAtelier() {
                   {calendarCells.map((cell, index) => {
                     if (!cell) return <span key={`empty-${index}`} />;
                     const past = cell < today;
+                    const full = isDayFull(availability, cell);
+                    const disabled = past || full;
                     const active = selectedDate !== null && sameDay(cell, selectedDate);
                     const isToday = sameDay(cell, today);
                     return (
-                      <button key={cell.toISOString()} type="button" disabled={past}
+                      <button key={cell.toISOString()} type="button" disabled={disabled}
                         onClick={() => { setSelectedDate(cell); setSelectedTime(null); }}
                         aria-label={formatLongDate(cell)} aria-pressed={active}
                         className={`relative aspect-square rounded-full text-base transition-all sm:text-lg ${
-                          past ? "cursor-not-allowed text-ink-dim/40 line-through" :
+                          disabled ? "cursor-not-allowed text-ink-dim/40 line-through" :
                           active ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/50" :
                           "text-foreground hover:bg-paper-line"}`}>
                         {cell.getDate()}
@@ -282,13 +314,19 @@ function TattooAtelier() {
                 </div>
 
                 <div className="mt-4 border-t border-dashed border-ink-dim/30 pt-3">
-                  <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-ink-pencil/70">Open studio slots</p>
+                  <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-ink-pencil/70">
+                    {availabilityQuery.isLoading ? "Checking the studio calendar…" : "Open studio slots"}
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {TIME_SLOTS.map((slot) => {
                       const active = selectedTime === slot;
+                      const taken = selectedDate !== null && isSlotTaken(availability, selectedDate, slot);
+                      const disabled = selectedDate === null || taken;
                       return (
-                        <button key={slot} type="button" disabled={selectedDate === null} onClick={() => setSelectedTime(slot)} aria-pressed={active}
+                        <button key={slot} type="button" disabled={disabled} onClick={() => setSelectedTime(slot)} aria-pressed={active}
+                          title={taken ? "Already taken" : undefined}
                           className={`rounded-full border px-3 py-1.5 text-base transition-all ${
+                            taken ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50 line-through" :
                             selectedDate === null ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50" :
                             active ? "border-foreground bg-foreground font-bold text-background" :
                             "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
@@ -346,6 +384,7 @@ function TattooAtelier() {
                 <ReviewRow label="Linework & Stencil:" value={email.trim() || "—"} last />
               </div>
               {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
+              {bookingError !== null && <p className="mt-3 text-pencil-red">{bookingError}</p>}
             </section>
           )}
         </div>
@@ -354,8 +393,8 @@ function TattooAtelier() {
           <Button variant="link" disabled={step === 1} onClick={() => goToStep(step - 1)} className="group h-auto p-0 font-hand text-lg text-ink-pencil hover:text-foreground">
             <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
           </Button>
-          <Button disabled={!currentValid} onClick={continueFlow} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
-            {step === TOTAL_STEPS ? "Lock In Appointment ✦" : "Continue →"}<span className="text-cyan-draft">✦</span>
+          <Button disabled={!currentValid || bookingMutation.isPending} onClick={continueFlow} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
+            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Locking in…" : "Lock In Appointment ✦") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
