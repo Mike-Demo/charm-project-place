@@ -39,6 +39,8 @@ export type Database = {
           reschedule_count: number
           rescheduled_at: string | null
           sketch_attempts: number
+          sms_reminder_at: string | null
+          sms_reminder_status: string | null
           social_sent_at: string | null
           status: string
           time_slot: string
@@ -67,6 +69,8 @@ export type Database = {
           reschedule_count?: number
           rescheduled_at?: string | null
           sketch_attempts?: number
+          sms_reminder_at?: string | null
+          sms_reminder_status?: string | null
           social_sent_at?: string | null
           status?: string
           time_slot: string
@@ -95,6 +99,8 @@ export type Database = {
           reschedule_count?: number
           rescheduled_at?: string | null
           sketch_attempts?: number
+          sms_reminder_at?: string | null
+          sms_reminder_status?: string | null
           social_sent_at?: string | null
           status?: string
           time_slot?: string
@@ -140,6 +146,36 @@ export type Database = {
           created_at?: string
           name?: string
           token_hash?: string
+        }
+        Relationships: []
+      }
+      reminder_runs: {
+        Row: {
+          failed: number
+          id: string
+          ran_at: string
+          sent: number
+          skipped_reason: string | null
+          sms_simulated: number
+          suppressed: number
+        }
+        Insert: {
+          failed?: number
+          id?: string
+          ran_at?: string
+          sent?: number
+          skipped_reason?: string | null
+          sms_simulated?: number
+          suppressed?: number
+        }
+        Update: {
+          failed?: number
+          id?: string
+          ran_at?: string
+          sent?: number
+          skipped_reason?: string | null
+          sms_simulated?: number
+          suppressed?: number
         }
         Relationships: []
       }
