@@ -176,32 +176,40 @@ function AdminPage() {
   if (!allowed) {
     return (
       <Shell>
-        <h1 className="text-3xl font-normal sm:text-4xl">Studio access required</h1>
-        <p className="mt-3 text-lg text-ink-pencil">
-          Signed in as {roleQuery.data?.email || "unknown"}. This account is not yet a studio artist.
-        </p>
-        <p className="mt-2 text-base text-ink-pencil">
-          If you are the studio owner and nobody has claimed the ledger yet, claim it now.
-        </p>
-        {actionError !== null && <p className="mt-3 text-pencil-red">{actionError}</p>}
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Button
-            disabled={claimMutation.isPending}
-            onClick={() => claimMutation.mutate()}
-            className="ink-stamp-btn h-auto rounded-2xl px-6 py-3 font-hand text-lg font-bold"
-          >
-            Claim studio access ✦
-          </Button>
-          <Button variant="outline" onClick={() => void signOut()} className="h-auto rounded-2xl px-6 py-3 font-hand text-lg">
-            Sign out
-          </Button>
+        <div className="mx-auto max-w-xl rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-6 shadow-sm sm:p-8">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">
+            Tattoo Atelier // Studio Ledger
+          </p>
+          <h1 className="mt-2 text-3xl font-normal sm:text-4xl">Studio access required</h1>
+          <div className="mt-4 space-y-3 border-t border-dashed border-ink-dim/30 pt-4">
+            <p className="text-lg text-ink-pencil">
+              Signed in as {roleQuery.data?.email || "unknown"}. This account is not yet a studio artist.
+            </p>
+            <p className="text-base text-ink-pencil">
+              If you are the studio owner and nobody has claimed the ledger yet, claim it now.
+            </p>
+          </div>
+          {actionError !== null && <p className="mt-3 text-pencil-red">{actionError}</p>}
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button
+              disabled={claimMutation.isPending}
+              onClick={() => claimMutation.mutate()}
+              className="ink-stamp-btn h-auto rounded-2xl px-6 py-3 font-hand text-lg font-bold"
+            >
+              Claim studio access ✦
+            </Button>
+            <Button variant="outline" onClick={() => void signOut()} className="h-auto rounded-2xl px-6 py-3 font-hand text-lg">
+              Sign out
+            </Button>
+          </div>
+          {claimMutation.data === false && (
+            <p className="mt-3 text-pencil-red">The ledger already has an owner. Ask them to add you.</p>
+          )}
         </div>
-        {claimMutation.data === false && (
-          <p className="mt-3 text-pencil-red">The ledger already has an owner. Ask them to add you.</p>
-        )}
       </Shell>
     );
   }
+
 
   return (
     <Shell>
