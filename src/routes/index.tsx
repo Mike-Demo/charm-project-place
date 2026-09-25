@@ -8,6 +8,7 @@ import {
   addDays,
   buildAvailability,
   formatLongDate,
+  formatPhone,
   isDayFull,
   isSlotTaken,
   sameDay,
@@ -462,7 +463,7 @@ function TattooAtelier() {
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where can we text your reminder?</h2>
                 <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : phone.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
-                  <input autoFocus aria-label="Phone number" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setPhone(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. (555) 019-2834" style={{ width: `${Math.max(20, phone.length + 1)}ch` }} type="tel" value={phone} />
+                  <input autoFocus aria-label="Phone number" className="paper-inline-input max-w-[78vw] font-bold" inputMode="tel" onChange={(e) => setPhone(formatPhone(e.target.value))} onKeyDown={handleEnter} placeholder="e.g. (555) 019-2834" style={{ width: `${Math.max(20, phone.length + 1)}ch` }} type="tel" value={phone} />
                   {!phoneValid && phone.trim() !== "" && <WaveUnderline />}
                 </span>
               </div>

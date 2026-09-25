@@ -134,3 +134,17 @@ export function isSlotTaken(
   if (availability.fullDays.has(key)) return true;
   return availability.slots.get(key)?.has(slot) ?? false;
 }
+
+/**
+ * Formats raw input as a US phone number: (555) 019-2834.
+ * Leading country code "1" is dropped; extra digits beyond 10 are ignored.
+ */
+export function formatPhone(input: string): string {
+  let digits = input.replace(/\D/g, "");
+  if (digits.length > 10 && digits.startsWith("1")) digits = digits.slice(1);
+  digits = digits.slice(0, 10);
+  if (digits.length === 0) return "";
+  if (digits.length < 4) return `(${digits}`;
+  if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
