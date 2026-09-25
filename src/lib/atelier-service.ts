@@ -58,6 +58,29 @@ export async function fetchConfirmedBooking(id: string): Promise<Appointment | n
   return { ...row, notes: null } as Appointment;
 }
 
+export async function fetchBookingToken(id: string): Promise<string | null> {
+  const { data, error } = await supabase.rpc("get_booking_token", { p_id: id });
+  if (error) throw new Error(error.message);
+  return (data as string | null) ?? null;
+}
+
+export async function fetchBookingByToken(token: string): Promise<Appointment | null> {
+  const { data, error } = await supabase.rpc("get_booking_by_token", { p_token: token });
+  if (error) throw new Error(error.message);
+  const row = (data ?? [])[0];
+  if (!row) return null;
+  return { ...row, notes: null } as Appointment;
+}
+
+export async function rescheduleBooking(token: string, date: Date, timeSlot: string): Promise<void> {
+  const { error } = await supabase.rpc("reschedule_booking", {
+    p_token: token,
+    p_date: toDateKey(date),
+    p_time_slot: timeSlot,
+  });
+  if (error) throw new Error(error.message);
+}
+
 
 export async function fetchAppointments(from: Date, to: Date): Promise<Appointment[]> {
   const { data, error } = await supabase

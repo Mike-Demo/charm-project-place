@@ -28,6 +28,8 @@ export interface Appointment {
   notes: string | null;
   pronouns: string | null;
   created_at: string;
+  reschedule_count?: number;
+  rescheduled_at?: string | null;
 }
 
 export const PRONOUN_OPTIONS = [

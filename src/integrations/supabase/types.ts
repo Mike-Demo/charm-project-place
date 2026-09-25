@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       appointments: {
         Row: {
+          access_token: string | null
           booking_date: string
           client_name: string
           created_at: string
@@ -27,10 +28,13 @@ export type Database = {
           payment_status: string
           phone: string
           pronouns: string | null
+          reschedule_count: number
+          rescheduled_at: string | null
           status: string
           time_slot: string
         }
         Insert: {
+          access_token?: string | null
           booking_date: string
           client_name: string
           created_at?: string
@@ -42,10 +46,13 @@ export type Database = {
           payment_status?: string
           phone: string
           pronouns?: string | null
+          reschedule_count?: number
+          rescheduled_at?: string | null
           status?: string
           time_slot: string
         }
         Update: {
+          access_token?: string | null
           booking_date?: string
           client_name?: string
           created_at?: string
@@ -57,6 +64,8 @@ export type Database = {
           payment_status?: string
           phone?: string
           pronouns?: string | null
+          reschedule_count?: number
+          rescheduled_at?: string | null
           status?: string
           time_slot?: string
         }
@@ -146,7 +155,25 @@ export type Database = {
         }
         Returns: string
       }
+      gen_access_token: { Args: never; Returns: string }
+      get_booking_by_token: {
+        Args: { p_token: string }
+        Returns: {
+          booking_date: string
+          client_name: string
+          created_at: string
+          email: string
+          id: string
+          phone: string
+          pronouns: string
+          reschedule_count: number
+          rescheduled_at: string
+          status: string
+          time_slot: string
+        }[]
+      }
       get_booking_status: { Args: { p_id: string }; Returns: string }
+      get_booking_token: { Args: { p_id: string }; Returns: string }
       get_confirmed_booking: {
         Args: { p_id: string }
         Returns: {
@@ -178,6 +205,10 @@ export type Database = {
       }
       release_pending_appointment: {
         Args: { p_id: string }
+        Returns: undefined
+      }
+      reschedule_booking: {
+        Args: { p_date: string; p_time_slot: string; p_token: string }
         Returns: undefined
       }
     }
