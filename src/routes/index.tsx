@@ -427,7 +427,7 @@ function TattooAtelier() {
   const canGoPrevMonth = monthCursor > new Date(today.getFullYear(), today.getMonth(), 1);
 
   return (
-    <div className="sketchbook-canvas relative flex min-h-screen flex-col overflow-x-hidden px-5 py-5 font-hand text-foreground selection:bg-paper-line sm:px-10 sm:py-10">
+    <div className="sketchbook-canvas relative flex min-h-screen flex-col overflow-x-hidden px-5 py-2.5 font-hand text-foreground selection:bg-paper-line sm:px-10 sm:py-5">
       <div aria-hidden="true" className="paper-fiber" />
       <div ref={draftRef} aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 text-ink-dim/50">
         <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1000 1000" preserveAspectRatio="none" fill="none" stroke="currentColor" strokeWidth="1.5" vectorEffect="non-scaling-stroke">
