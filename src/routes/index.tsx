@@ -161,8 +161,8 @@ function TattooAtelier() {
     setPaymentState("confirming");
     let consecutiveErrors = 0;
     for (let attempt = 0; attempt < 30; attempt += 1) {
-      const status = await getBookingStatus(id).catch((error: Error) => {
-        setBookingError(error.message);
+      const status = await getBookingStatus(id).catch(() => {
+        setBookingError("We couldn't find that payment yet. If you just paid, give it a minute and reopen the link from your email — or head back to the form and we'll sort it out.");
         return null;
       });
       if (status !== null) consecutiveErrors = 0; else consecutiveErrors += 1;
