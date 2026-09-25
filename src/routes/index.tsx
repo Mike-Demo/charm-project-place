@@ -439,7 +439,7 @@ function TattooAtelier() {
         </svg>
       </div>
 
-      <header ref={headerRef} className="relative z-10 flex flex-1 flex-col items-center justify-center pt-2 text-center">
+      <header ref={headerRef} className="relative z-10 flex flex-col items-center text-center">
         <div className="group flex flex-col items-center">
           <svg aria-hidden="true" className="doodle-hover mb-1 h-56 w-56 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
             <defs>
