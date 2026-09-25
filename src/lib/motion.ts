@@ -107,15 +107,15 @@ export const animateStepArtOut = (
   }
   const paths = Array.from(group.querySelectorAll<SVGPathElement>("path"));
   paths.forEach((path) => {
-    if (path.dataset.trace === "false") return;
+    if (path.dataset['trace'] === "false") return;
     const length = path.getTotalLength();
     path.style.strokeDasharray = String(length);
     path.style.strokeDashoffset = "0";
   });
   const animation = animate(paths, {
-    strokeDashoffset: (_target, index) => {
-      const path = paths[index];
-      return path?.dataset.trace === "false" ? 0 : path?.getTotalLength() ?? 0;
+    strokeDashoffset: (target) => {
+      const path = target instanceof SVGPathElement ? target : null;
+      return path?.dataset['trace'] === "false" ? 0 : path?.getTotalLength() ?? 0;
     },
     opacity: [1, 0],
     x: direction === "forward" ? -3 : 3,
@@ -144,7 +144,7 @@ export const animateStepArtIn = (
   }
   paths.forEach((path) => {
     path.style.opacity = "0";
-    if (path.dataset.trace === "false") return;
+    if (path.dataset['trace'] === "false") return;
     const length = path.getTotalLength();
     path.style.strokeDasharray = String(length);
     path.style.strokeDashoffset = String(length);
