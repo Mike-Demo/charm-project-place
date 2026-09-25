@@ -178,6 +178,46 @@ function Licenses(): ReactElement {
           </p>
         </header>
 
+        <section className="mt-10" aria-labelledby="proof-of-concept">
+          <h2
+            id="proof-of-concept"
+            className="font-hand text-2xl font-bold text-foreground underline decoration-cyan-draft/50 decoration-wavy underline-offset-8"
+          >
+            Proof of concept
+          </h2>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <article className="sketch-card p-4">
+              <h3 className="font-hand text-xl font-bold text-foreground">Phone verification code</h3>
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink-dim">
+                Demo only · no real texts
+              </p>
+              <p className="mt-2 font-hand text-base text-ink-pencil">
+                The six-digit code step is simulated. Nothing is sent to your phone — the code is
+                shown on screen so you can try the flow.
+              </p>
+            </article>
+            <article className="sketch-card p-4">
+              <h3 className="font-hand text-xl font-bold text-foreground">$1 donation checkout</h3>
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink-dim">
+                Test mode · no money moves
+              </p>
+              <p className="mt-2 font-hand text-base text-ink-pencil">
+                Checkout runs in test mode with test card numbers only. No real card is charged and
+                no donation is collected yet.
+              </p>
+            </article>
+          </div>
+          <p className="mt-5 font-hand text-lg text-ink-pencil">
+            Studio artist?{" "}
+            <Link
+              to="/auth"
+              className="font-mono text-sm text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
+            >
+              Sign in to the booking ledger →
+            </Link>
+          </p>
+        </section>
+
         {GROUPS.map((group) => {
           const headingId = `license-${group.title.replaceAll(" ", "-").toLowerCase()}`;
           return (
