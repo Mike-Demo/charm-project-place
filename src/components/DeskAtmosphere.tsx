@@ -18,22 +18,22 @@ const MARKS: readonly DeskMark[] = [
   {
     src: coffeeRing.url,
     className: "w-[150px] sm:w-[220px] -top-8 -left-10 sm:-top-10 sm:-left-14",
-    style: { opacity: 0.42, transform: "rotate(-12deg)" },
+    style: { opacity: 0.32, transform: "rotate(-12deg)" },
   },
   {
     src: inkSplatter.url,
     className: "w-[170px] sm:w-[260px] top-[30%] -right-8 sm:-right-10",
-    style: { opacity: 0.45, transform: "rotate(14deg)" },
+    style: { opacity: 0.2, transform: "rotate(14deg)" },
   },
   {
     src: inkSmudge.url,
     className: "w-[130px] sm:w-[185px] bottom-24 -left-9 sm:-left-10",
-    style: { opacity: 0.55, transform: "rotate(8deg)" },
+    style: { opacity: 0.22, transform: "rotate(8deg)" },
   },
   {
     src: warmWash.url,
     className: "w-[160px] sm:w-[240px] -bottom-10 -right-9 sm:-right-12",
-    style: { opacity: 0.7, transform: "rotate(-6deg)" },
+    style: { opacity: 0.38, transform: "rotate(-6deg)" },
   },
 ];
 
