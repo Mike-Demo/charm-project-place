@@ -14,7 +14,7 @@ import {
   toDateKey,
 } from "@/lib/atelier";
 import { bookAppointment, fetchUnavailableSlots } from "@/lib/atelier-service";
-import { animateSheetIn, inkSettle, noteDrop, pickPop, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
+import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
 
 const LOGO_URL =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
@@ -90,7 +90,11 @@ function TattooAtelier() {
   const paneRef = useRef<HTMLDivElement | null>(null);
   const pillsRef = useRef<HTMLDivElement | null>(null);
   const toastRef = useRef<HTMLDivElement | null>(null);
-  const logoRef = useRef<HTMLImageElement | null>(null);
+  const draftRef = useRef<HTMLDivElement | null>(null);
+  const paperRef = useRef<HTMLElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
+  const indicatorRef = useRef<HTMLDivElement | null>(null);
+  const initialStepEffect = useRef(true);
 
   const firstName = name.trim().split(/\s+/)[0] || "";
   const nameValid = name.trim().length >= 2;
@@ -132,10 +136,27 @@ function TattooAtelier() {
   };
 
   useEffect(() => {
-    inkSettle(logoRef.current);
+    if (prefersReducedMotion()) return;
+    try {
+      if (sessionStorage.getItem("tattoo-atelier-studio-draft-seen") === "1") return;
+      sessionStorage.setItem("tattoo-atelier-studio-draft-seen", "1");
+    } catch {
+      // Storage can be unavailable in private browsing; the entrance remains optional.
+    }
+    animateStudioDraftEntrance({
+      linework: draftRef.current,
+      paper: paperRef.current,
+      header: headerRef.current,
+      stepIndicator: indicatorRef.current,
+      question: paneRef.current,
+    });
   }, []);
 
   useEffect(() => {
+    if (initialStepEffect.current) {
+      initialStepEffect.current = false;
+      return;
+    }
     animateSheetIn(paneRef.current, direction);
     stampPill(pillsRef.current?.children[step - 1]);
     if (step === TOTAL_STEPS) staggerRows(paneRef.current);
@@ -225,20 +246,25 @@ function TattooAtelier() {
   return (
     <div className="sketchbook-canvas relative flex min-h-screen flex-col overflow-x-hidden px-5 py-5 font-hand text-foreground selection:bg-paper-line sm:px-10 sm:py-10">
       <div aria-hidden="true" className="paper-fiber" />
-      <div aria-hidden="true" className="corner-tick left-5 top-5 border-l-2 border-t-2" />
-      <div aria-hidden="true" className="corner-tick right-5 top-5 border-r-2 border-t-2" />
-      <div aria-hidden="true" className="corner-tick bottom-5 left-5 border-b-2 border-l-2" />
-      <div aria-hidden="true" className="corner-tick bottom-5 right-5 border-b-2 border-r-2" />
+      <div ref={draftRef} aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 text-ink-dim/50">
+        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1000 1000" preserveAspectRatio="none" fill="none" stroke="currentColor" strokeWidth="1.5" vectorEffect="non-scaling-stroke">
+          <path data-draft-stroke="" d="M 48 40 H 18 V 72 M 952 40 H 982 V 72 M 18 928 V 960 H 48 M 982 928 V 960 H 952" />
+          <path data-draft-stroke="" d="M 50 64 H 105 M 895 64 H 950 M 50 936 H 105 M 895 936 H 950" strokeDasharray="3 5" />
+        </svg>
+        <svg className="absolute left-1/2 top-20 h-9 w-9 -translate-x-1/2 text-cyan-draft/60 sm:top-24" viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+          <path data-draft-stroke="" d="M 7 28 L 28 7 M 22 8 L 28 7 L 27 13 M 5 30 L 8 27 M 12 29 L 17 34" />
+        </svg>
+      </div>
 
-      <header className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
+      <header ref={headerRef} className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
         <div className="group flex flex-col items-center">
-          <img alt="Tattoo Atelier needle doodle" ref={logoRef} className="doodle-hover mb-1 h-16 w-16 opacity-95 mix-blend-multiply" src={LOGO_URL} />
+          <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-16 w-16 opacity-95 mix-blend-multiply" src={LOGO_URL} />
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink &amp; Needle</span>
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto my-auto w-full max-w-2xl py-8 sm:py-12">
-        <div className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
+      <main ref={paperRef} className="relative z-10 mx-auto my-auto w-full max-w-2xl py-8 sm:py-12">
+        <div ref={indicatorRef} className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
           <div className="flex min-w-0 items-center gap-2">
             <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
             <span className="hidden font-hand text-sm text-ink-pencil sm:inline">• {currentMeta.hint}</span>
