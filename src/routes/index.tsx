@@ -168,6 +168,7 @@ function TattooAtelier() {
     stepIndicator: indicatorRef.current,
     question: paneRef.current,
   });
+  }, []);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
