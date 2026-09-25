@@ -125,10 +125,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <SitePreloader />
-      <DeskAtmosphere />
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-      <SketchFooter />
+      {/* Desk marks are anchored to this frame so they scroll with the page content. */}
+      <div className="relative flex min-h-dvh flex-col">
+        <DeskAtmosphere />
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <SketchFooter />
+      </div>
     </QueryClientProvider>
   );
 }
