@@ -84,6 +84,21 @@ function AuthPage() {
     await navigate({ to: "/admin" });
   };
 
+  const microsoftSignIn = async () => {
+    setBusy(true);
+    setError(null);
+    const result = await lovable.auth.signInWithOAuth("microsoft", {
+      redirect_uri: window.location.origin,
+    });
+    if (result.error) {
+      setError("Microsoft sign-in did not complete. Try again.");
+      setBusy(false);
+      return;
+    }
+    if (result.redirected) return;
+    await navigate({ to: "/admin" });
+  };
+
   const appleSignIn = async () => {
     setBusy(true);
     setError(null);
@@ -165,6 +180,16 @@ function AuthPage() {
           className="mt-3 h-auto w-full rounded-2xl border-ink-dim/40 bg-transparent px-6 py-3 font-hand text-lg text-foreground hover:bg-paper-line"
         >
           Continue with Apple
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          disabled={busy}
+          onClick={() => void microsoftSignIn()}
+          className="mt-3 h-auto w-full rounded-2xl border-ink-dim/40 bg-transparent px-6 py-3 font-hand text-lg text-foreground hover:bg-paper-line"
+        >
+          Continue with Microsoft
         </Button>
 
         <button
