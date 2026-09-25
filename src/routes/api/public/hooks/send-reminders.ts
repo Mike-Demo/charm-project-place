@@ -41,7 +41,7 @@ export const Route = createFileRoute("/api/public/hooks/send-reminders")({
           .limit(200);
         if (error) return Response.json({ error: "Could not load bookings" }, { status: 500 });
 
-        const origin = new URL(request.url).origin;
+        const { APP_ORIGIN } = await import("@/lib/studio-location");
         let sent = 0, suppressed = 0, failed = 0;
         for (const row of rows ?? []) {
           try {
