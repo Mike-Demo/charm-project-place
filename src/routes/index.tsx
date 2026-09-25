@@ -1,24 +1,245 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { Button } from "@/components/ui/button";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const LOGO_URL =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
+
+const stepMeta = [
+  { badge: "Step 01 // 04", hint: "Date & time", title: "Step 1: Date & Time" },
+  { badge: "Step 02 // 04", hint: "Your name", title: "Step 2: Name" },
+  { badge: "Step 03 // 04", hint: "Phone verification", title: "Step 3: Phone" },
+  { badge: "Step 04 // 04", hint: "Digital stencil", title: "Step 4: Email" },
+  { badge: "Review // Final", hint: "Ready to ink", title: "Review & Lock In" },
+] as const;
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Session Details — Tattoo Atelier" },
+      { name: "description", content: "Confirm your custom linework session at Tattoo Atelier." },
+      { property: "og:title", content: "Session Details — Tattoo Atelier" },
+      { property: "og:description", content: "Confirm your custom linework session at Tattoo Atelier." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: TattooAtelier,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function WaveUnderline() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <svg aria-hidden="true" className="absolute -bottom-2 left-0 h-2.5 w-full overflow-visible text-pencil-red" fill="none" preserveAspectRatio="none" viewBox="0 0 160 8">
+      <path d="M 0 4 Q 10 1, 20 4 T 40 4 T 60 4 T 80 4 T 100 4 T 120 4 T 140 4 T 160 4" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function TattooAtelier() {
+  const [step, setStep] = useState(3);
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
+  const [name, setName] = useState("Gail");
+  const [phone, setPhone] = useState("555-019");
+  const [email, setEmail] = useState("gail@example");
+  const [date, setDate] = useState("Friday, Oct 25 @ 11:30 AM");
+  const [toast, setToast] = useState(false);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const firstName = name.trim().split(/\s+/)[0] || "Gail";
+  const nameValid = name.trim().length >= 2;
+  const phoneValid = phone.replace(/\D/g, "").length >= 10;
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
+  const allValid = nameValid && phoneValid && emailValid;
+  const currentMeta = stepMeta[step - 1] ?? stepMeta[0];
+
+  useEffect(() => () => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+  }, []);
+
+  const goToStep = (next: number) => {
+    if (next < 1 || next > 5 || next === step) return;
+    setDirection(next > step ? "forward" : "backward");
+    setStep(next);
+  };
+
+  const showConfirmation = () => {
+    setToast(true);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(false), 3000);
+  };
+
+  const continueFlow = () => {
+    if (step === 2 && !nameValid) return;
+    if (step === 3 && !phoneValid) return;
+    if (step === 4 && !emailValid) return;
+    if (step === 5) {
+      if (allValid) showConfirmation();
+      return;
+    }
+    goToStep(step + 1);
+  };
+
+  const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") continueFlow();
+  };
+
+  const toggleValid = () => {
+    if (allValid) {
+      setPhone("555-019");
+      setEmail("gail@example");
+      setStep(3);
+      return;
+    }
+    setName(nameValid ? name : "Gail");
+    setPhone("+1 (555) 019-2834");
+    setEmail("gail@example.com");
+  };
+
+  const currentValid = step === 2 ? nameValid : step === 3 ? phoneValid : step === 4 ? emailValid : step === 5 ? allValid : true;
+
+  return (
+    <div className="sketchbook-canvas relative flex min-h-screen flex-col overflow-x-hidden px-5 py-5 font-hand text-foreground selection:bg-paper-line sm:px-10 sm:py-10">
+      <div aria-hidden="true" className="paper-fiber" />
+      <div aria-hidden="true" className="corner-tick left-5 top-5 border-l-2 border-t-2" />
+      <div aria-hidden="true" className="corner-tick right-5 top-5 border-r-2 border-t-2" />
+      <div aria-hidden="true" className="corner-tick bottom-5 left-5 border-b-2 border-l-2" />
+      <div aria-hidden="true" className="corner-tick bottom-5 right-5 border-b-2 border-r-2" />
+
+      <header className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
+        <div className="group flex flex-col items-center">
+          <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-16 w-16 opacity-95 mix-blend-multiply" src={LOGO_URL} />
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink & Needle</span>
+        </div>
+        <h1 className="mt-4 flex items-center justify-center gap-2 text-3xl font-normal tracking-wide sm:text-4xl">
+          One question at a time, {firstName} <span className="animate-pulse text-2xl">✨</span>
+        </h1>
+        <p className="mt-1 text-base text-ink-pencil sm:text-lg">No overwhelming forms — answer one relaxed prompt directly on paper.</p>
+      </header>
+
+      <main className="relative z-10 mx-auto my-auto w-full max-w-2xl py-8 sm:py-12">
+        <div className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
+            <span className="hidden font-hand text-sm text-ink-pencil sm:inline">• {currentMeta.hint}</span>
+          </div>
+          <div className="flex shrink-0 items-center gap-1 sm:gap-1.5" aria-label="Appointment steps">
+            {stepMeta.map((item, index) => (
+              <Button key={item.title} variant="ghost" size="icon" onClick={() => goToStep(index + 1)} title={item.title} aria-label={item.title}
+                className={`h-7 w-7 rounded-full p-0 font-mono text-xs shadow-none ${step === index + 1 ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/40 hover:bg-foreground hover:text-background" : "bg-paper-deep/80 text-ink-pencil hover:bg-paper-line hover:text-foreground"}`}>
+                {index === 4 ? "✦" : String(index + 1).padStart(2, "0")}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div className={`step-pane min-h-[300px] ${direction === "forward" ? "paper-in-forward" : "paper-in-backward"}`} key={step}>
+          {step === 1 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 04</p>
+              <h2 className="mb-6 text-3xl font-normal leading-snug sm:text-4xl">When do you want to book?</h2>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-4 py-2 shadow-xs">
+                  <span className="text-cyan-draft">✦</span><strong className="text-xl sm:text-3xl">{date}</strong>
+                  <Button variant="link" className="h-auto p-0 font-mono text-xs text-cyan-draft sm:text-sm" onClick={() => setDate(date.includes("Oct 25") ? "Saturday, Oct 26 @ 2:00 PM" : "Friday, Oct 25 @ 11:30 AM")}>(change)</Button>
+                </div>
+              </div>
+              <p className="mt-4 flex items-center gap-1.5 text-sm text-ink-pencil"><span className="h-2 w-2 rounded-full bg-pencil-green" />90 min custom linework session at Station 03 • Studio Downtown</p>
+            </section>
+          )}
+
+          {step === 2 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 04</p>
+              <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
+                <h2 className="font-normal">What should we call you?</h2>
+                <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : "border-pencil-red"}`}>
+                  <input autoFocus aria-label="Your name" className="paper-inline-input max-w-[75vw] font-bold focus:text-cyan-draft" onChange={(e) => setName(e.target.value)} onKeyDown={handleEnter} style={{ width: `${Math.max(4, name.length + 1)}ch` }} value={name} />
+                </span>
+              </div>
+              <p className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : "border-pencil-red/25 bg-invalid-soft text-pencil-red"}`}>
+                {nameValid ? `(looking great, ${firstName}! ✨)` : "(let us know who to ink for ✏️)"}
+              </p>
+              <p className="mt-3 text-xs text-ink-pencil sm:text-sm">Press Enter ↵ or click Continue below when ready.</p>
+            </section>
+          )}
+
+          {step === 3 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 04</p>
+              <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
+                <h2 className="font-normal">Where can we text your reminder?</h2>
+                <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : "border-pencil-red"}`}>
+                  <input autoFocus aria-label="Phone number" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setPhone(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. (555) 019-2834" style={{ width: `${Math.max(12, phone.length + 1)}ch` }} type="tel" value={phone} />
+                  {!phoneValid && <WaveUnderline />}
+                </span>
+              </div>
+              {phoneValid ? <ValidNote>Perfect! Day-of session reminder will be texted here.</ValidNote> : <ErrorNote icon="✏️" title="Just needs a couple more digits to reach you!">Tip: Format like +1 (555) 019-2834 so our atelier SMS system can connect.</ErrorNote>}
+            </section>
+          )}
+
+          {step === 4 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 04</p>
+              <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
+                <h2 className="font-normal">Where should we send your stencil & guide?</h2>
+                <span className={`relative inline-block border-b-2 ${emailValid ? "border-pencil-green" : "border-pencil-red"}`}>
+                  <input autoFocus aria-label="Email address" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setEmail(e.target.value)} onKeyDown={handleEnter} placeholder="gail@example.com" style={{ width: `${Math.max(14, email.length + 1)}ch` }} type="email" value={email} />
+                  {!emailValid && <WaveUnderline />}
+                </span>
+              </div>
+              {emailValid ? <ValidNote>Looks good! Stencil & prep guides will head to your inbox.</ValidNote> : <ErrorNote icon="✉️" title={`Almost there, ${firstName}! Don't forget the .com at the end.`}>We need a valid domain so your high-res linework and aftercare guide won't bounce!</ErrorNote>}
+            </section>
+          )}
+
+          {step === 5 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Review // Final Protocol</p>
+              <h2 className="mb-4 text-3xl font-normal leading-snug sm:text-4xl">Almost ready to ink, {firstName} <span className="animate-pulse text-2xl">✨</span></h2>
+              <div className="space-y-3 rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-4 text-lg">
+                <ReviewRow label="Session:" value={`${date} (Station 03)`} />
+                <ReviewRow label="Client:" value={name || "Gail"} />
+                <ReviewRow label="SMS Reminder:" value={phone || "+1 (555) 019-2834"} />
+                <ReviewRow label="Linework & Stencil:" value={email || "gail@example.com"} last />
+              </div>
+              {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
+            </section>
+          )}
+        </div>
+
+        <div className="mt-10 flex flex-col items-center justify-between gap-6 border-t border-dashed border-ink-dim/30 pt-6 sm:flex-row">
+          <Button variant="link" disabled={step === 1} onClick={() => goToStep(step - 1)} className="group h-auto p-0 font-hand text-lg text-ink-pencil hover:text-foreground">
+            <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
+          </Button>
+          <Button disabled={!currentValid} onClick={continueFlow} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === 5 ? "final-stamp" : ""}`}>
+            {step === 5 ? "Lock In Appointment ✦" : "Continue →"}<span className="text-cyan-draft">✦</span>
+          </Button>
+        </div>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
+          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />No deposit charged today</span>
+          <span>Pay in atelier via Card or Cash</span><span>Free rescheduling up to 24h prior</span>
+        </div>
+      </main>
+
+      <footer className="relative z-10 mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-3 border-t border-ink-dim/20 pb-2 pt-4 text-xs text-ink-pencil">
+        <div className="flex flex-wrap items-center gap-2"><span>Need to test the valid state?</span><Button variant="ghost" onClick={toggleValid} className="h-auto rounded-full bg-cyan-soft px-2.5 py-0.5 font-hand font-bold text-cyan-draft hover:bg-cyan-soft/70">⚡ Toggle Auto-Fix / Valid State</Button></div>
+        <span className="font-mono text-[11px] uppercase tracking-wider text-ink-dim">Tattoo Atelier // Novo // P. 02</span>
+      </footer>
+
+      <div role="status" aria-live="polite" className={`fixed left-1/2 top-8 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl border-2 border-foreground bg-paper-sheet px-6 py-3 shadow-2xl transition-all duration-300 ${toast ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"}`}>
+        <span className="h-3 w-3 animate-ping rounded-full bg-cyan-draft" /><strong className="text-xl">Booking locked in for {firstName}!</strong>
+      </div>
     </div>
   );
+}
+
+function ValidNote({ children }: { children: string }) {
+  return <div className="mt-3 flex items-start gap-2 text-pencil-green"><span className="mt-0.5 shrink-0">✓</span><strong className="text-base leading-snug">{children}</strong></div>;
+}
+
+function ErrorNote({ icon, title, children }: { icon: string; title: string; children: string }) {
+  return <div className="mt-3 flex max-w-xl items-start gap-2"><span className="mt-0.5 shrink-0 text-lg">{icon}</span><div className="text-base leading-snug text-pencil-red"><strong>{title}</strong><span className="mt-0.5 block text-xs text-ink-pencil sm:text-sm">{children}</span></div></div>;
+}
+
+function ReviewRow({ label, value, last = false }: { label: string; value: string; last?: boolean }) {
+  return <div className={`flex flex-col justify-between gap-1 pb-2 sm:flex-row sm:items-center ${last ? "" : "border-b border-ink-dim/20"}`}><span className="shrink-0 font-mono text-sm text-ink-pencil">{label}</span><strong className="break-words text-left sm:text-right">{value}</strong></div>;
 }
