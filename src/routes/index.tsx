@@ -782,7 +782,7 @@ function ConfirmedPass({ booking, onReset }: { booking: Appointment; onReset: ()
         <Button onClick={() => window.open(googleCalendarUrl(booking), "_blank", "noopener")} className="ink-stamp-btn h-auto rounded-2xl px-5 py-3 font-hand text-lg font-bold">
           Add to Google Calendar<span className="text-cyan-draft">✦</span>
         </Button>
-        <Button variant="outlined" onClick={() => downloadIcs([booking], "tattoo-session.ics")} className="h-auto rounded-2xl border-ink-dim/40 bg-transparent px-5 py-3 font-hand text-lg text-foreground hover:bg-paper-deep">
+        <Button variant="outline" onClick={() => downloadIcs([booking], "tattoo-session.ics")} className="h-auto rounded-2xl border-ink-dim/40 bg-transparent px-5 py-3 font-hand text-lg text-foreground hover:bg-paper-deep">
           Download .ics invite
         </Button>
       </div>
