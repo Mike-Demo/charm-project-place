@@ -9,6 +9,7 @@ import {
   buildAvailability,
   formatLongDate,
   formatPhone,
+  generateVerificationCode,
   isDayFull,
   isSlotTaken,
   sameDay,
@@ -20,12 +21,13 @@ import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersR
 import { NEEDLE_MARK_D } from "@/lib/logo-marks";
 
 const stepMeta = [
-  { badge: "Step 01 // 06", hint: "Your name", title: "Step 1: Name" },
-  { badge: "Step 02 // 06", hint: "Your pronouns", title: "Step 2: Pronouns" },
-  { badge: "Step 03 // 06", hint: "Preferred day", title: "Step 3: Day" },
-  { badge: "Step 04 // 06", hint: "Date & time", title: "Step 4: Date & Time" },
-  { badge: "Step 05 // 06", hint: "Phone verification", title: "Step 5: Phone" },
-  { badge: "Step 06 // 06", hint: "Digital stencil", title: "Step 6: Email" },
+  { badge: "Step 01 // 07", hint: "Your name", title: "Step 1: Name" },
+  { badge: "Step 02 // 07", hint: "Your pronouns", title: "Step 2: Pronouns" },
+  { badge: "Step 03 // 07", hint: "Preferred day", title: "Step 3: Day" },
+  { badge: "Step 04 // 07", hint: "Date & time", title: "Step 4: Date & Time" },
+  { badge: "Step 05 // 07", hint: "Phone number", title: "Step 5: Phone" },
+  { badge: "Step 06 // 07", hint: "SMS pass code", title: "Step 6: Verify" },
+  { badge: "Step 07 // 07", hint: "Digital stencil", title: "Step 7: Email" },
   { badge: "Review // Final", hint: "Ready to ink", title: "Review & Lock In" },
 ] as const;
 
@@ -98,6 +100,11 @@ function TattooAtelier() {
   const [monthCursor, setMonthCursor] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [toast, setToast] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
+  const [smsCode, setSmsCode] = useState<string | null>(null);
+  const [codeDigits, setCodeDigits] = useState<string[]>(["", "", "", "", "", ""]);
+  const [codeError, setCodeError] = useState(false);
+  const [resendIn, setResendIn] = useState(0);
+  const codeInputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const paneRef = useRef<HTMLDivElement | null>(null);
   const pillsRef = useRef<HTMLDivElement | null>(null);
@@ -122,7 +129,9 @@ function TattooAtelier() {
   const pronounsValue =
     pronounChoice === null ? "" : pronounChoice === "custom" ? customPronouns.trim() : pronounChoice === "private" ? "" : pronounChoice;
   const pronounsLabel = pronounChoice === "private" ? "Prefer not to say" : pronounsValue;
-  const allValid = nameValid && pronounsValid && scheduleValid && phoneValid && emailValid;
+  const joinedCode = codeDigits.join("");
+  const codeValid = smsCode !== null && joinedCode === smsCode;
+  const allValid = nameValid && pronounsValid && scheduleValid && phoneValid && codeValid && emailValid;
   const currentMeta = stepMeta[step - 1] ?? stepMeta[0];
 
   const sessionLabel = selectedDate && selectedTime ? `${formatLongDate(selectedDate)} @ ${selectedTime}` : "Not picked yet";
@@ -207,6 +216,33 @@ function TattooAtelier() {
     if (toast) noteDrop(toastRef.current);
   }, [toast]);
 
+  // Demo SMS: mint a studio pass when the verification step opens, focus the first box.
+  useEffect(() => {
+    if (step !== 6) return;
+    if (smsCode === null) setSmsCode(generateVerificationCode());
+    setResendIn(30);
+    codeInputRefs.current[0]?.focus();
+  }, [step, smsCode]);
+
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const timer = setTimeout(() => setResendIn((seconds) => seconds - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [resendIn]);
+
+  // Once all six digits are in: stamp through and glide on, or shake and flag the sketch.
+  useEffect(() => {
+    if (step !== 6 || smsCode === null || joinedCode.length < 6) return undefined;
+    if (joinedCode !== smsCode) {
+      setCodeError(true);
+      shakeField(codeInputRefs.current[0]);
+      return undefined;
+    }
+    setCodeError(false);
+    const timer = setTimeout(() => goToStep(7), 450);
+    return () => clearTimeout(timer);
+  }, [step, smsCode, joinedCode]);
+
   const handlePaneClick = (event: MouseEvent<HTMLDivElement>) => {
     const target = event.target instanceof Element ? event.target.closest("button:not(:disabled)") : null;
     if (target) pickPop(target);
@@ -241,15 +277,45 @@ function TattooAtelier() {
     toastTimer.current = setTimeout(() => setToast(false), 3000);
   };
 
+  const setCodeDigit = (index: number, raw: string) => {
+    const value = raw.replace(/\D/g, "");
+    setCodeDigits((prev) => {
+      const next = [...prev];
+      let cursor = index;
+      for (const char of value) {
+        if (cursor > 5) break;
+        next[cursor] = char;
+        cursor += 1;
+      }
+      return next;
+    });
+    if (value.length > 0) codeInputRefs.current[Math.min(index + value.length, 5)]?.focus();
+  };
+
+  const handleCodeKeyDown = (index: number, event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Backspace" || codeDigits[index] !== "" || index === 0) return;
+    codeInputRefs.current[index - 1]?.focus();
+    setCodeDigits((prev) => prev.map((digit, position) => (position === index - 1 ? "" : digit)));
+  };
+
+  const resendCode = () => {
+    if (resendIn > 0) return;
+    setSmsCode(generateVerificationCode());
+    setCodeDigits(["", "", "", "", "", ""]);
+    setCodeError(false);
+    codeInputRefs.current[0]?.focus();
+  };
+
   const continueFlow = () => {
-    const blocked = (step === 1 && !nameValid) || (step === 2 && !pronounsValid) || (step === 5 && !phoneValid) || (step === 6 && !emailValid);
+    const blocked = (step === 1 && !nameValid) || (step === 2 && !pronounsValid) || (step === 5 && !phoneValid) || (step === 6 && !codeValid) || (step === 7 && !emailValid);
     if (blocked) shakeField(paneRef.current?.querySelector("input"));
     if (step === 1 && !nameValid) return;
     if (step === 2 && !pronounsValid) return;
     if (step === 3 && dayChoice === null) return;
     if (step === 4 && !scheduleValid) return;
     if (step === 5 && !phoneValid) return;
-    if (step === 6 && !emailValid) return;
+    if (step === 6 && !codeValid) return;
+    if (step === 7 && !emailValid) return;
     if (step === TOTAL_STEPS) {
       if (!allValid || selectedDate === null || selectedTime === null) return;
       setBookingError(null);
@@ -276,7 +342,8 @@ function TattooAtelier() {
       : step === 3 ? dayChoice !== null
       : step === 4 ? scheduleValid
       : step === 5 ? phoneValid
-      : step === 6 ? emailValid
+      : step === 6 ? codeValid
+      : step === 7 ? emailValid
       : allValid;
 
   const calendarCells = useMemo(() => {
@@ -342,7 +409,7 @@ function TattooAtelier() {
         <div ref={paneRef} onClick={handlePaneClick} className="step-pane min-h-[300px]" key={step}>
           {step === 1 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 06</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 07</p>
               <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">What should we call you?</h2>
                 <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : name.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -361,7 +428,7 @@ function TattooAtelier() {
 
           {step === 2 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 06</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 07</p>
               <h2 className="mb-2 text-3xl font-normal leading-snug sm:text-4xl">What are your pronouns{firstName ? `, ${firstName}` : ""}?</h2>
               <p className="mb-5 text-sm text-ink-pencil">So your artist addresses you right from the first sketch.</p>
               <div className="flex flex-wrap gap-2">
@@ -399,7 +466,7 @@ function TattooAtelier() {
 
           {step === 3 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 06</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 07</p>
               <h2 className="mb-6 text-3xl font-normal leading-snug sm:text-4xl">What day do you want?</h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {DAY_OPTIONS.map((option) => {
@@ -424,7 +491,7 @@ function TattooAtelier() {
 
           {step === 4 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 06</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 07</p>
               <h2 className="mb-5 text-3xl font-normal leading-snug sm:text-4xl">Pick your exact date &amp; time</h2>
 
               <div className="rounded-2xl border border-ink-dim/30 bg-paper-deep/50 p-4">
@@ -500,7 +567,7 @@ function TattooAtelier() {
 
           {step === 5 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 05 of 06</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 05 of 07</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where can we text your reminder?</h2>
                 <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : phone.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -515,7 +582,41 @@ function TattooAtelier() {
 
           {step === 6 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 06 of 06</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 06 of 07</p>
+              <h2 className="mb-2 text-3xl font-normal leading-snug sm:text-4xl">We just sketched a pass code to your phone</h2>
+              <p className="mb-6 text-lg text-ink-pencil">Enter the 6-digit studio pass texted to <strong className="text-foreground">{formatPhone(phone)}</strong>.</p>
+              <div className="mb-4 flex gap-2 sm:gap-3">
+                {codeDigits.map((digit, index) => (
+                  <input
+                    key={index}
+                    ref={(el) => { codeInputRefs.current[index] = el; }}
+                    aria-label={`Studio pass digit ${index + 1}`}
+                    autoFocus={index === 0}
+                    className={`code-box text-3xl font-bold ${codeError ? "code-box-error" : digit ? "code-box-filled" : ""}`}
+                    inputMode="numeric"
+                    maxLength={6}
+                    onChange={(event) => setCodeDigit(index, event.target.value)}
+                    onFocus={(event) => event.currentTarget.select()}
+                    onKeyDown={(event) => handleCodeKeyDown(index, event)}
+                    value={digit}
+                  />
+                ))}
+              </div>
+              {codeError ? <ErrorNote icon="✏️" title="That sketch didn't match the studio pass — check the banner below and try again.">Pass codes are always 6 digits.</ErrorNote> : null}
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-sm text-ink-pencil">
+                <button type="button" className="underline underline-offset-4 disabled:no-underline disabled:opacity-50" disabled={resendIn > 0} onClick={resendCode}>Resend code</button>
+                {resendIn > 0 ? <span aria-live="polite">new pass in {resendIn}s</span> : null}
+                <button type="button" className="underline underline-offset-4" onClick={() => goToStep(5)}>Wrong number?</button>
+              </div>
+              <p className="mt-5 rounded-lg border border-dashed border-cyan-draft/60 bg-paper-deep/50 px-4 py-3 font-mono text-sm">
+                <span className="text-cyan-draft">◐ Demo studio SMS sent:</span> <strong className="tracking-[0.3em]">{smsCode ?? "······"}</strong>
+              </p>
+            </section>
+          )}
+
+          {step === 7 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 07 of 07</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where should we send your stencil &amp; guide?</h2>
                 <span className={`relative inline-block border-b-2 ${emailValid ? "border-pencil-green" : email.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>

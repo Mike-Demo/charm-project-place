@@ -148,3 +148,9 @@ export function formatPhone(input: string): string {
   if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
   return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 }
+
+/** Six-digit studio pass used by the demo SMS verification step. */
+export function generateVerificationCode(): string {
+  const value = Math.floor(Math.random() * 1_000_000);
+  return value.toString().padStart(6, "0");
+}
