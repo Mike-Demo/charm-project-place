@@ -382,7 +382,12 @@ function TattooAtelier() {
 
   const continueFlow = () => {
     const blocked = (step === 1 && !nameValid) || (step === 2 && !pronounsValid) || (step === 5 && !phoneValid) || (step === 6 && !codeValid) || (step === 7 && !emailValid);
-    if (blocked) shakeField(paneRef.current?.querySelector("input"));
+    if (blocked) {
+      const field = paneRef.current?.querySelector("input");
+      shakeField(field);
+      field?.focus();
+    }
+
     if (step === 1 && !nameValid) return;
     if (step === 2 && !pronounsValid) return;
     if (step === 3 && dayChoice === null) return;
