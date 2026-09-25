@@ -38,12 +38,13 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
                 if (row?.access_token) {
                   try {
                     const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+                    const { APP_ORIGIN } = await import("@/lib/studio-location");
                     await sendTemplateEmail("session-pass", row.email, {
                       templateData: {
                         name: row.client_name.split(" ")[0],
                         date: row.booking_date,
                         time: row.time_slot,
-                        passUrl: `${new URL(request.url).origin}/pass/${row.access_token}`,
+                        passUrl: `${APP_ORIGIN}/pass/${row.access_token}`,
                       },
                       idempotencyKey: `pass-${custom.data.appointmentId}`,
                     });

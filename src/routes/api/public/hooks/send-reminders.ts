@@ -45,7 +45,7 @@ export const Route = createFileRoute("/api/public/hooks/send-reminders")({
         let sent = 0, suppressed = 0, failed = 0;
         for (const row of rows ?? []) {
           try {
-            const result = await sendLifecycleForRow(row, "reminder", origin, `reminder-auto-${row.id}`);
+            const result = await sendLifecycleForRow(row, "reminder", APP_ORIGIN, `reminder-auto-${row.id}`);
             if (!result.sent) { suppressed++; continue; }
             await supabaseAdmin.from("appointments").update({ reminder_sent_at: new Date().toISOString() }).eq("id", row.id);
             sent++;
