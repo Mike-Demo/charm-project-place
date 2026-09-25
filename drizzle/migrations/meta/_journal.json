@@ -57,6 +57,13 @@
       "when": 1790372920191,
       "tag": "0007_secure_idea_and_sketch",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790374922929,
+      "tag": "0008_transfer_studio_admin",
+      "breakpoints": true
     }
   ]
 }
