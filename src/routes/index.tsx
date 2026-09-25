@@ -266,7 +266,6 @@ function TattooAtelier() {
       <header ref={headerRef} className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
         <div className="group flex flex-col items-center">
           <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-48 w-48 opacity-95 mix-blend-multiply" src={LOGO_URL} />
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink &amp; Needle</span>
         </div>
       </header>
 
@@ -464,6 +463,7 @@ function TattooAtelier() {
 
       <footer className="relative z-10 mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-3 border-t border-ink-dim/20 pb-2 pt-4 text-xs text-ink-pencil">
         <span className="font-mono text-[11px] uppercase tracking-wider text-ink-dim">Tattoo Atelier // Novo // P. 02</span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink &amp; Needle</span>
       </footer>
 
       <div ref={toastRef} role="status" aria-live="polite" className={`fixed left-1/2 top-8 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl border-2 border-foreground bg-paper-sheet px-6 py-3 shadow-2xl transition-all duration-300 ${toast ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"}`}>
