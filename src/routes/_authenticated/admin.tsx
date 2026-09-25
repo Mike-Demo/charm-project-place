@@ -6,6 +6,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import {
   TIME_SLOTS,
@@ -266,7 +267,7 @@ function AdminPage() {
             </select>
           </label>
         </div>
-        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="mt-6">
           <div className="min-w-0">
             {bookingPageQuery.isPending ? <p role="status" className="py-8 text-ink-pencil">Loading bookings…</p> :
               bookingPageQuery.isError ? <div role="alert" className="py-8 text-pencil-red">Bookings could not load. <Button variant="outline" onClick={() => void bookingPageQuery.refetch()}>Retry</Button></div> :
@@ -286,7 +287,12 @@ function AdminPage() {
               <Button variant="outline" disabled={bookingPageQuery.isFetching || (page + 1) * PAGE_SIZE >= (bookingPageQuery.data?.total ?? 0)} onClick={() => setPage((value) => value + 1)}>Next</Button>
             </div>
           </div>
-          <AdminBookingDetails booking={selectedBookingQuery.data ?? null} loading={selectedBookingQuery.isPending && selectedId !== null} error={selectedBookingQuery.isError} busy={statusMutation.isPending} onStatus={(id, nextStatus) => statusMutation.mutate({ id, status: nextStatus })} onClose={() => setSelectedId(null)} />
+          <Sheet open={selectedId !== null} onOpenChange={(open) => { if (!open) setSelectedId(null); }}>
+            <SheetContent side="right" className="sketchbook-canvas w-full overflow-y-auto border-l border-ink-dim/40 font-hand text-foreground sm:max-w-xl">
+              <SheetHeader className="sr-only"><SheetTitle>Session file / details</SheetTitle></SheetHeader>
+              <AdminBookingDetails hideClose booking={selectedBookingQuery.data ?? null} loading={selectedBookingQuery.isPending && selectedId !== null} error={selectedBookingQuery.isError} busy={statusMutation.isPending} onStatus={(id, nextStatus) => statusMutation.mutate({ id, status: nextStatus })} onClose={() => setSelectedId(null)} />
+            </SheetContent>
+          </Sheet>
         </div>
       </section>
 

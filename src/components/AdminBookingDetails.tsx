@@ -12,14 +12,15 @@ interface Props {
   busy: boolean;
   onStatus: (id: string, status: string) => void;
   onClose: () => void;
+  hideClose?: boolean;
 }
 
-export function AdminBookingDetails({ booking, loading, error, busy, onStatus, onClose }: Props) {
+export function AdminBookingDetails({ booking, loading, error, busy, onStatus, onClose, hideClose = false }: Props) {
   return (
-    <section aria-label="Booking details" className="min-w-0 border-t border-ink-dim/40 pt-5 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
+    <section aria-label="Booking details" className="min-w-0">
       <div className="flex items-center justify-between gap-3">
         <p className="font-mono text-[11px] uppercase text-ink-pencil">Session file / details</p>
-        {booking && <Button variant="ghost" size="icon" aria-label="Close booking details" title="Close booking details" onClick={onClose}><X className="size-4" /></Button>}
+        {booking && !hideClose && <Button variant="ghost" size="icon" aria-label="Close booking details" title="Close booking details" onClick={onClose}><X className="size-4" /></Button>}
       </div>
       {loading ? <p className="mt-8 text-ink-pencil" role="status">Opening session file…</p> :
        error ? <p className="mt-8 text-pencil-red" role="alert">Could not open this booking. Please try again.</p> :
