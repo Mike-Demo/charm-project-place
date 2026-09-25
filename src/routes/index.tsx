@@ -102,7 +102,9 @@ function TattooAtelier() {
   const initialStepEffect = useRef(true);
 
   const firstName = name.trim().split(/\s+/)[0] || "";
+  const hasFullName = name.trim().split(/\s+/).filter(Boolean).length >= 2;
   const nameValid = name.trim().length >= 2;
+
   const phoneValid = phone.replace(/\D/g, "").length >= 10;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
   const scheduleValid = selectedDate !== null && selectedTime !== null;
@@ -313,9 +315,11 @@ function TattooAtelier() {
                 </span>
               </div>
               <p className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : name.trim() ? "border-pencil-red/25 bg-invalid-soft text-pencil-red" : "border-ink-dim/30 bg-paper-deep/60 text-ink-pencil"}`}>
-                {nameValid ? `(looking great, ${firstName}! ✨)` : name.trim() ? "(let us know who to ink for ✏️)" : "(your name goes here)"}
+                {nameValid ? (hasFullName ? `(Looking great, ${firstName}! Full name locked in ✍️)` : `(Just "${firstName}"? Cool, I like it. ✨)`) : name.trim() ? "(let us know who to ink for ✏️)" : "(your name goes here)"}
               </p>
-              <p className="mt-3 text-xs text-ink-pencil sm:text-sm">Press Enter ↵ or click Continue below when ready.</p>
+              <p className="mt-3 text-xs text-ink-pencil sm:text-sm">First &amp; last name is preferred for studio check-in, but whatever you go by is fine.</p>
+              <p className="mt-1 text-xs text-ink-pencil sm:text-sm">Press Enter ↵ or click Continue below when ready.</p>
+
             </section>
           )}
 
