@@ -251,7 +251,7 @@ function TattooAtelier() {
           <path data-draft-stroke="" d="M 48 40 H 18 V 72 M 952 40 H 982 V 72 M 18 928 V 960 H 48 M 982 928 V 960 H 952" />
           <path data-draft-stroke="" d="M 50 64 H 105 M 895 64 H 950 M 50 936 H 105 M 895 936 H 950" strokeDasharray="3 5" />
         </svg>
-        <svg className="absolute left-1/2 top-20 h-9 w-9 -translate-x-1/2 text-cyan-draft/60 sm:top-24" viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+        <svg className="absolute left-[calc(50%+2.5rem)] top-8 h-7 w-7 text-cyan-draft/60 sm:top-10" viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
           <path data-draft-stroke="" d="M 7 28 L 28 7 M 22 8 L 28 7 L 27 13 M 5 30 L 8 27 M 12 29 L 17 34" />
         </svg>
       </div>
