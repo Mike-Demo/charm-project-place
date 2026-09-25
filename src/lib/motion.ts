@@ -108,7 +108,11 @@ export const startLineBoil = (
   let timer: ReturnType<typeof setInterval> | null = null;
   const tick = () => {
     frame = (frame + 1) % BOIL_SEEDS.length;
-    turbulence.setAttribute("seed", String(BOIL_SEEDS[frame]));
+    const seed = String(BOIL_SEEDS[frame]);
+    turbulence.setAttribute("seed", seed);
+    document
+      .querySelectorAll<SVGFETurbulenceElement>("[data-boil-seed]")
+      .forEach((node) => node.setAttribute("seed", seed));
     if (inkEl) inkEl.style.opacity = String(BOIL_OPACITY[frame]);
   };
   const start = () => {
