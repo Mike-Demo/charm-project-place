@@ -491,6 +491,7 @@ function TattooAtelier() {
               <div className="space-y-3 rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-4 text-lg">
                 <ReviewRow label="Session:" value={scheduleValid ? `${sessionLabel} (Station 03)` : "—"} />
                 <ReviewRow label="Client:" value={name.trim() || "—"} />
+                <ReviewRow label="Pronouns:" value={pronounsValid ? pronounsLabel : "—"} />
                 <ReviewRow label="SMS Reminder:" value={phone.trim() || "—"} />
                 <ReviewRow label="Linework & Stencil:" value={email.trim() || "—"} last />
               </div>
