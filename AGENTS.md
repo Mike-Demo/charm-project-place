@@ -11,3 +11,4 @@
 
 - Keep booking-step header art in `StepArtwork` with a shared SVG coordinate system so transitions never shift the form layout.
 - Mount the first-visit preloader in the shared root shell as a fixed overlay so all pages retain their final layout underneath it.
+- Tattoo idea photos/sketches live in private bucket `tattoo-ideas`, attached server-side after the slot hold via `attachIdea`; concept sketches stream from `/api/sketch-concept` (image edits) — keeps AI key server-side and avoids orphan uploads.
