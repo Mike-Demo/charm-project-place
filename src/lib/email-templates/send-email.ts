@@ -74,7 +74,7 @@ export async function sendTemplateEmail(
         subject,
         html,
         text,
-        purpose: 'transactional',
+        purpose: 'transactional' as const,
         label: templateName,
         idempotency_key: options.idempotencyKey || crypto.randomUUID(),
         reply_to: options.replyTo,
