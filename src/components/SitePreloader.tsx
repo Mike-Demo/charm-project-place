@@ -19,14 +19,27 @@ export function SitePreloader() {
       setMounted(false);
     };
 
+    let forceReplay = false;
     try {
-      if (sessionStorage.getItem(PRELOADER_SESSION_KEY) === "1") {
-        finish();
-        return;
-      }
-      sessionStorage.setItem(PRELOADER_SESSION_KEY, "1");
+      const params = new URLSearchParams(window.location.search);
+      forceReplay = ["replay", "intro", "sketch"].some((key) => {
+        const value = params.get(key);
+        return value !== null && value !== "0" && value !== "false";
+      });
     } catch {
-      // If storage is unavailable, show the entrance once for this mount.
+      // Ignore unparsable URLs and fall back to the once-per-session behavior.
+    }
+
+    if (!forceReplay) {
+      try {
+        if (sessionStorage.getItem(PRELOADER_SESSION_KEY) === "1") {
+          finish();
+          return;
+        }
+        sessionStorage.setItem(PRELOADER_SESSION_KEY, "1");
+      } catch {
+        // If storage is unavailable, show the entrance once for this mount.
+      }
     }
 
     document.documentElement.setAttribute("data-preloader-active", "true");
