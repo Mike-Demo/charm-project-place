@@ -22,6 +22,7 @@ export interface BookingInput {
   email: string;
   date: Date;
   timeSlot: string;
+  pronouns: string;
 }
 
 export async function bookAppointment(input: BookingInput): Promise<string> {
@@ -31,6 +32,7 @@ export async function bookAppointment(input: BookingInput): Promise<string> {
     p_email: input.email,
     p_date: toDateKey(input.date),
     p_time_slot: input.timeSlot,
+    p_pronouns: input.pronouns,
   });
   if (error) throw new Error(error.message);
   return data as string;
