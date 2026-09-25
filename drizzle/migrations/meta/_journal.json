@@ -64,6 +64,13 @@
       "when": 1790374922929,
       "tag": "0008_transfer_studio_admin",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790375322248,
+      "tag": "0009_booking_lifecycle_stages",
+      "breakpoints": true
     }
   ]
 }
