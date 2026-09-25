@@ -79,6 +79,23 @@ export async function fetchBookingByToken(token: string): Promise<Appointment | 
   return { ...row, notes: null } as Appointment;
 }
 
+export interface AttendanceState {
+  reminder_sent_at: string | null;
+  client_confirmed_at: string | null;
+}
+
+export async function fetchAttendanceState(token: string): Promise<AttendanceState | null> {
+  const { data, error } = await supabase.rpc("get_booking_confirmation", { p_token: token });
+  if (error) throw new Error(error.message);
+  return (data ?? [])[0] ?? null;
+}
+
+export async function confirmAttendance(token: string): Promise<string> {
+  const { data, error } = await supabase.rpc("confirm_attendance", { p_token: token });
+  if (error) throw new Error(error.message);
+  return data as string;
+}
+
 export async function rescheduleBooking(token: string, date: Date, timeSlot: string): Promise<void> {
   const { error } = await supabase.rpc("reschedule_booking", {
     p_token: token,
@@ -132,7 +149,7 @@ export async function fetchBookingPage(options: BookingListOptions): Promise<{ b
 
 export async function fetchAdminBooking(id: string): Promise<Appointment | null> {
   const { data, error } = await supabase.from("appointments")
-    .select("id,client_name,phone,email,booking_date,time_slot,status,payment_status,pronouns,created_at,reschedule_count,rescheduled_at,idea_description,reference_image_path,concept_sketch_path,notes")
+    .select("id,client_name,phone,email,booking_date,time_slot,status,payment_status,pronouns,created_at,reschedule_count,rescheduled_at,idea_description,reference_image_path,concept_sketch_path,notes,reminder_sent_at,client_confirmed_at,day_of_sent_at,aftercare_sent_at,social_sent_at")
     .eq("id", id).maybeSingle();
   if (error) throw new Error(error.message);
   return data as Appointment | null;
