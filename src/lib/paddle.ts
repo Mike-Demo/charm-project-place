@@ -72,7 +72,7 @@ export function initializePaddle(): Promise<void> {
 export async function openSlotCheckout(options: { appointmentId: string; email: string }): Promise<void> {
   await initializePaddle();
   const paddlePriceId = await resolvePaddlePrice({
-    data: { priceId: SLOT_LOCK_PRICE_ID, environment: getPaddleEnvironment() },
+    data: { environment: getPaddleEnvironment() },
   });
   window.Paddle?.Checkout.open({
     items: [{ priceId: paddlePriceId, quantity: 1 }],
