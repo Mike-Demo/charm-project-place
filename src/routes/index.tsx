@@ -16,10 +16,8 @@ import {
   toDateKey,
 } from "@/lib/atelier";
 import { bookAppointment, fetchUnavailableSlots } from "@/lib/atelier-service";
-import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
-
-const LOGO_URL =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
+import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startAmbientMorph } from "@/lib/motion";
+import { CALENDAR_MARK_D, NEEDLE_MARK_D } from "@/lib/logo-marks";
 
 const stepMeta = [
   { badge: "Step 01 // 06", hint: "Your name", title: "Step 1: Name" },
