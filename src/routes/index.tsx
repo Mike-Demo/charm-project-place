@@ -322,6 +322,8 @@ function TattooAtelier() {
   const resetFlow = () => {
     setConfirmed(null);
     setPassToken(null);
+    setPaymentState("idle");
+
     setStep(1);
     setDirection("forward");
     setName("");
