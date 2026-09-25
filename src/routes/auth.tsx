@@ -84,7 +84,7 @@ function AuthPage() {
   };
 
   return (
-    <div className="sketchbook-canvas relative flex min-h-screen items-center justify-center px-5 py-10 font-hand text-foreground">
+    <div className="sketchbook-canvas relative flex min-h-dvh items-center justify-center px-5 py-10 font-hand text-foreground">
       <div aria-hidden="true" className="paper-fiber" />
       <div className="relative z-10 w-full max-w-md rounded-2xl border border-ink-dim/30 bg-paper-deep/60 p-6 sm:p-8">
         <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">

@@ -154,7 +154,7 @@ export const Route = createFileRoute("/licenses")({
 
 function Licenses(): ReactElement {
   return (
-    <div className="sketchbook-canvas relative min-h-screen px-4 py-6 sm:px-6 sm:py-10">
+    <div className="sketchbook-canvas relative min-h-dvh px-4 py-6 sm:px-6 sm:py-10">
       <div className="paper-fiber" aria-hidden="true" />
       <main className="relative z-10 mx-auto w-full max-w-3xl">
         <Link
@@ -204,7 +204,7 @@ function Licenses(): ReactElement {
                       rel="noopener noreferrer"
                       className="mt-3 inline-block font-mono text-xs text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
                     >
-                      License source ↗
+                      License source ↗<span className="sr-only"> (opens in a new tab)</span>
                     </a>
                   </article>
                 ))}

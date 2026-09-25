@@ -367,7 +367,7 @@ function SlotRow({
               rel="noreferrer noopener"
               target="_blank"
             >
-              Add to Google Calendar
+              Add to Google Calendar<span className="sr-only"> (opens in a new tab)</span>
             </a>
           </div>
           {appointment.status !== "confirmed" && (
@@ -415,7 +415,7 @@ function SlotRow({
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="sketchbook-canvas relative min-h-screen px-5 py-8 font-hand text-foreground sm:px-10">
+    <div className="sketchbook-canvas relative min-h-dvh px-5 py-8 font-hand text-foreground sm:px-10">
       <div aria-hidden="true" className="paper-fiber" />
       <div className="relative z-10 mx-auto w-full max-w-5xl">{children}</div>
     </div>
