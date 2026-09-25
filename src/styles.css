@@ -213,6 +213,21 @@
 }
 @keyframes ink-bloom-in { from { opacity: 0; transform: scale(.82); } to { opacity: .22; transform: scale(1); } }
 
+/* Looping "being sketched" holding animation for the payment confirmation wait. */
+.sketch-stroke {
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  animation: sketch-draw 3.2s ease-in-out infinite;
+}
+@keyframes sketch-draw {
+  0% { stroke-dashoffset: 260; opacity: .25; }
+  30% { stroke-dashoffset: 0; opacity: 1; }
+  72% { stroke-dashoffset: 0; opacity: 1; }
+  92%, 100% { stroke-dashoffset: -260; opacity: .15; }
+}
+.sketch-status { opacity: 0; animation: sketch-status-in 600ms ease-out forwards; }
+@keyframes sketch-status-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
