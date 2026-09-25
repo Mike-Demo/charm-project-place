@@ -83,7 +83,7 @@ export const animateStudioDraftEntrance = ({ linework, paper, header, stepIndica
     const length = path.getTotalLength();
     path.style.strokeDasharray = String(length);
     path.style.strokeDashoffset = String(length);
-    animate(path, { strokeDashoffset: [length, 0], duration: 240, ease: "outQuad" });
+    animate(path, { "stroke-dashoffset": [length, 0], duration: 240, ease: "outQuad" });
   });
 
   if (paper) animate(paper, { scale: [0.995, 1], opacity: [0.85, 1], delay: 100, duration: 280, ease: "outQuad" });
