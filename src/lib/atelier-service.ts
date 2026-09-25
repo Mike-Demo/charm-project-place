@@ -149,7 +149,7 @@ export async function fetchBookingPage(options: BookingListOptions): Promise<{ b
 
 export async function fetchAdminBooking(id: string): Promise<Appointment | null> {
   const { data, error } = await supabase.from("appointments")
-    .select("id,client_name,phone,email,booking_date,time_slot,status,payment_status,pronouns,created_at,reschedule_count,rescheduled_at,idea_description,reference_image_path,concept_sketch_path,notes,reminder_sent_at,client_confirmed_at,day_of_sent_at,aftercare_sent_at,social_sent_at")
+    .select("id,client_name,phone,email,booking_date,time_slot,status,payment_status,pronouns,created_at,reschedule_count,rescheduled_at,idea_description,reference_image_path,concept_sketch_path,notes,reminder_sent_at,client_confirmed_at,day_of_sent_at,aftercare_sent_at,social_sent_at,sms_reminder_status,sms_reminder_at")
     .eq("id", id).maybeSingle();
   if (error) throw new Error(error.message);
   return data as Appointment | null;
@@ -197,4 +197,21 @@ export async function claimAdmin(): Promise<boolean> {
 export async function signIdeaImage(path: string): Promise<string | null> {
   const { data } = await supabase.storage.from("tattoo-ideas").createSignedUrl(path, 60 * 60);
   return data?.signedUrl ?? null;
+}
+
+export interface ReminderRun {
+  ran_at: string;
+  skipped_reason: string | null;
+  sent: number;
+  failed: number;
+  sms_simulated: number;
+}
+
+/** Latest automatic reminder run that actually processed bookings (not a skip). */
+export async function getLastReminderRun(): Promise<{ last: ReminderRun | null; lastPing: string | null }> {
+  const [processed, ping] = await Promise.all([
+    supabase.from("reminder_runs").select("ran_at,skipped_reason,sent,failed,sms_simulated").is("skipped_reason", null).order("ran_at", { ascending: false }).limit(1).maybeSingle(),
+    supabase.from("reminder_runs").select("ran_at").order("ran_at", { ascending: false }).limit(1).maybeSingle(),
+  ]);
+  return { last: processed.data ?? null, lastPing: ping.data?.ran_at ?? null };
 }

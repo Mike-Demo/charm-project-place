@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
+import { ReminderRunStatus } from "@/components/ReminderRunStatus";
 import {
   TIME_SLOTS,
   addDays,
@@ -238,6 +239,8 @@ function AdminPage() {
           </Button>
         </div>
       </div>
+
+      <ReminderRunStatus />
 
       {actionError !== null && <p className="mt-4 text-pencil-red">{actionError}</p>}
 

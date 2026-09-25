@@ -34,6 +34,7 @@ export function LifecycleTimeline({ booking }: { booking: Appointment }) {
   const stages: Stage[] = [
     { label: "Booked", at: booking.payment_status === "paid" ? booking.created_at : null },
     { label: "Reminder sent", at: booking.reminder_sent_at, send: "reminder" },
+    { label: booking.sms_reminder_status === "simulated" ? "SMS reminder — not live (test)" : "SMS reminder sent", at: booking.sms_reminder_status === "failed" ? null : booking.sms_reminder_at },
     { label: "Client confirmed", at: booking.client_confirmed_at },
     { label: "Day-of email sent", at: booking.day_of_sent_at, send: "day_of" },
     { label: "Aftercare email sent", at: booking.aftercare_sent_at, send: "aftercare" },
