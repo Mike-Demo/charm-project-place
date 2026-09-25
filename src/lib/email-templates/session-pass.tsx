@@ -29,7 +29,7 @@ const cyan = "#237590";
 const paper = "#f9f7f1";
 const hand = '"Segoe Print", "Comic Sans MS", cursive';
 const mono = '"Courier New", Courier, monospace';
-const needleUrl = needleAsset.url;
+const needleUrl = `https://freshink.art${needleAsset.url}`;
 
 function displayDate(value?: string): string {
   if (!value) return "Your session date";
