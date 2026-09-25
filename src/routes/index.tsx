@@ -99,7 +99,11 @@ function TattooAtelier() {
   const [monthCursor, setMonthCursor] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [toast, setToast] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [smsCode, setSmsCode] = useState<string | null>(null);
+  const [codeDigits, setCodeDigits] = useState<string[]>(["", "", "", "", "", ""]);
+  const [codeError, setCodeError] = useState(false);
+  const [resendIn, setResendIn] = useState(0);
+  const codeInputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const paneRef = useRef<HTMLDivElement | null>(null);
   const pillsRef = useRef<HTMLDivElement | null>(null);
   const toastRef = useRef<HTMLDivElement | null>(null);
