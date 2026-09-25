@@ -99,6 +99,7 @@ function TattooAtelier() {
   const indicatorRef = useRef<HTMLDivElement | null>(null);
   const initialStepEffect = useRef(true);
   const logoPathRef = useRef<SVGPathElement | null>(null);
+  const morphRef = useRef<{ cancel: () => void } | null>(null);
 
   const firstName = name.trim().split(/\s+/)[0] || "";
   const hasFullName = name.trim().split(/\s+/).filter(Boolean).length >= 2;
