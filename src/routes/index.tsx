@@ -159,8 +159,17 @@ function TattooAtelier() {
 
   const waitForConfirmation = async (id: string) => {
     setPaymentState("confirming");
+    let consecutiveErrors = 0;
     for (let attempt = 0; attempt < 30; attempt += 1) {
-      const status = await getBookingStatus(id).catch(() => null);
+      const status = await getBookingStatus(id).catch((error: Error) => {
+        setBookingError(error.message);
+        return null;
+      });
+      if (status !== null) consecutiveErrors = 0; else consecutiveErrors += 1;
+      if (consecutiveErrors >= 3) {
+        setPaymentState("failed");
+        return;
+      }
       if (status === "confirmed") {
         const booking = await fetchConfirmedBooking(id).catch(() => null);
         heldIdRef.current = null;
@@ -180,6 +189,7 @@ function TattooAtelier() {
     setPaymentState("failed");
     setBookingError("Payment received, but confirmation is taking a while. We'll email you your session pass once it's locked in.");
   };
+
 
 
   useEffect(() => {
