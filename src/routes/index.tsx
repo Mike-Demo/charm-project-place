@@ -167,6 +167,18 @@ function TattooAtelier() {
     stepIndicator: indicatorRef.current,
     question: paneRef.current,
   });
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    // Let the studio draft entrance land first, then start the slow ambient morph.
+    const timer = setTimeout(() => {
+      morphRef.current = startAmbientMorph(logoPathRef.current, "#atelier-morph-target");
+    }, 900);
+    return () => {
+      clearTimeout(timer);
+      morphRef.current?.cancel();
+      morphRef.current = null;
+    };
   }, []);
 
   useEffect(() => {
