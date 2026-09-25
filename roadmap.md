@@ -1,0 +1,3 @@
+- [ ] Build a searchable, paginated booking list with date and status filters.
+- [ ] Add a full booking-preparation view including private idea images, while preserving availability tools.
+- [ ] Verify admin access, desktop/mobile presentation, and current preview health.

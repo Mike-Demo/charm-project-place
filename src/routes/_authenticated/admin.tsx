@@ -1,4 +1,6 @@
 import { AdminIdea } from "@/components/IdeaGallery";
+import { AdminBookingDetails } from "@/components/AdminBookingDetails";
+import { Search } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
@@ -19,10 +21,13 @@ import {
   blockSlot,
   claimAdmin,
   fetchAppointments,
+  fetchAdminBooking,
+  fetchBookingPage,
   fetchBlockedSlots,
   isAdmin,
   setAppointmentStatus,
   unblockSlot,
+  type BookingPeriod,
 } from "@/lib/atelier-service";
 import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
 
@@ -42,6 +47,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 const RANGE_DAYS = 60;
+const PAGE_SIZE = 12;
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -51,6 +57,11 @@ function AdminPage() {
   const rangeEnd = useMemo(() => addDays(today, RANGE_DAYS), [today]);
   const [focusDate, setFocusDate] = useState<Date>(today);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [period, setPeriod] = useState<BookingPeriod>("upcoming");
+  const [status, setStatus] = useState("all");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const roleQuery = useQuery({
     queryKey: ["admin-role"],
@@ -76,9 +87,23 @@ function AdminPage() {
     enabled: allowed,
   });
 
+  const bookingPageQuery = useQuery({
+    queryKey: ["booking-page", period, status, search, page, toDateKey(today)],
+    queryFn: () => fetchBookingPage({ period, status, search, page, pageSize: PAGE_SIZE, today: toDateKey(today) }),
+    enabled: allowed,
+  });
+
+  const selectedBookingQuery = useQuery({
+    queryKey: ["admin-booking", selectedId],
+    queryFn: () => selectedId ? fetchAdminBooking(selectedId) : Promise.resolve(null),
+    enabled: allowed && selectedId !== null,
+  });
+
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: ["appointments"] });
     void queryClient.invalidateQueries({ queryKey: ["blocked"] });
+    void queryClient.invalidateQueries({ queryKey: ["booking-page"] });
+    void queryClient.invalidateQueries({ queryKey: ["admin-booking"] });
   };
 
   const claimMutation = useMutation({
@@ -137,8 +162,10 @@ function AdminPage() {
   );
 
   const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
     await supabase.auth.signOut();
-    await navigate({ to: "/auth" });
+    await navigate({ to: "/auth", replace: true });
   };
 
   if (roleQuery.isLoading) {
@@ -204,6 +231,57 @@ function AdminPage() {
 
       {actionError !== null && <p className="mt-4 text-pencil-red">{actionError}</p>}
 
+      <section aria-labelledby="bookings-heading" className="mt-8 border-t-2 border-foreground pt-5">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="font-mono text-[11px] uppercase text-cyan-draft">01 / Session preparation</p>
+            <h2 id="bookings-heading" className="mt-1 text-2xl sm:text-3xl">Bookings</h2>
+          </div>
+          <span className="font-mono text-xs text-ink-pencil">{bookingPageQuery.data?.total ?? 0} matching</span>
+        </div>
+        <div className="mt-5 flex flex-wrap items-end gap-3">
+          <label className="min-w-44 flex-1 sm:max-w-xs">
+            <span className="font-mono text-[11px] uppercase text-ink-pencil">Search by name</span>
+            <span className="mt-1 flex items-center gap-2 border-b border-ink-dim px-2"><Search aria-hidden="true" className="size-4 text-ink-pencil" /><input value={search} onChange={(event) => { setSearch(event.target.value); setPage(0); }} placeholder="Client name" className="min-h-11 w-full min-w-0 bg-transparent outline-none placeholder:text-ink-pencil" /></span>
+          </label>
+          <label className="min-w-32 flex-1 sm:max-w-44">
+            <span className="font-mono text-[11px] uppercase text-ink-pencil">Date</span>
+            <select value={period} onChange={(event) => { setPeriod(event.target.value as BookingPeriod); setPage(0); }} className="mt-1 min-h-11 w-full border-b border-ink-dim bg-transparent px-2">
+              <option value="upcoming">Upcoming</option><option value="past">Past</option><option value="all">All dates</option>
+            </select>
+          </label>
+          <label className="min-w-32 flex-1 sm:max-w-44">
+            <span className="font-mono text-[11px] uppercase text-ink-pencil">Status</span>
+            <select value={status} onChange={(event) => { setStatus(event.target.value); setPage(0); }} className="mt-1 min-h-11 w-full border-b border-ink-dim bg-transparent px-2">
+              <option value="all">All statuses</option><option value="confirmed">Confirmed</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option><option value="expired">Expired</option>
+            </select>
+          </label>
+        </div>
+        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <div className="min-w-0">
+            {bookingPageQuery.isPending ? <p role="status" className="py-8 text-ink-pencil">Loading bookings…</p> :
+              bookingPageQuery.isError ? <div role="alert" className="py-8 text-pencil-red">Bookings could not load. <Button variant="outline" onClick={() => void bookingPageQuery.refetch()}>Retry</Button></div> :
+              bookingPageQuery.data.bookings.length === 0 ? <p className="py-8 text-ink-pencil">No bookings match these filters.</p> : (
+                <div className="divide-y divide-dashed divide-ink-dim/40 border-y border-ink-dim/50">
+                  {bookingPageQuery.data.bookings.map((booking) => (
+                    <Button key={booking.id} variant="ghost" aria-pressed={selectedId === booking.id} onClick={() => setSelectedId(booking.id)} className={`h-auto min-h-19 w-full justify-between gap-3 rounded-none px-2 py-3 text-left font-hand hover:bg-paper-line/40 ${selectedId === booking.id ? "bg-cyan-soft" : ""}`}>
+                      <span className="min-w-0 flex-1"><span className="block truncate text-lg text-foreground">{booking.client_name}</span><span className="block truncate text-sm font-normal text-ink-pencil">{booking.pronouns || "Pronouns not provided"} · {booking.idea_description || booking.reference_image_path || booking.concept_sketch_path ? "Idea attached" : "No idea"}</span></span>
+                      <span className="shrink-0 text-right font-mono text-xs font-normal text-ink-pencil"><span className="block">{booking.booking_date}</span><span className="block">{booking.time_slot}</span></span>
+                    </Button>
+                  ))}
+                </div>
+              )}
+            <div className="mt-4 flex items-center justify-between gap-3 font-mono text-xs text-ink-pencil">
+              <Button variant="outline" disabled={page === 0 || bookingPageQuery.isFetching} onClick={() => setPage((value) => Math.max(0, value - 1))}>Previous</Button>
+              <span>Page {page + 1} / {Math.max(1, Math.ceil((bookingPageQuery.data?.total ?? 0) / PAGE_SIZE))}</span>
+              <Button variant="outline" disabled={bookingPageQuery.isFetching || (page + 1) * PAGE_SIZE >= (bookingPageQuery.data?.total ?? 0)} onClick={() => setPage((value) => value + 1)}>Next</Button>
+            </div>
+          </div>
+          <AdminBookingDetails booking={selectedBookingQuery.data ?? null} loading={selectedBookingQuery.isPending && selectedId !== null} error={selectedBookingQuery.isError} busy={statusMutation.isPending} onStatus={(id, nextStatus) => statusMutation.mutate({ id, status: nextStatus })} onClose={() => setSelectedId(null)} />
+        </div>
+      </section>
+
+      <h2 className="mt-12 border-t-2 border-foreground pt-5 text-2xl sm:text-3xl"><span className="mr-3 font-mono text-[11px] text-cyan-draft">02 / Availability</span>Studio calendar</h2>
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_1.1fr]">
         <section className="rounded-2xl border border-ink-dim/30 bg-paper-deep/50 p-4">
           <div className="mb-3 flex items-center justify-between">
