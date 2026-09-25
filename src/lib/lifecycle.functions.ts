@@ -21,8 +21,8 @@ export const sendLifecycleEmail = createServerFn({ method: "POST" })
     if (error || !row) throw new Error("Booking not found.");
     if (row.status === "cancelled" || row.status === "expired") throw new Error("This booking is not active.");
 
-    const origin = new URL(getRequest().url).origin;
-    const result = await sendLifecycleForRow(row, data.stage, origin, `${data.stage}-${row.id}-${Date.now()}`);
+    const { APP_ORIGIN } = await import("@/lib/studio-location");
+    const result = await sendLifecycleForRow(row, data.stage, APP_ORIGIN, `${data.stage}-${row.id}-${Date.now()}`);
     if (!result.sent) return { sent: false, reason: "recipient_suppressed" };
 
     const at = new Date().toISOString();
