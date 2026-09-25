@@ -71,6 +71,13 @@
       "when": 1790375322248,
       "tag": "0009_booking_lifecycle_stages",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790376309129,
+      "tag": "0010_reminder_cron_setup",
+      "breakpoints": true
     }
   ]
 }
