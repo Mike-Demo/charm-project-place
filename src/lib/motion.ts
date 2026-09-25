@@ -113,7 +113,7 @@ export const animateStepArtOut = (
     path.style.strokeDashoffset = "0";
   });
   const animation = animate(paths, {
-    strokeDashoffset: (target) => {
+    strokeDashoffset: (target: unknown) => {
       const path = target instanceof SVGPathElement ? target : null;
       return path?.dataset['trace'] === "false" ? 0 : path?.getTotalLength() ?? 0;
     },
