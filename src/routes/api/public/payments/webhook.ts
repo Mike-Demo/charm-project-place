@@ -28,6 +28,29 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
                 .eq("id", custom.data.appointmentId)
                 .in("status", ["pending", "expired"]);
               if (error) console.error("Failed to confirm appointment", error.message);
+              else {
+                const { data: row } = await supabaseAdmin
+                  .from("appointments")
+                  .select("client_name,email,booking_date,time_slot,access_token")
+                  .eq("id", custom.data.appointmentId)
+                  .maybeSingle();
+                if (row?.access_token) {
+                  try {
+                    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+                    await sendTemplateEmail("session-pass", row.email, {
+                      templateData: {
+                        name: row.client_name.split(" ")[0],
+                        date: row.booking_date,
+                        time: row.time_slot,
+                        passUrl: `${new URL(request.url).origin}/pass/${row.access_token}`,
+                      },
+                      idempotencyKey: `pass-${custom.data.appointmentId}`,
+                    });
+                  } catch (mailError) {
+                    console.error("Session pass email failed", mailError);
+                  }
+                }
+              }
             }
           }
           return Response.json({ received: true });
