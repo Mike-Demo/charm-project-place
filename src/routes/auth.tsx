@@ -8,10 +8,10 @@ import { lovable } from "@/integrations/lovable/index";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Studio Sign In — Tattoo Atelier" },
-      { name: "description", content: "Artist access to the Tattoo Atelier booking ledger." },
-      { property: "og:title", content: "Studio Sign In — Tattoo Atelier" },
-      { property: "og:description", content: "Artist access to the Tattoo Atelier booking ledger." },
+      { title: "Studio Sign In — Fresh Ink: Book your session" },
+      { name: "description", content: "Studio sign in for Tattoo Atelier: artist access to the booking ledger. Appointment-only custom linework studio in Saint Paul." },
+      { property: "og:title", content: "Studio Sign In — Fresh Ink: Book your session" },
+      { property: "og:description", content: "Studio sign in for Tattoo Atelier: artist access to the booking ledger. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },

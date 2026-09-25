@@ -34,10 +34,10 @@ import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Studio Ledger — Tattoo Atelier" },
-      { name: "description", content: "Manage sessions and studio availability." },
-      { property: "og:title", content: "Studio Ledger — Tattoo Atelier" },
-      { property: "og:description", content: "Manage sessions and studio availability." },
+      { title: "Studio Ledger — Fresh Ink: Book your session" },
+      { name: "description", content: "Tattoo Atelier studio ledger: manage sessions and availability. Appointment-only custom linework studio in Saint Paul." },
+      { property: "og:title", content: "Studio Ledger — Fresh Ink: Book your session" },
+      { property: "og:description", content: "Tattoo Atelier studio ledger: manage sessions and availability. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },

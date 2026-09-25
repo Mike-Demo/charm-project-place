@@ -6,10 +6,10 @@ import { fetchBookingByToken } from "@/lib/atelier-service";
 export const Route = createFileRoute("/pass/$token")({
   head: () => ({
     meta: [
-      { title: "Your Session Pass — Tattoo Atelier" },
-      { name: "description", content: "Your private Tattoo Atelier session pass: details, calendar invite, and rescheduling." },
-      { property: "og:title", content: "Your Session Pass — Tattoo Atelier" },
-      { property: "og:description", content: "Private session pass for your Tattoo Atelier booking." },
+      { title: "Session Pass — Fresh Ink: Book your session" },
+      { name: "description", content: "Your private session pass: Tattoo Atelier details, calendar invite, and rescheduling. Appointment-only custom linework studio in Saint Paul." },
+      { property: "og:title", content: "Session Pass — Fresh Ink: Book your session" },
+      { property: "og:description", content: "Your private session pass: Tattoo Atelier details, calendar invite, and rescheduling. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
