@@ -493,7 +493,7 @@ function TattooAtelier() {
                   <BoilRule tone={nameValid ? "text-cyan-draft/60" : "text-ink-dim/50"} />
                 </span>
               </div>
-              <p className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : name.trim() ? "border-pencil-red/25 bg-invalid-soft text-pencil-red" : "border-ink-dim/30 bg-paper-deep/60 text-ink-pencil"}`}>
+              <p aria-live="polite" className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : name.trim() ? "border-pencil-red/25 bg-invalid-soft text-pencil-red" : "border-ink-dim/30 bg-paper-deep/60 text-ink-pencil"}`}>
                 {nameValid ? (hasFullName ? `(Looking great, ${firstName}! Full name locked in ✍️)` : `(Just "${firstName}"? Cool, I like it. ✨)`) : name.trim() ? "(let us know who to ink for ✏️)" : "(your name goes here)"}
               </p>
               <p className="mt-3 text-xs text-ink-pencil sm:text-sm">First &amp; last name is preferred for studio check-in, but whatever you go by is fine.</p>
@@ -718,7 +718,7 @@ function TattooAtelier() {
               </div>
               {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
               <p className="mt-3 text-sm text-ink-dim">Test mode: use card 4242 4242 4242 4242, any future date, CVC 123. Your slot is held for 15 minutes while you pay.</p>
-              {bookingError !== null && <p className="mt-3 text-pencil-red">{bookingError}</p>}
+              {bookingError !== null && <p role="alert" className="mt-3 text-pencil-red">{bookingError}</p>}
             </section>
           )}
         </div>
@@ -747,7 +747,7 @@ function ValidNote({ children }: { children: string }) {
 }
 
 function ErrorNote({ icon, title, children }: { icon: string; title: string; children: string }) {
-  return <div className="mt-3 flex max-w-xl items-start gap-2"><span className="mt-0.5 shrink-0 text-lg">{icon}</span><div className="text-base leading-snug text-pencil-red"><strong>{title}</strong><span className="mt-0.5 block text-xs text-ink-pencil sm:text-sm">{children}</span></div></div>;
+  return <div role="status" aria-live="polite" className="mt-3 flex max-w-xl items-start gap-2"><span className="mt-0.5 shrink-0 text-lg">{icon}</span><div className="text-base leading-snug text-pencil-red"><strong>{title}</strong><span className="mt-0.5 block text-xs text-ink-pencil sm:text-sm">{children}</span></div></div>;
 }
 
 function ReviewRow({ label, value, last = false }: { label: string; value: ReactNode; last?: boolean }) {
