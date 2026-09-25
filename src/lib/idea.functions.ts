@@ -16,6 +16,7 @@ export const attachIdea = createServerFn({ method: "POST" })
     z
       .object({
         appointmentId: z.string().uuid(),
+        holdSecret: z.string().min(32).max(128),
         description: z.string().max(1000),
         referenceImage: dataUrl.nullable(),
         conceptSketch: dataUrl.nullable(),
@@ -27,11 +28,12 @@ export const attachIdea = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("appointments")
-      .select("id,status,idea_description,reference_image_path")
+      .select("id,status,idea_description,reference_image_path,hold_expires_at")
       .eq("id", data.appointmentId)
+      .eq("hold_secret", data.holdSecret)
       .maybeSingle();
     if (error || !row) throw new Error("Booking not found");
-    if (row.status !== "pending" || row.idea_description !== null || row.reference_image_path !== null) {
+    if (row.status !== "pending" || !row.hold_expires_at || new Date(row.hold_expires_at) <= new Date() || row.idea_description !== null || row.reference_image_path !== null) {
       throw new Error("Idea already saved for this booking");
     }
     const upload = async (value: string | null, name: string): Promise<string | null> => {
@@ -53,7 +55,8 @@ export const attachIdea = createServerFn({ method: "POST" })
         concept_sketch_path: sketchPath,
         sketch_attempts: data.sketchAttempts,
       })
-      .eq("id", data.appointmentId);
+      .eq("id", data.appointmentId)
+      .eq("hold_secret", data.holdSecret);
     if (updateError) throw new Error(updateError.message);
     return { ok: true };
   });

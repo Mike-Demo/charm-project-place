@@ -25,7 +25,12 @@ export interface BookingInput {
   pronouns: string;
 }
 
-export async function holdAppointment(input: BookingInput): Promise<string> {
+export interface AppointmentHold {
+  id: string;
+  holdSecret: string;
+}
+
+export async function holdAppointment(input: BookingInput): Promise<AppointmentHold> {
   const { data, error } = await supabase.rpc("create_pending_appointment", {
     p_name: input.name,
     p_phone: input.phone,
@@ -35,7 +40,9 @@ export async function holdAppointment(input: BookingInput): Promise<string> {
     p_pronouns: input.pronouns,
   });
   if (error) throw new Error(error.message);
-  return data as string;
+  const row = data?.[0];
+  if (!row?.id || !row.hold_secret) throw new Error("Could not hold that slot. Please try again.");
+  return { id: row.id, holdSecret: row.hold_secret };
 }
 
 export async function releaseAppointment(id: string): Promise<void> {

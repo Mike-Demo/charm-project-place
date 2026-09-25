@@ -220,11 +220,11 @@ function TattooAtelier() {
   const [idea, setIdea] = useState<IdeaDraft>(EMPTY_IDEA);
   const bookingMutation = useMutation({
     mutationFn: async (input: BookingInput) => {
-      const id = await holdAppointment(input);
+      const { id, holdSecret } = await holdAppointment(input);
       heldIdRef.current = id;
       paidRef.current = false;
       if (idea.description.trim() || idea.referenceImage) {
-        await attachIdea({ data: { appointmentId: id, ...idea } }).catch(() => undefined);
+        await attachIdea({ data: { appointmentId: id, holdSecret, ...idea } }).catch(() => undefined);
       }
       try {
         await openSlotCheckout({ appointmentId: id, email: input.email });
