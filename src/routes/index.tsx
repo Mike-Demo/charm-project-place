@@ -592,7 +592,7 @@ function TattooAtelier() {
                     ref={(el) => { codeInputRefs.current[index] = el; }}
                     aria-label={`Studio pass digit ${index + 1}`}
                     autoFocus={index === 0}
-                    className={`paper-inline-input h-16 w-12 rounded-lg border-2 text-center text-3xl font-bold sm:w-14 ${codeError ? "border-pencil-red" : digit ? "border-pencil-green" : "border-ink-dim/40"}`}
+                    className={`code-box text-3xl font-bold ${codeError ? "code-box-error" : digit ? "code-box-filled" : ""}`}
                     inputMode="numeric"
                     maxLength={6}
                     onChange={(event) => setCodeDigit(index, event.target.value)}

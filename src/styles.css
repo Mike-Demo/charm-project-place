@@ -189,6 +189,12 @@
 
 .paper-inline-input { margin: 0; min-width: 7rem; border: 0; background: transparent; padding: 0 0.25rem 0.125rem; color: var(--foreground); outline: none; font: inherit; }
 .paper-inline-input:focus { outline: none; box-shadow: none; }
+/* Sketchy pass-code boxes: uneven hand-inked frame, green when filled, red when the pass fails. */
+.code-box { margin: 0; width: 3.25rem; height: 4rem; border: 2px solid var(--ink-dim); border-radius: 12px 15px 11px 14px / 14px 11px 15px 12px; background: var(--paper-deep); padding: 0; color: var(--foreground); outline: none; font: inherit; text-align: center; transition: border-color 150ms ease, transform 150ms ease; }
+.code-box:focus { border-color: var(--foreground); transform: translateY(-2px); }
+.code-box.code-box-filled { border-color: var(--pencil-green); }
+.code-box.code-box-error { border-color: var(--pencil-red); }
+@media (min-width: 640px) { .code-box { width: 3.75rem; } }
 .ink-stamp-btn { background: var(--foreground); color: var(--paper-sheet); box-shadow: 3px 4px 0 var(--cyan-draft); transition: transform 200ms cubic-bezier(.34,1.56,.64,1), box-shadow 200ms; }
 .ink-stamp-btn:hover { background: var(--foreground); color: var(--paper-sheet); transform: translate(-2px,-2px); box-shadow: 5px 6px 0 var(--cyan-draft); }
 .ink-stamp-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--cyan-draft); }
