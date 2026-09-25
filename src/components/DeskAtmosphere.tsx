@@ -22,7 +22,7 @@ const MARKS: readonly DeskMark[] = [
   },
   {
     src: inkSplatter.url,
-    className: "w-[170px] sm:w-[260px] top-[30%] -right-8 sm:-right-10",
+    className: "w-[150px] sm:w-[260px] top-[46%] -right-16 sm:top-[30%] sm:-right-10",
     style: { opacity: 0.2, transform: "rotate(14deg)" },
   },
   {
