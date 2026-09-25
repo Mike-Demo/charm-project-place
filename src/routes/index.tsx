@@ -38,14 +38,14 @@ function WaveUnderline() {
 function TattooAtelier() {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
-  const [name, setName] = useState("Gail");
-  const [phone, setPhone] = useState("555-019");
-  const [email, setEmail] = useState("gail@example");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [date, setDate] = useState("Friday, Oct 25 @ 11:30 AM");
   const [toast, setToast] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const firstName = name.trim().split(/\s+/)[0] || "Gail";
+  const firstName = name.trim().split(/\s+/)[0] || "";
   const nameValid = name.trim().length >= 2;
   const phoneValid = phone.replace(/\D/g, "").length >= 10;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
@@ -123,12 +123,12 @@ function TattooAtelier() {
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 04</p>
               <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">What should we call you?</h2>
-                <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : "border-pencil-red"}`}>
-                  <input autoFocus aria-label="Your name" className="paper-inline-input max-w-[75vw] font-bold focus:text-cyan-draft" onChange={(e) => setName(e.target.value)} onKeyDown={handleEnter} style={{ width: `${Math.max(4, name.length + 1)}ch` }} value={name} />
+                <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : name.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
+                  <input autoFocus aria-label="Your name" className="paper-inline-input max-w-[75vw] font-bold focus:text-cyan-draft" onChange={(e) => setName(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. Sara Tattoo" style={{ width: `${Math.max(17, name.length + 1)}ch` }} value={name} />
                 </span>
               </div>
-              <p className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : "border-pencil-red/25 bg-invalid-soft text-pencil-red"}`}>
-                {nameValid ? `(looking great, ${firstName}! ✨)` : "(let us know who to ink for ✏️)"}
+              <p className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : name.trim() ? "border-pencil-red/25 bg-invalid-soft text-pencil-red" : "border-ink-dim/30 bg-paper-deep/60 text-ink-pencil"}`}>
+                {nameValid ? `(looking great, ${firstName}! ✨)` : name.trim() ? "(let us know who to ink for ✏️)" : "(your name goes here)"}
               </p>
               <p className="mt-3 text-xs text-ink-pencil sm:text-sm">Press Enter ↵ or click Continue below when ready.</p>
             </section>
@@ -153,12 +153,12 @@ function TattooAtelier() {
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 04</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where can we text your reminder?</h2>
-                <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : "border-pencil-red"}`}>
-                  <input autoFocus aria-label="Phone number" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setPhone(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. (555) 019-2834" style={{ width: `${Math.max(12, phone.length + 1)}ch` }} type="tel" value={phone} />
-                  {!phoneValid && <WaveUnderline />}
+                <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : phone.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
+                  <input autoFocus aria-label="Phone number" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setPhone(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. (555) 019-2834" style={{ width: `${Math.max(20, phone.length + 1)}ch` }} type="tel" value={phone} />
+                  {!phoneValid && phone.trim() !== "" && <WaveUnderline />}
                 </span>
               </div>
-              {phoneValid ? <ValidNote>Perfect! Day-of session reminder will be texted here.</ValidNote> : <ErrorNote icon="✏️" title="Just needs a couple more digits to reach you!">Tip: Format like +1 (555) 019-2834 so our atelier SMS system can connect.</ErrorNote>}
+              {phoneValid ? <ValidNote>Perfect! Day-of session reminder will be texted here.</ValidNote> : phone.trim() === "" ? <p className="mt-3 text-sm text-ink-pencil">Type the number where we can text your day-of reminder.</p> : <ErrorNote icon="✏️" title="Just needs a couple more digits to reach you!">Tip: Format like +1 (555) 019-2834 so our atelier SMS system can connect.</ErrorNote>}
             </section>
           )}
 
@@ -167,24 +167,24 @@ function TattooAtelier() {
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 04</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where should we send your stencil & guide?</h2>
-                <span className={`relative inline-block border-b-2 ${emailValid ? "border-pencil-green" : "border-pencil-red"}`}>
-                  <input autoFocus aria-label="Email address" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setEmail(e.target.value)} onKeyDown={handleEnter} placeholder="gail@example.com" style={{ width: `${Math.max(14, email.length + 1)}ch` }} type="email" value={email} />
-                  {!emailValid && <WaveUnderline />}
+                <span className={`relative inline-block border-b-2 ${emailValid ? "border-pencil-green" : email.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
+                  <input autoFocus aria-label="Email address" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setEmail(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. you@example.com" style={{ width: `${Math.max(21, email.length + 1)}ch` }} type="email" value={email} />
+                  {!emailValid && email.trim() !== "" && <WaveUnderline />}
                 </span>
               </div>
-              {emailValid ? <ValidNote>Looks good! Stencil & prep guides will head to your inbox.</ValidNote> : <ErrorNote icon="✉️" title={`Almost there, ${firstName}! Don't forget the .com at the end.`}>We need a valid domain so your high-res linework and aftercare guide won't bounce!</ErrorNote>}
+              {emailValid ? <ValidNote>Looks good! Stencil & prep guides will head to your inbox.</ValidNote> : email.trim() === "" ? <p className="mt-3 text-sm text-ink-pencil">We'll send your stencil and prep guide here.</p> : <ErrorNote icon="✉️" title={firstName ? `Almost there, ${firstName}! Don't forget the .com at the end.` : "Almost there! Don't forget the .com at the end."}>We need a valid domain so your high-res linework and aftercare guide won't bounce!</ErrorNote>}
             </section>
           )}
 
           {step === 5 && (
             <section className="flex min-h-[280px] flex-col justify-center">
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Review // Final Protocol</p>
-              <h2 className="mb-4 text-3xl font-normal leading-snug sm:text-4xl">Almost ready to ink, {firstName} <span className="animate-pulse text-2xl">✨</span></h2>
+              <h2 className="mb-4 text-3xl font-normal leading-snug sm:text-4xl">Almost ready to ink{firstName ? `, ${firstName}` : ""} <span className="animate-pulse text-2xl">✨</span></h2>
               <div className="space-y-3 rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-4 text-lg">
                 <ReviewRow label="Session:" value={`${date} (Station 03)`} />
-                <ReviewRow label="Client:" value={name || "Gail"} />
-                <ReviewRow label="SMS Reminder:" value={phone || "+1 (555) 019-2834"} />
-                <ReviewRow label="Linework & Stencil:" value={email || "gail@example.com"} last />
+                <ReviewRow label="Client:" value={name.trim() || "—"} />
+                <ReviewRow label="SMS Reminder:" value={phone.trim() || "—"} />
+                <ReviewRow label="Linework & Stencil:" value={email.trim() || "—"} last />
               </div>
               {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
             </section>
@@ -210,7 +210,7 @@ function TattooAtelier() {
       </footer>
 
       <div role="status" aria-live="polite" className={`fixed left-1/2 top-8 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl border-2 border-foreground bg-paper-sheet px-6 py-3 shadow-2xl transition-all duration-300 ${toast ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"}`}>
-        <span className="h-3 w-3 animate-ping rounded-full bg-cyan-draft" /><strong className="text-xl">Booking locked in for {firstName}!</strong>
+        <span className="h-3 w-3 animate-ping rounded-full bg-cyan-draft" /><strong className="text-xl">Booking locked in{firstName ? ` for ${firstName}` : ""}!</strong>
       </div>
     </div>
   );
