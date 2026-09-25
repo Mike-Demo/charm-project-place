@@ -6,8 +6,8 @@ const LOGO_URL =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
 
 const stepMeta = [
-  { badge: "Step 01 // 04", hint: "Date & time", title: "Step 1: Date & Time" },
-  { badge: "Step 02 // 04", hint: "Your name", title: "Step 2: Name" },
+  { badge: "Step 01 // 04", hint: "Your name", title: "Step 1: Name" },
+  { badge: "Step 02 // 04", hint: "Date & time", title: "Step 2: Date & Time" },
   { badge: "Step 03 // 04", hint: "Phone verification", title: "Step 3: Phone" },
   { badge: "Step 04 // 04", hint: "Digital stencil", title: "Step 4: Email" },
   { badge: "Review // Final", hint: "Ready to ink", title: "Review & Lock In" },
@@ -69,7 +69,7 @@ function TattooAtelier() {
   };
 
   const continueFlow = () => {
-    if (step === 2 && !nameValid) return;
+    if (step === 1 && !nameValid) return;
     if (step === 3 && !phoneValid) return;
     if (step === 4 && !emailValid) return;
     if (step === 5) {
@@ -95,7 +95,7 @@ function TattooAtelier() {
     setEmail("gail@example.com");
   };
 
-  const currentValid = step === 2 ? nameValid : step === 3 ? phoneValid : step === 4 ? emailValid : step === 5 ? allValid : true;
+  const currentValid = step === 1 ? nameValid : step === 3 ? phoneValid : step === 4 ? emailValid : step === 5 ? allValid : true;
 
   return (
     <div className="sketchbook-canvas relative flex min-h-screen flex-col overflow-x-hidden px-5 py-5 font-hand text-foreground selection:bg-paper-line sm:px-10 sm:py-10">
