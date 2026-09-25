@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import {
+  PRONOUN_OPTIONS,
   TIME_SLOTS,
   addDays,
   buildAvailability,
@@ -20,11 +21,12 @@ const LOGO_URL =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
 
 const stepMeta = [
-  { badge: "Step 01 // 05", hint: "Your name", title: "Step 1: Name" },
-  { badge: "Step 02 // 05", hint: "Preferred day", title: "Step 2: Day" },
-  { badge: "Step 03 // 05", hint: "Date & time", title: "Step 3: Date & Time" },
-  { badge: "Step 04 // 05", hint: "Phone verification", title: "Step 4: Phone" },
-  { badge: "Step 05 // 05", hint: "Digital stencil", title: "Step 5: Email" },
+  { badge: "Step 01 // 06", hint: "Your name", title: "Step 1: Name" },
+  { badge: "Step 02 // 06", hint: "Your pronouns", title: "Step 2: Pronouns" },
+  { badge: "Step 03 // 06", hint: "Preferred day", title: "Step 3: Day" },
+  { badge: "Step 04 // 06", hint: "Date & time", title: "Step 4: Date & Time" },
+  { badge: "Step 05 // 06", hint: "Phone verification", title: "Step 5: Phone" },
+  { badge: "Step 06 // 06", hint: "Digital stencil", title: "Step 6: Email" },
   { badge: "Review // Final", hint: "Ready to ink", title: "Review & Lock In" },
 ] as const;
 
@@ -80,6 +82,8 @@ function TattooAtelier() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [pronounChoice, setPronounChoice] = useState<string | null>(null);
+  const [customPronouns, setCustomPronouns] = useState("");
   const [dayChoice, setDayChoice] = useState<DayChoice | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -101,7 +105,11 @@ function TattooAtelier() {
   const phoneValid = phone.replace(/\D/g, "").length >= 10;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
   const scheduleValid = selectedDate !== null && selectedTime !== null;
-  const allValid = nameValid && scheduleValid && phoneValid && emailValid;
+  const pronounsValid = pronounChoice !== null && (pronounChoice !== "custom" || customPronouns.trim().length > 0);
+  const pronounsValue =
+    pronounChoice === null ? "" : pronounChoice === "custom" ? customPronouns.trim() : pronounChoice === "private" ? "" : pronounChoice;
+  const pronounsLabel = pronounChoice === "private" ? "Prefer not to say" : pronounsValue;
+  const allValid = nameValid && pronounsValid && scheduleValid && phoneValid && emailValid;
   const currentMeta = stepMeta[step - 1] ?? stepMeta[0];
 
   const sessionLabel = selectedDate && selectedTime ? `${formatLongDate(selectedDate)} @ ${selectedTime}` : "Not picked yet";
