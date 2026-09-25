@@ -204,6 +204,13 @@ function AuthPage() {
           {mode === "signin" ? "Need a studio login? Create one" : "Already have a login? Sign in"}
         </button>
       </div>
+
+      <Link
+        to="/"
+        className="relative z-10 mt-6 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-ink-dim/40 px-6 font-hand text-lg text-ink-pencil underline decoration-ink-dim/40 underline-offset-4 transition-colors hover:bg-paper-line hover:text-foreground"
+      >
+        ← Return home
+      </Link>
     </div>
   );
 }
