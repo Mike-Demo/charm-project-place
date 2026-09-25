@@ -131,3 +131,8 @@ export async function claimAdmin(): Promise<boolean> {
   if (error) throw new Error(error.message);
   return data === true;
 }
+
+export async function signIdeaImage(path: string): Promise<string | null> {
+  const { data } = await supabase.storage.from("tattoo-ideas").createSignedUrl(path, 60 * 60);
+  return data?.signedUrl ?? null;
+}

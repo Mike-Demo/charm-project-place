@@ -3,6 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { StepArtwork } from "@/components/StepArtwork";
+import { EMPTY_IDEA, IdeaStep, type IdeaDraft } from "@/components/IdeaStep";
+import { attachIdea } from "@/lib/idea.functions";
 import {
   PRONOUN_OPTIONS,
   TIME_SLOTS,
@@ -35,6 +37,7 @@ const stepMeta = [
   { badge: "Step 05 // 07", hint: "Phone number", title: "Step 5: Phone" },
   { badge: "Step 06 // 07", hint: "SMS pass code", title: "Step 6: Verify" },
   { badge: "Step 07 // 07", hint: "Digital stencil", title: "Step 7: Email" },
+  { badge: "Extra // Optional", hint: "Your idea", title: "Step 8: Idea" },
   { badge: "Review // Final", hint: "Ready to ink", title: "Review & Lock In" },
 ] as const;
 
@@ -214,11 +217,15 @@ function TattooAtelier() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [idea, setIdea] = useState<IdeaDraft>(EMPTY_IDEA);
   const bookingMutation = useMutation({
     mutationFn: async (input: BookingInput) => {
       const id = await holdAppointment(input);
       heldIdRef.current = id;
       paidRef.current = false;
+      if (idea.description.trim() || idea.referenceImage) {
+        await attachIdea({ data: { appointmentId: id, ...idea } }).catch(() => undefined);
+      }
       try {
         await openSlotCheckout({ appointmentId: id, email: input.email });
       } catch (error) {
@@ -341,7 +348,7 @@ function TattooAtelier() {
     setConfirmed(null);
     setPassToken(null);
     setPaymentState("idle");
-
+    setIdea(EMPTY_IDEA);
     setStep(1);
     setDirection("forward");
     setName("");
@@ -431,6 +438,7 @@ function TattooAtelier() {
       : step === 5 ? phoneValid
       : step === 6 ? codeValid
       : step === 7 ? emailValid
+      : step === 8 ? true
       : allValid;
 
   const calendarCells = useMemo(() => {
@@ -718,6 +726,8 @@ function TattooAtelier() {
             </section>
           )}
 
+          {step === 8 && <IdeaStep value={idea} onChange={setIdea} />}
+
           {step === TOTAL_STEPS && (
             <section className="flex min-h-[280px] flex-col justify-center">
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Review // Final Protocol</p>
@@ -727,8 +737,15 @@ function TattooAtelier() {
                 <ReviewRow label="Client:" value={name.trim() || "—"} />
                 <ReviewRow label="Pronouns:" value={pronounsValid ? pronounsLabel : "—"} />
                 <ReviewRow label="SMS Reminder:" value={phone.trim() || "—"} />
-                <ReviewRow label="Linework & Stencil:" value={email.trim() || "—"} last />
+                <ReviewRow label="Linework & Stencil:" value={email.trim() || "—"} />
+                <ReviewRow label="Idea:" value={idea.description.trim() ? (idea.description.trim().length > 60 ? `${idea.description.trim().slice(0, 60)}…` : idea.description.trim()) : idea.referenceImage ? "Photo attached" : "Skipped"} last />
               </div>
+              {(idea.referenceImage || idea.conceptSketch) && (
+                <div className="mt-3 flex gap-3">
+                  {idea.referenceImage && <img src={idea.referenceImage} alt="Your reference photo" className="sketch-card h-20 w-20 object-cover p-1" />}
+                  {idea.conceptSketch && <img src={idea.conceptSketch} alt="Your pencil concept" className="sketch-card h-20 w-20 object-cover p-1" />}
+                </div>
+              )}
               {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
               <p className="mt-3 text-sm text-ink-dim">Test mode: use card 4242 4242 4242 4242, any future date, CVC 123. Your slot is held for 15 minutes while you pay.</p>
               {bookingError !== null && <p role="alert" className="mt-3 text-pencil-red">{bookingError}</p>}

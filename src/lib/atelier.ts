@@ -30,6 +30,9 @@ export interface Appointment {
   created_at: string;
   reschedule_count?: number;
   rescheduled_at?: string | null;
+  idea_description?: string | null;
+  reference_image_path?: string | null;
+  concept_sketch_path?: string | null;
 }
 
 export const PRONOUN_OPTIONS = [
