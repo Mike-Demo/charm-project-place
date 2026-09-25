@@ -110,7 +110,6 @@ function TattooAtelier() {
   const codeInputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const paneRef = useRef<HTMLDivElement | null>(null);
   const pillsRef = useRef<HTMLDivElement | null>(null);
-  const toastRef = useRef<HTMLDivElement | null>(null);
   const draftRef = useRef<HTMLDivElement | null>(null);
   const paperRef = useRef<HTMLElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
