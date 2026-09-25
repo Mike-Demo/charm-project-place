@@ -137,19 +137,26 @@ function TattooAtelier() {
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
-    try {
-      if (sessionStorage.getItem("tattoo-atelier-studio-draft-seen") === "1") return;
-      sessionStorage.setItem("tattoo-atelier-studio-draft-seen", "1");
-    } catch {
-      // Storage can be unavailable in private browsing; the entrance remains optional.
-    }
-    animateStudioDraftEntrance({
-      linework: draftRef.current,
-      paper: paperRef.current,
-      header: headerRef.current,
-      stepIndicator: indicatorRef.current,
-      question: paneRef.current,
+    const params = new URLSearchParams(window.location.search);
+    const forced = ["replay", "intro", "sketch"].some((key) => {
+      const value = params.get(key);
+      return value !== null && value !== "0" && value !== "false";
     });
+    if (!forced) {
+      try {
+        if (sessionStorage.getItem("tattoo-atelier-studio-draft-seen") === "1") return;
+        sessionStorage.setItem("tattoo-atelier-studio-draft-seen", "1");
+      } catch {
+        // Storage can be unavailable in private browsing; the entrance remains optional.
+      }
+    }
+  animateStudioDraftEntrance({
+    linework: draftRef.current,
+    paper: paperRef.current,
+    header: headerRef.current,
+    stepIndicator: indicatorRef.current,
+    question: paneRef.current,
+  });
   }, []);
 
   useEffect(() => {
