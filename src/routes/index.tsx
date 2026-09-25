@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import {
   TIME_SLOTS,
@@ -145,7 +145,7 @@ function TattooAtelier() {
     if (toast) noteDrop(toastRef.current);
   }, [toast]);
 
-  const handlePaneClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handlePaneClick = (event: MouseEvent<HTMLDivElement>) => {
     const target = event.target instanceof Element ? event.target.closest("button:not(:disabled)") : null;
     if (target) pickPop(target);
   };
@@ -449,5 +449,5 @@ function ErrorNote({ icon, title, children }: { icon: string; title: string; chi
 }
 
 function ReviewRow({ label, value, last = false }: { label: string; value: string; last?: boolean }) {
-  return <div className={`flex flex-col justify-between gap-1 pb-2 sm:flex-row sm:items-center ${last ? "" : "border-b border-ink-dim/20"}`}><span className="shrink-0 font-mono text-sm text-ink-pencil">{label}</span><strong className="break-words text-left sm:text-right">{value}</strong></div>;
+  return <div data-review-row="" className={`flex flex-col justify-between gap-1 pb-2 sm:flex-row sm:items-center ${last ? "" : "border-b border-ink-dim/20"}`}><span className="shrink-0 font-mono text-sm text-ink-pencil">{label}</span><strong className="break-words text-left sm:text-right">{value}</strong></div>;
 }
