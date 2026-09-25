@@ -1,4 +1,4 @@
-import { animate, morphTo, stagger } from "animejs";
+import { animate, stagger } from "animejs";
 
 type Target = Element | null | undefined;
 
@@ -92,20 +92,39 @@ export const animateStudioDraftEntrance = ({ linework, paper, header, stepIndica
   if (question) animate(question, { y: [8, 0], opacity: [0.75, 1], delay: 250, duration: 170, ease: "outQuad" });
 };
 
-export type MorphAnimation = { cancel: () => void };
+export type LineBoil = { cancel: () => void };
 
-export const startAmbientMorph = (pathEl: SVGPathElement | null, targetSelector: string): MorphAnimation | null => {
-  if (!pathEl || prefersReducedMotion()) return null;
-  const animation = animate(pathEl, {
-    d: morphTo(targetSelector, 0.2),
-    duration: 4500,
-    ease: "inOutSine",
-    alternate: true,
-    loop: true,
-  });
+const BOIL_SEEDS = [1, 7, 13, 21];
+const BOIL_OPACITY = [0.95, 0.92, 0.97, 0.94];
+
+// Stepped (not tweened) seed swaps read as hand-inked animation frames.
+export const startLineBoil = (
+  turbulence: SVGFETurbulenceElement | null,
+  inkEl: SVGElement | null,
+  fps = 8,
+): LineBoil | null => {
+  if (!turbulence || prefersReducedMotion()) return null;
+  let frame = 0;
+  let timer: ReturnType<typeof setInterval> | null = null;
+  const tick = () => {
+    frame = (frame + 1) % BOIL_SEEDS.length;
+    turbulence.setAttribute("seed", String(BOIL_SEEDS[frame]));
+    if (inkEl) inkEl.style.opacity = String(BOIL_OPACITY[frame]);
+  };
+  const start = () => {
+    if (timer === null) timer = setInterval(tick, 1000 / fps);
+  };
+  const stop = () => {
+    if (timer !== null) clearInterval(timer);
+    timer = null;
+  };
+  const onVisibility = () => (document.hidden ? stop() : start());
+  document.addEventListener("visibilitychange", onVisibility);
+  if (!document.hidden) start();
   return {
     cancel: () => {
-      animation.cancel();
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
     },
   };
 };
