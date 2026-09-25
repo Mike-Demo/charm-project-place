@@ -94,6 +94,78 @@ export const animateStudioDraftEntrance = ({ linework, paper, header, stepIndica
 
 export type LineBoil = { cancel: () => void };
 
+export type StepArtTransition = { cancel: () => void };
+
+export const animateStepArtOut = (
+  group: SVGGElement | null,
+  direction: "forward" | "backward",
+  onComplete: () => void,
+): StepArtTransition | null => {
+  if (!group || prefersReducedMotion()) {
+    onComplete();
+    return null;
+  }
+  const paths = Array.from(group.querySelectorAll<SVGPathElement>("path"));
+  paths.forEach((path) => {
+    if (path.dataset['trace'] === "false") return;
+    const length = path.getTotalLength();
+    path.style.strokeDasharray = String(length);
+    path.style.strokeDashoffset = "0";
+  });
+  const animation = animate(paths, {
+    strokeDashoffset: (target: unknown) => {
+      const path = target instanceof SVGPathElement ? target : null;
+      return path?.dataset['trace'] === "false" ? 0 : path?.getTotalLength() ?? 0;
+    },
+    opacity: [1, 0],
+    x: direction === "forward" ? -3 : 3,
+    delay: stagger(12, { reversed: direction === "forward" }),
+    duration: 130,
+    ease: "inQuad",
+    onComplete,
+  });
+  return { cancel: () => animation.cancel() };
+};
+
+export const animateStepArtIn = (
+  group: SVGGElement | null,
+  direction: "forward" | "backward",
+): StepArtTransition | null => {
+  if (!group) return null;
+  const paths = Array.from(group.querySelectorAll<SVGPathElement>("path"));
+  if (prefersReducedMotion()) {
+    group.style.opacity = "1";
+    paths.forEach((path) => {
+      path.style.opacity = "1";
+      path.style.strokeDasharray = "";
+      path.style.strokeDashoffset = "";
+    });
+    return null;
+  }
+  paths.forEach((path) => {
+    path.style.opacity = "0";
+    if (path.dataset['trace'] === "false") return;
+    const length = path.getTotalLength();
+    path.style.strokeDasharray = String(length);
+    path.style.strokeDashoffset = String(length);
+  });
+  const animation = animate(paths, {
+    strokeDashoffset: 0,
+    opacity: [0, 1],
+    x: [direction === "forward" ? 3 : -3, 0],
+    delay: stagger(24, { reversed: direction === "backward" }),
+    duration: 280,
+    ease: "outQuad",
+    onComplete: () => {
+      paths.forEach((path) => {
+        path.style.strokeDasharray = "";
+        path.style.strokeDashoffset = "";
+      });
+    },
+  });
+  return { cancel: () => animation.cancel() };
+};
+
 const BOIL_SEEDS = [1, 7, 13, 21];
 const BOIL_OPACITY = [0.95, 0.92, 0.97, 0.94];
 

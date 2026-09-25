@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { StepArtwork } from "@/components/StepArtwork";
 import {
   PRONOUN_OPTIONS,
   TIME_SLOTS,
@@ -21,8 +22,7 @@ import {
 import { ConfirmedPass } from "@/components/ConfirmedPass";
 import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
-import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startLineBoil } from "@/lib/motion";
-import { NEEDLE_MARK_D } from "@/lib/logo-marks";
+import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
 
 const stepMeta = [
   { badge: "Step 01 // 07", hint: "Your name", title: "Step 1: Name" },
@@ -117,9 +117,6 @@ function TattooAtelier() {
   const headerRef = useRef<HTMLElement | null>(null);
   const indicatorRef = useRef<HTMLDivElement | null>(null);
   const initialStepEffect = useRef(true);
-  const logoPathRef = useRef<SVGPathElement | null>(null);
-  const boilTurbulenceRef = useRef<SVGFETurbulenceElement | null>(null);
-  const boilRef = useRef<{ cancel: () => void } | null>(null);
 
   const firstName = name.trim().split(/\s+/)[0] || "";
   const hasFullName = name.trim().split(/\s+/).filter(Boolean).length >= 2;
@@ -251,19 +248,6 @@ function TattooAtelier() {
     stepIndicator: indicatorRef.current,
     question: paneRef.current,
   });
-  }, []);
-
-  useEffect(() => {
-    if (prefersReducedMotion()) return;
-    // Let the studio draft entrance land first, then start the hand-drawn line boil.
-    const timer = setTimeout(() => {
-      boilRef.current = startLineBoil(boilTurbulenceRef.current, logoPathRef.current);
-    }, 600);
-    return () => {
-      clearTimeout(timer);
-      boilRef.current?.cancel();
-      boilRef.current = null;
-    };
   }, []);
 
   useEffect(() => {
@@ -444,19 +428,7 @@ function TattooAtelier() {
 
       <header ref={headerRef} className="relative z-10 flex flex-col items-center text-center">
         <div className="group flex flex-col items-center">
-          <svg aria-hidden="true" className="doodle-hover mb-1 h-48 w-36 opacity-95 mix-blend-multiply" viewBox="69.4 34.1 318 424">
-            <defs>
-              <filter id="atelier-line-boil" x="-5%" y="-5%" width="110%" height="110%">
-                <feTurbulence ref={boilTurbulenceRef} type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="1" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
-              </filter>
-              <filter id="atelier-boil-fine" x="-20%" y="-150%" width="140%" height="400%">
-                <feTurbulence data-boil-seed="" type="fractalNoise" baseFrequency="0.09" numOctaves="1" seed="1" result="fine-noise" />
-                <feDisplacementMap in="SourceGraphic" in2="fine-noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
-              </filter>
-            </defs>
-            <path ref={logoPathRef} d={NEEDLE_MARK_D} fill="currentColor" filter="url(#atelier-line-boil)" className="text-foreground" />
-          </svg>
+          <StepArtwork step={step} direction={direction} />
         </div>
       </header>
 
