@@ -266,7 +266,7 @@ function AdminPage() {
             </select>
           </label>
         </div>
-        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="mt-6">
           <div className="min-w-0">
             {bookingPageQuery.isPending ? <p role="status" className="py-8 text-ink-pencil">Loading bookings…</p> :
               bookingPageQuery.isError ? <div role="alert" className="py-8 text-pencil-red">Bookings could not load. <Button variant="outline" onClick={() => void bookingPageQuery.refetch()}>Retry</Button></div> :
