@@ -5,7 +5,7 @@ const STATUS_LINES = [
 ] as const;
 
 /** Hand-drawn holding screen shown while the payment confirms. */
-export function ConfirmingSketch({ note }: { note?: string }) {
+export function ConfirmingSketch({ note }: { note?: string | undefined }) {
   return (
     <section
       aria-live="polite"
