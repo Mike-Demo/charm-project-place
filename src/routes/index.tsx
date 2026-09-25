@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import {
   TIME_SLOTS,
@@ -14,6 +14,7 @@ import {
   toDateKey,
 } from "@/lib/atelier";
 import { bookAppointment, fetchUnavailableSlots } from "@/lib/atelier-service";
+import { animateSheetIn, inkSettle, noteDrop, pickPop, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
 
 const LOGO_URL =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
@@ -86,6 +87,10 @@ function TattooAtelier() {
   const [toast, setToast] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const paneRef = useRef<HTMLDivElement | null>(null);
+  const pillsRef = useRef<HTMLDivElement | null>(null);
+  const toastRef = useRef<HTMLDivElement | null>(null);
+  const logoRef = useRef<HTMLImageElement | null>(null);
 
   const firstName = name.trim().split(/\s+/)[0] || "";
   const nameValid = name.trim().length >= 2;
@@ -126,6 +131,25 @@ function TattooAtelier() {
     return from;
   };
 
+  useEffect(() => {
+    inkSettle(logoRef.current);
+  }, []);
+
+  useEffect(() => {
+    animateSheetIn(paneRef.current, direction);
+    stampPill(pillsRef.current?.children[step - 1]);
+    if (step === TOTAL_STEPS) staggerRows(paneRef.current);
+  }, [step, direction]);
+
+  useEffect(() => {
+    if (toast) noteDrop(toastRef.current);
+  }, [toast]);
+
+  const handlePaneClick = (event: MouseEvent<HTMLDivElement>) => {
+    const target = event.target instanceof Element ? event.target.closest("button:not(:disabled)") : null;
+    if (target) pickPop(target);
+  };
+
   useEffect(() => () => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
   }, []);
@@ -156,6 +180,8 @@ function TattooAtelier() {
   };
 
   const continueFlow = () => {
+    const blocked = (step === 1 && !nameValid) || (step === 4 && !phoneValid) || (step === 5 && !emailValid);
+    if (blocked) shakeField(paneRef.current?.querySelector("input"));
     if (step === 1 && !nameValid) return;
     if (step === 2 && dayChoice === null) return;
     if (step === 3 && !scheduleValid) return;
@@ -206,7 +232,7 @@ function TattooAtelier() {
 
       <header className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
         <div className="group flex flex-col items-center">
-          <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-16 w-16 opacity-95 mix-blend-multiply" src={LOGO_URL} />
+          <img alt="Tattoo Atelier needle doodle" ref={logoRef} className="doodle-hover mb-1 h-16 w-16 opacity-95 mix-blend-multiply" src={LOGO_URL} />
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink &amp; Needle</span>
         </div>
       </header>
@@ -217,7 +243,7 @@ function TattooAtelier() {
             <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
             <span className="hidden font-hand text-sm text-ink-pencil sm:inline">• {currentMeta.hint}</span>
           </div>
-          <div className="flex shrink-0 items-center gap-1 sm:gap-1.5" aria-label="Appointment steps">
+          <div ref={pillsRef} className="flex shrink-0 items-center gap-1 sm:gap-1.5" aria-label="Appointment steps">
             {stepMeta.map((item, index) => (
               <Button key={item.title} variant="ghost" size="icon" onClick={() => goToStep(index + 1)} title={item.title} aria-label={item.title}
                 className={`h-7 w-7 rounded-full p-0 font-mono text-xs shadow-none ${step === index + 1 ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/40 hover:bg-foreground hover:text-background" : "bg-paper-deep/80 text-ink-pencil hover:bg-paper-line hover:text-foreground"}`}>
@@ -227,7 +253,7 @@ function TattooAtelier() {
           </div>
         </div>
 
-        <div className={`step-pane min-h-[300px] ${direction === "forward" ? "paper-in-forward" : "paper-in-backward"}`} key={step}>
+        <div ref={paneRef} onClick={handlePaneClick} className="step-pane min-h-[300px]" key={step}>
           {step === 1 && (
             <section className="flex min-h-[280px] flex-col justify-center">
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 05</p>
@@ -393,7 +419,7 @@ function TattooAtelier() {
           <Button variant="link" disabled={step === 1} onClick={() => goToStep(step - 1)} className="group h-auto p-0 font-hand text-lg text-ink-pencil hover:text-foreground">
             <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
           </Button>
-          <Button disabled={!currentValid || bookingMutation.isPending} onClick={continueFlow} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
+          <Button disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
             {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Locking in…" : "Lock In Appointment ✦") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
         </div>
@@ -407,7 +433,7 @@ function TattooAtelier() {
         <span className="font-mono text-[11px] uppercase tracking-wider text-ink-dim">Tattoo Atelier // Novo // P. 02</span>
       </footer>
 
-      <div role="status" aria-live="polite" className={`fixed left-1/2 top-8 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl border-2 border-foreground bg-paper-sheet px-6 py-3 shadow-2xl transition-all duration-300 ${toast ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"}`}>
+      <div ref={toastRef} role="status" aria-live="polite" className={`fixed left-1/2 top-8 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl border-2 border-foreground bg-paper-sheet px-6 py-3 shadow-2xl transition-all duration-300 ${toast ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"}`}>
         <span className="h-3 w-3 animate-ping rounded-full bg-cyan-draft" /><strong className="text-xl">Booking locked in{firstName ? ` for ${firstName}` : ""}!</strong>
       </div>
     </div>
@@ -423,5 +449,5 @@ function ErrorNote({ icon, title, children }: { icon: string; title: string; chi
 }
 
 function ReviewRow({ label, value, last = false }: { label: string; value: string; last?: boolean }) {
-  return <div className={`flex flex-col justify-between gap-1 pb-2 sm:flex-row sm:items-center ${last ? "" : "border-b border-ink-dim/20"}`}><span className="shrink-0 font-mono text-sm text-ink-pencil">{label}</span><strong className="break-words text-left sm:text-right">{value}</strong></div>;
+  return <div data-review-row="" className={`flex flex-col justify-between gap-1 pb-2 sm:flex-row sm:items-center ${last ? "" : "border-b border-ink-dim/20"}`}><span className="shrink-0 font-mono text-sm text-ink-pencil">{label}</span><strong className="break-words text-left sm:text-right">{value}</strong></div>;
 }
