@@ -21,6 +21,7 @@ import {
 } from "@/lib/atelier";
 import { ConfirmedPass } from "@/components/ConfirmedPass";
 import { ConfirmingSketch } from "@/components/ConfirmingSketch";
+import { PRELOADER_COMPLETE_EVENT } from "@/components/SitePreloader";
 
 import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
@@ -149,9 +150,7 @@ function TattooAtelier() {
     [availabilityQuery.data],
   );
 
-  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming" | "failed">(() =>
-    new URLSearchParams(window.location.search).get("paid") ? "confirming" : "idle",
-  );
+  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming" | "failed">("idle");
 
 
   const heldIdRef = useRef<string | null>(null);
@@ -245,27 +244,36 @@ function TattooAtelier() {
   };
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-    const params = new URLSearchParams(window.location.search);
-    const forced = ["replay", "intro", "sketch"].some((key) => {
-      const value = params.get(key);
-      return value !== null && value !== "0" && value !== "false";
-    });
-    if (!forced) {
-      try {
-        if (sessionStorage.getItem("tattoo-atelier-studio-draft-seen") === "1") return;
-        sessionStorage.setItem("tattoo-atelier-studio-draft-seen", "1");
-      } catch {
-        // Storage can be unavailable in private browsing; the entrance remains optional.
+    const playEntrance = () => {
+      if (prefersReducedMotion()) return;
+      const params = new URLSearchParams(window.location.search);
+      const forced = ["replay", "intro", "sketch"].some((key) => {
+        const value = params.get(key);
+        return value !== null && value !== "0" && value !== "false";
+      });
+      if (!forced) {
+        try {
+          if (sessionStorage.getItem("tattoo-atelier-studio-draft-seen") === "1") return;
+          sessionStorage.setItem("tattoo-atelier-studio-draft-seen", "1");
+        } catch {
+          // Storage can be unavailable in private browsing; the entrance remains optional.
+        }
       }
+      animateStudioDraftEntrance({
+        linework: draftRef.current,
+        paper: paperRef.current,
+        header: headerRef.current,
+        stepIndicator: indicatorRef.current,
+        question: paneRef.current,
+      });
+    };
+
+    if (document.documentElement.hasAttribute("data-preloader-active")) {
+      window.addEventListener(PRELOADER_COMPLETE_EVENT, playEntrance, { once: true });
+      return () => window.removeEventListener(PRELOADER_COMPLETE_EVENT, playEntrance);
     }
-  animateStudioDraftEntrance({
-    linework: draftRef.current,
-    paper: paperRef.current,
-    header: headerRef.current,
-    stepIndicator: indicatorRef.current,
-    question: paneRef.current,
-  });
+    playEntrance();
+    return undefined;
   }, []);
 
   useEffect(() => {
