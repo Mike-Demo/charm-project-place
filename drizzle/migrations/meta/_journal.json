@@ -36,6 +36,13 @@
       "when": 1790360606813,
       "tag": "0004_get_confirmed_booking",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790362220195,
+      "tag": "0005_booking_access_token_reschedule",
+      "breakpoints": true
     }
   ]
 }
