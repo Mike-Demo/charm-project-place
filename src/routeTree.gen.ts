@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiSketchConceptRouteImport } from './routes/api/sketch-concept'
 import { Route as PassTokenRouteImport } from './routes/pass.$token'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -42,6 +43,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiSketchConceptRoute = ApiSketchConceptRouteImport.update({
+  id: '/api/sketch-concept',
+  path: '/api/sketch-concept',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PassTokenRoute = PassTokenRouteImport.update({
   id: '/pass/$token',
   path: '/pass/$token',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/pass/$token': typeof PassTokenRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/pass/$token': typeof PassTokenRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/pass/$token': typeof PassTokenRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/licenses'
     | '/admin'
+    | '/api/sketch-concept'
     | '/pass/$token'
     | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/licenses'
     | '/admin'
+    | '/api/sketch-concept'
     | '/pass/$token'
     | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/licenses'
     | '/_authenticated/admin'
+    | '/api/sketch-concept'
     | '/pass/$token'
     | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
@@ -125,6 +137,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   LicensesRoute: typeof LicensesRoute
+  ApiSketchConceptRoute: typeof ApiSketchConceptRoute
   PassTokenRoute: typeof PassTokenRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -167,6 +180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/sketch-concept': {
+      id: '/api/sketch-concept'
+      path: '/api/sketch-concept'
+      fullPath: '/api/sketch-concept'
+      preLoaderRoute: typeof ApiSketchConceptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pass/$token': {
       id: '/pass/$token'
       path: '/pass/$token'
@@ -207,6 +227,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   LicensesRoute: LicensesRoute,
+  ApiSketchConceptRoute: ApiSketchConceptRoute,
   PassTokenRoute: PassTokenRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
