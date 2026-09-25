@@ -267,7 +267,8 @@ function Licenses(): ReactElement {
               to="/auth"
               className="font-mono text-sm text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
             >
-              Sign in to the booking ledger →
+              Sign in to the booking ledger{" "}
+              <span className="whitespace-nowrap">→</span>
             </Link>
           </p>
         </section>
