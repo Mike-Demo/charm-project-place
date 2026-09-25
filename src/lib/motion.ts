@@ -1,4 +1,4 @@
-import { animate, morphTo, stagger } from "animejs";
+import { animate, stagger } from "animejs";
 
 type Target = Element | null | undefined;
 
