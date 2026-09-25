@@ -375,6 +375,11 @@ function SlotRow({
               {appointment.status === "pending" ? "Awaiting payment" : appointment.status}
             </p>
           )}
+          {appointment.rescheduled_at && (
+            <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-cyan-draft">
+              Rescheduled ×{appointment.reschedule_count ?? 1} · {new Date(appointment.rescheduled_at).toLocaleDateString()}
+            </p>
+          )}
         </div>
       )}
 
