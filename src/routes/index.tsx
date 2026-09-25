@@ -16,8 +16,8 @@ import {
   toDateKey,
 } from "@/lib/atelier";
 import { bookAppointment, fetchUnavailableSlots } from "@/lib/atelier-service";
-import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startAmbientMorph } from "@/lib/motion";
-import { CALENDAR_MARK_D, NEEDLE_MARK_D } from "@/lib/logo-marks";
+import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startLineBoil } from "@/lib/motion";
+import { NEEDLE_MARK_D } from "@/lib/logo-marks";
 
 const stepMeta = [
   { badge: "Step 01 // 06", hint: "Your name", title: "Step 1: Name" },
@@ -99,7 +99,8 @@ function TattooAtelier() {
   const indicatorRef = useRef<HTMLDivElement | null>(null);
   const initialStepEffect = useRef(true);
   const logoPathRef = useRef<SVGPathElement | null>(null);
-  const morphRef = useRef<{ cancel: () => void } | null>(null);
+  const boilTurbulenceRef = useRef<SVGFETurbulenceElement | null>(null);
+  const boilRef = useRef<{ cancel: () => void } | null>(null);
 
   const firstName = name.trim().split(/\s+/)[0] || "";
   const hasFullName = name.trim().split(/\s+/).filter(Boolean).length >= 2;
@@ -172,14 +173,14 @@ function TattooAtelier() {
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
-    // Let the studio draft entrance land first, then start the slow ambient morph.
+    // Let the studio draft entrance land first, then start the hand-drawn line boil.
     const timer = setTimeout(() => {
-      morphRef.current = startAmbientMorph(logoPathRef.current, "#atelier-morph-target");
-    }, 900);
+      boilRef.current = startLineBoil(boilTurbulenceRef.current, logoPathRef.current);
+    }, 600);
     return () => {
       clearTimeout(timer);
-      morphRef.current?.cancel();
-      morphRef.current = null;
+      boilRef.current?.cancel();
+      boilRef.current = null;
     };
   }, []);
 
@@ -298,10 +299,13 @@ function TattooAtelier() {
       <header ref={headerRef} className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
         <div className="group flex flex-col items-center">
           <svg aria-hidden="true" className="doodle-hover mb-1 h-48 w-48 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
-            <path ref={logoPathRef} d={NEEDLE_MARK_D} fill="currentColor" className="text-foreground" />
-          </svg>
-          <svg aria-hidden="true" className="hidden" viewBox="0 0 512 512">
-            <path id="atelier-morph-target" d={CALENDAR_MARK_D} fill="none" />
+            <defs>
+              <filter id="atelier-line-boil" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence ref={boilTurbulenceRef} type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="1" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+            </defs>
+            <path ref={logoPathRef} d={NEEDLE_MARK_D} fill="currentColor" filter="url(#atelier-line-boil)" className="text-foreground" />
           </svg>
         </div>
       </header>
