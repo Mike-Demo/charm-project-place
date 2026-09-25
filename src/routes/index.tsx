@@ -74,6 +74,15 @@ function WaveUnderline() {
   );
 }
 
+// Second-pass pencil trace under an answer line; wobbles with the logo's boil.
+function BoilRule({ tone = "text-ink-dim/50" }: { tone?: string }) {
+  return (
+    <svg aria-hidden="true" className={`pointer-events-none absolute -bottom-1.5 left-0 h-2 w-full overflow-visible ${tone}`} fill="none" preserveAspectRatio="none" viewBox="0 0 160 8">
+      <path d="M 1 5 C 40 3.4, 80 6, 120 4.2 S 150 5.4, 159 4.6" filter="url(#atelier-boil-fine)" stroke="currentColor" strokeLinecap="round" strokeWidth="1.4" />
+    </svg>
+  );
+}
+
 function TattooAtelier() {
   const today = useMemo(() => startOfDay(new Date()), []);
   const [step, setStep] = useState(1);
