@@ -41,7 +41,7 @@ export function DeskAtmosphere() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden select-none"
+      className="pointer-events-none fixed inset-0 z-[1] overflow-hidden select-none"
     >
       {MARKS.map((mark) => (
         <img
