@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { DeskAtmosphere } from "@/components/DeskAtmosphere";
 import { SketchFooter } from "@/components/SketchFooter";
+import { SitePreloader } from "@/components/SitePreloader";
 import {
   Outlet,
   Link,
@@ -123,6 +124,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SitePreloader />
       <DeskAtmosphere />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />

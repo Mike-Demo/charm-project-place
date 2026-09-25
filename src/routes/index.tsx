@@ -21,6 +21,7 @@ import {
 } from "@/lib/atelier";
 import { ConfirmedPass } from "@/components/ConfirmedPass";
 import { ConfirmingSketch } from "@/components/ConfirmingSketch";
+import { PRELOADER_COMPLETE_EVENT } from "@/components/SitePreloader";
 
 import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
@@ -149,9 +150,7 @@ function TattooAtelier() {
     [availabilityQuery.data],
   );
 
-  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming" | "failed">(() =>
-    new URLSearchParams(window.location.search).get("paid") ? "confirming" : "idle",
-  );
+  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming" | "failed">("idle");
 
 
   const heldIdRef = useRef<string | null>(null);
@@ -245,27 +244,36 @@ function TattooAtelier() {
   };
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-    const params = new URLSearchParams(window.location.search);
-    const forced = ["replay", "intro", "sketch"].some((key) => {
-      const value = params.get(key);
-      return value !== null && value !== "0" && value !== "false";
-    });
-    if (!forced) {
-      try {
-        if (sessionStorage.getItem("tattoo-atelier-studio-draft-seen") === "1") return;
-        sessionStorage.setItem("tattoo-atelier-studio-draft-seen", "1");
-      } catch {
-        // Storage can be unavailable in private browsing; the entrance remains optional.
+    const playEntrance = () => {
+      if (prefersReducedMotion()) return;
+      const params = new URLSearchParams(window.location.search);
+      const forced = ["replay", "intro", "sketch"].some((key) => {
+        const value = params.get(key);
+        return value !== null && value !== "0" && value !== "false";
+      });
+      if (!forced) {
+        try {
+          if (sessionStorage.getItem("tattoo-atelier-studio-draft-seen") === "1") return;
+          sessionStorage.setItem("tattoo-atelier-studio-draft-seen", "1");
+        } catch {
+          // Storage can be unavailable in private browsing; the entrance remains optional.
+        }
       }
+      animateStudioDraftEntrance({
+        linework: draftRef.current,
+        paper: paperRef.current,
+        header: headerRef.current,
+        stepIndicator: indicatorRef.current,
+        question: paneRef.current,
+      });
+    };
+
+    if (document.documentElement.hasAttribute("data-preloader-active")) {
+      window.addEventListener(PRELOADER_COMPLETE_EVENT, playEntrance, { once: true });
+      return () => window.removeEventListener(PRELOADER_COMPLETE_EVENT, playEntrance);
     }
-  animateStudioDraftEntrance({
-    linework: draftRef.current,
-    paper: paperRef.current,
-    header: headerRef.current,
-    stepIndicator: indicatorRef.current,
-    question: paneRef.current,
-  });
+    playEntrance();
+    return undefined;
   }, []);
 
   useEffect(() => {
@@ -494,7 +502,7 @@ function TattooAtelier() {
               <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">What should we call you?</h2>
                 <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : name.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
-                  <input autoFocus aria-label="Your name" className="paper-inline-input max-w-[75vw] font-bold focus:text-cyan-draft" onChange={(e) => setName(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. Sara Tattoo" style={{ width: `${Math.max(17, name.length + 1)}ch` }} value={name} />
+                  <input autoFocus aria-label="Your name" className="paper-inline-input max-w-[75vw] font-bold focus:text-cyan-draft" onChange={(e) => setName(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. Sara Tattoo" size={Math.max(17, name.length + 1)} value={name} />
                   <BoilRule tone={nameValid ? "text-cyan-draft/60" : "text-ink-dim/50"} />
                 </span>
               </div>

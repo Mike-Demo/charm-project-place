@@ -1,4 +1,4 @@
-import { animate, stagger } from "animejs";
+import { animate, createMotionPath, stagger } from "animejs";
 
 type Target = Element | null | undefined;
 
@@ -7,6 +7,85 @@ export const prefersReducedMotion = (): boolean =>
 
 const fadeOnly = (target: Element | NodeListOf<Element>) =>
   animate(target, { opacity: [0, 1], duration: 100, ease: "linear" });
+
+type SitePreloaderTargets = {
+  overlay: HTMLDivElement | null;
+  mark: SVGGElement | null;
+  trace: SVGPathElement | null;
+  guide: SVGPathElement | null;
+  needle: SVGGElement | null;
+  onComplete: () => void;
+};
+
+export type SitePreloaderAnimation = { cancel: () => void };
+
+export const animateSitePreloader = ({
+  overlay,
+  mark,
+  trace,
+  guide,
+  needle,
+  onComplete,
+}: SitePreloaderTargets): SitePreloaderAnimation => {
+  if (!overlay || !mark || !trace || !guide || !needle) {
+    onComplete();
+    return { cancel: () => undefined };
+  }
+
+  const animations: Array<{ cancel: () => void }> = [];
+  let completionTimer: ReturnType<typeof setTimeout> | null = null;
+
+  if (prefersReducedMotion()) {
+    mark.style.opacity = "1";
+    trace.style.opacity = "0";
+    needle.style.opacity = "0";
+    completionTimer = setTimeout(onComplete, 160);
+    return {
+      cancel: () => {
+        if (completionTimer !== null) clearTimeout(completionTimer);
+      },
+    };
+  }
+
+  const length = trace.getTotalLength();
+  trace.style.strokeDasharray = String(length);
+  trace.style.strokeDashoffset = String(length);
+
+  animations.push(
+    animate(mark, { opacity: [0, 0.16, 1], scale: [0.975, 1], duration: 900, ease: "outQuad" }),
+    animate(trace, { strokeDashoffset: [length, 0], opacity: [0.45, 1, 0], duration: 1120, ease: "inOutQuad" }),
+  );
+
+  const pathMotion = createMotionPath(guide);
+  if (pathMotion) {
+    animations.push(
+      animate(needle, {
+        ...pathMotion,
+        opacity: [0, 1, 1, 0],
+        duration: 1120,
+        ease: "inOutQuad",
+      }),
+    );
+  }
+
+  animations.push(
+    animate(overlay, {
+      opacity: [1, 0],
+      y: [0, -8],
+      delay: 1120,
+      duration: 360,
+      ease: "outQuad",
+      onComplete,
+    }),
+  );
+
+  return {
+    cancel: () => {
+      if (completionTimer !== null) clearTimeout(completionTimer);
+      animations.forEach((animation) => animation.cancel());
+    },
+  };
+};
 
 export const animateSheetIn = (el: Target, direction: "forward" | "backward"): void => {
   if (!el) return;

@@ -187,6 +187,36 @@
     repeating-linear-gradient(-45deg, oklch(0.36 0.02 72 / 2%) 0 1px, transparent 1px 4px);
 }
 
+.site-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse at 50% 35%, var(--paper-sheet) 0%, transparent 68%),
+    repeating-linear-gradient(45deg, oklch(0.36 0.02 72 / 2%) 0 1px, transparent 1px 5px);
+}
+
+.site-preloader-mark {
+  display: block;
+  width: min(72vw, 25rem);
+  aspect-ratio: 1024 / 528;
+  overflow: visible;
+}
+
+.site-preloader-caption {
+  margin: 0.75rem 0 0;
+  color: var(--ink-pencil);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0;
+}
+
 .paper-inline-input { margin: 0; min-width: 7rem; border: 0; background: transparent; padding: 0 0.25rem 0.125rem; color: var(--foreground); outline: none; font: inherit; }
 .paper-inline-input:focus { outline: none; box-shadow: none; }
 /* Keyboard users get a visible dashed focus ring on the hand-inked writing lines. */
