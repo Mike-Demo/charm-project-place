@@ -16,10 +16,8 @@ import {
   toDateKey,
 } from "@/lib/atelier";
 import { bookAppointment, fetchUnavailableSlots } from "@/lib/atelier-service";
-import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
-
-const LOGO_URL =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
+import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startAmbientMorph } from "@/lib/motion";
+import { CALENDAR_MARK_D, NEEDLE_MARK_D } from "@/lib/logo-marks";
 
 const stepMeta = [
   { badge: "Step 01 // 06", hint: "Your name", title: "Step 1: Name" },
@@ -100,6 +98,8 @@ function TattooAtelier() {
   const headerRef = useRef<HTMLElement | null>(null);
   const indicatorRef = useRef<HTMLDivElement | null>(null);
   const initialStepEffect = useRef(true);
+  const logoPathRef = useRef<SVGPathElement | null>(null);
+  const morphRef = useRef<{ cancel: () => void } | null>(null);
 
   const firstName = name.trim().split(/\s+/)[0] || "";
   const hasFullName = name.trim().split(/\s+/).filter(Boolean).length >= 2;
@@ -168,6 +168,19 @@ function TattooAtelier() {
     stepIndicator: indicatorRef.current,
     question: paneRef.current,
   });
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    // Let the studio draft entrance land first, then start the slow ambient morph.
+    const timer = setTimeout(() => {
+      morphRef.current = startAmbientMorph(logoPathRef.current, "#atelier-morph-target");
+    }, 900);
+    return () => {
+      clearTimeout(timer);
+      morphRef.current?.cancel();
+      morphRef.current = null;
+    };
   }, []);
 
   useEffect(() => {
@@ -284,7 +297,12 @@ function TattooAtelier() {
 
       <header ref={headerRef} className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
         <div className="group flex flex-col items-center">
-          <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-48 w-48 opacity-95 mix-blend-multiply" src={LOGO_URL} />
+          <svg aria-hidden="true" className="doodle-hover mb-1 h-48 w-48 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
+            <path ref={logoPathRef} d={NEEDLE_MARK_D} fill="currentColor" className="text-foreground" />
+          </svg>
+          <svg aria-hidden="true" className="hidden" viewBox="0 0 512 512">
+            <path id="atelier-morph-target" d={CALENDAR_MARK_D} fill="none" />
+          </svg>
         </div>
       </header>
 

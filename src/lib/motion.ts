@@ -1,4 +1,4 @@
-import { animate, stagger } from "animejs";
+import { animate, morphTo, stagger } from "animejs";
 
 type Target = Element | null | undefined;
 
@@ -90,4 +90,22 @@ export const animateStudioDraftEntrance = ({ linework, paper, header, stepIndica
   if (header) animate(header, { y: [6, 0], opacity: [0.7, 1], delay: 180, duration: 170, ease: "outQuad" });
   if (stepIndicator) animate(stepIndicator, { y: [6, 0], opacity: [0.7, 1], delay: 215, duration: 170, ease: "outQuad" });
   if (question) animate(question, { y: [8, 0], opacity: [0.75, 1], delay: 250, duration: 170, ease: "outQuad" });
+};
+
+export type MorphAnimation = { cancel: () => void };
+
+export const startAmbientMorph = (pathEl: SVGPathElement | null, targetSelector: string): MorphAnimation | null => {
+  if (!pathEl || prefersReducedMotion()) return null;
+  const animation = animate(pathEl, {
+    d: morphTo(targetSelector, 0.2),
+    duration: 4500,
+    ease: "inOutSine",
+    alternate: true,
+    loop: true,
+  });
+  return {
+    cancel: () => {
+      animation.cancel();
+    },
+  };
 };
