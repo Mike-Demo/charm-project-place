@@ -70,9 +70,10 @@ export const animateSitePreloader = ({
 
   animations.push(
     animate(overlay, {
-      opacity: [1, 1, 0],
-      y: [0, 0, -8],
-      duration: 1480,
+      opacity: [1, 0],
+      y: [0, -8],
+      delay: 1120,
+      duration: 360,
       ease: "outQuad",
       onComplete,
     }),
