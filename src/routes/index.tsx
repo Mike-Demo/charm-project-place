@@ -441,10 +441,18 @@ function TattooAtelier() {
       </header>
 
       <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl pb-8 sm:pb-12">
-        {confirmed ? <ConfirmedPass booking={confirmed} token={passToken} onReset={resetFlow} onRescheduled={() => { if (passToken) void fetchBookingByToken(passToken).then((b) => b && setConfirmed(b)); }} /> : paymentState === "confirming" ? (
-          <ConfirmingSketch note={bookingError ?? undefined} />
+        {confirmed ? <ConfirmedPass booking={confirmed} token={passToken} onReset={resetFlow} onRescheduled={() => { if (passToken) void fetchBookingByToken(passToken).then((b) => b && setConfirmed(b)); }} /> : paymentState === "confirming" || paymentState === "failed" ? (
+          <div className="flex flex-col items-center">
+            <ConfirmingSketch note={paymentState === "failed" ? bookingError ?? undefined : undefined} />
+            {paymentState === "failed" ? (
+              <Button onClick={resetFlow} className="ink-stamp-btn mt-4 h-auto rounded-2xl px-8 py-3 font-hand text-lg font-bold">
+                ← Back to the form
+              </Button>
+            ) : null}
+          </div>
         ) : (
         <>
+
 
         <div ref={indicatorRef} className="mb-8 flex flex-wrap items-center justify-between gap-3 gap-y-3 font-mono text-xs text-ink-pencil/70">
           <div className="flex min-w-0 items-center gap-2">
