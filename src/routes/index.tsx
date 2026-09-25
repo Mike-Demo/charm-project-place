@@ -74,6 +74,15 @@ function WaveUnderline() {
   );
 }
 
+// Second-pass pencil trace under an answer line; wobbles with the logo's boil.
+function BoilRule({ tone = "text-ink-dim/50" }: { tone?: string }) {
+  return (
+    <svg aria-hidden="true" className={`pointer-events-none absolute -bottom-1.5 left-0 h-2 w-full overflow-visible ${tone}`} fill="none" preserveAspectRatio="none" viewBox="0 0 160 8">
+      <path d="M 1 5 C 40 3.4, 80 6, 120 4.2 S 150 5.4, 159 4.6" filter="url(#atelier-boil-fine)" stroke="currentColor" strokeLinecap="round" strokeWidth="1.4" />
+    </svg>
+  );
+}
+
 function TattooAtelier() {
   const today = useMemo(() => startOfDay(new Date()), []);
   const [step, setStep] = useState(1);
@@ -296,13 +305,17 @@ function TattooAtelier() {
         </svg>
       </div>
 
-      <header ref={headerRef} className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
+      <header ref={headerRef} className="relative z-10 flex flex-1 flex-col items-center justify-center pt-2 text-center">
         <div className="group flex flex-col items-center">
-          <svg aria-hidden="true" className="doodle-hover mb-1 h-48 w-48 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
+          <svg aria-hidden="true" className="doodle-hover mb-1 h-56 w-56 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
             <defs>
               <filter id="atelier-line-boil" x="-5%" y="-5%" width="110%" height="110%">
                 <feTurbulence ref={boilTurbulenceRef} type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="1" result="noise" />
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+              <filter id="atelier-boil-fine" x="-20%" y="-150%" width="140%" height="400%">
+                <feTurbulence data-boil-seed="" type="fractalNoise" baseFrequency="0.09" numOctaves="1" seed="1" result="fine-noise" />
+                <feDisplacementMap in="SourceGraphic" in2="fine-noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
               </filter>
             </defs>
             <path ref={logoPathRef} d={NEEDLE_MARK_D} fill="currentColor" filter="url(#atelier-line-boil)" className="text-foreground" />
@@ -310,7 +323,7 @@ function TattooAtelier() {
         </div>
       </header>
 
-      <main ref={paperRef} className="relative z-10 mx-auto my-auto w-full max-w-2xl py-8 sm:py-12">
+      <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl py-8 sm:py-12">
         <div ref={indicatorRef} className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
           <div className="flex min-w-0 items-center gap-2">
             <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
@@ -334,6 +347,7 @@ function TattooAtelier() {
                 <h2 className="font-normal">What should we call you?</h2>
                 <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : name.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
                   <input autoFocus aria-label="Your name" className="paper-inline-input max-w-[75vw] font-bold focus:text-cyan-draft" onChange={(e) => setName(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. Sara Tattoo" style={{ width: `${Math.max(17, name.length + 1)}ch` }} value={name} />
+                  <BoilRule tone={nameValid ? "text-cyan-draft/60" : "text-ink-dim/50"} />
                 </span>
               </div>
               <p className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : name.trim() ? "border-pencil-red/25 bg-invalid-soft text-pencil-red" : "border-ink-dim/30 bg-paper-deep/60 text-ink-pencil"}`}>
@@ -356,24 +370,25 @@ function TattooAtelier() {
                   return (
                     <button key={option} type="button" aria-pressed={active}
                       onClick={() => { setPronounChoice(option); setCustomPronouns(""); }}
-                      className={`rounded-full border px-4 py-2 text-lg transition-all ${active ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                      className={`rounded-full border px-4 py-2 text-lg transition-all ${active ? "ink-bloom border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
                       {option}
                     </button>
                   );
                 })}
                 <button type="button" aria-pressed={pronounChoice === "custom"} onClick={() => setPronounChoice("custom")}
-                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "custom" ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "custom" ? "ink-bloom border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
                   ✎ Something else
                 </button>
                 <button type="button" aria-pressed={pronounChoice === "private"} onClick={() => { setPronounChoice("private"); setCustomPronouns(""); }}
-                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "private" ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "private" ? "ink-bloom border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
                   Prefer not to say
                 </button>
               </div>
               {pronounChoice === "custom" && (
-                <span className={`mt-5 inline-block w-fit border-b-2 text-2xl sm:text-3xl ${customPronouns.trim() ? "border-foreground/70" : "border-ink-dim/40"}`}>
-                  <input autoFocus aria-label="Your pronouns" className="paper-inline-input font-bold" onChange={(e) => setCustomPronouns(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. ze / hir" style={{ width: `${Math.max(12, customPronouns.length + 1)}ch` }} value={customPronouns} />
-                </span>
+                  <span className={`relative mt-5 inline-block w-fit border-b-2 text-2xl sm:text-3xl ${customPronouns.trim() ? "border-foreground/70" : "border-ink-dim/40"}`}>
+                    <input autoFocus aria-label="Your pronouns" className="paper-inline-input font-bold" onChange={(e) => setCustomPronouns(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. ze / hir" style={{ width: `${Math.max(12, customPronouns.length + 1)}ch` }} value={customPronouns} />
+                    <BoilRule />
+                  </span>
               )}
               <p className="mt-4 flex items-center gap-1.5 text-sm text-ink-pencil">
                 <span className="h-2 w-2 shrink-0 rounded-full bg-pencil-green" />
@@ -466,7 +481,7 @@ function TattooAtelier() {
                           className={`rounded-full border px-3 py-1.5 text-base transition-all ${
                             taken ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50 line-through" :
                             selectedDate === null ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50" :
-                            active ? "border-foreground bg-foreground font-bold text-background" :
+                            active ? "ink-bloom border-foreground bg-foreground font-bold text-background" :
                             "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
                           {slot}
                         </button>
@@ -490,6 +505,7 @@ function TattooAtelier() {
                 <h2 className="font-normal">Where can we text your reminder?</h2>
                 <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : phone.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
                   <input autoFocus aria-label="Phone number" className="paper-inline-input max-w-[78vw] font-bold" inputMode="tel" onChange={(e) => setPhone(formatPhone(e.target.value))} onKeyDown={handleEnter} placeholder="e.g. (555) 019-2834" style={{ width: `${Math.max(20, phone.length + 1)}ch` }} type="tel" value={phone} />
+                  {phoneValid ? <BoilRule tone="text-pencil-green/50" /> : null}
                   {!phoneValid && phone.trim() !== "" && <WaveUnderline />}
                 </span>
               </div>
@@ -504,6 +520,7 @@ function TattooAtelier() {
                 <h2 className="font-normal">Where should we send your stencil &amp; guide?</h2>
                 <span className={`relative inline-block border-b-2 ${emailValid ? "border-pencil-green" : email.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
                   <input autoFocus aria-label="Email address" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setEmail(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. you@example.com" style={{ width: `${Math.max(21, email.length + 1)}ch` }} type="email" value={email} />
+                  {emailValid ? <BoilRule tone="text-pencil-green/50" /> : null}
                   {!emailValid && email.trim() !== "" && <WaveUnderline />}
                 </span>
               </div>
