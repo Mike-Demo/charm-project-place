@@ -83,17 +83,6 @@ function TattooAtelier() {
     if (event.key === "Enter") continueFlow();
   };
 
-  const toggleValid = () => {
-    if (allValid) {
-      setPhone("555-019");
-      setEmail("gail@example");
-      setStep(3);
-      return;
-    }
-    setName(nameValid ? name : "Gail");
-    setPhone("+1 (555) 019-2834");
-    setEmail("gail@example.com");
-  };
 
   const currentValid = step === 1 ? nameValid : step === 3 ? phoneValid : step === 4 ? emailValid : step === 5 ? allValid : true;
 
