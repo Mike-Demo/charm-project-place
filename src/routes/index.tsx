@@ -36,7 +36,7 @@ function WaveUnderline() {
 }
 
 function TattooAtelier() {
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const [name, setName] = useState("Gail");
   const [phone, setPhone] = useState("555-019");
