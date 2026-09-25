@@ -324,11 +324,24 @@ function TattooAtelier() {
     setSelectedTime(null);
   };
 
-  const showConfirmation = () => {
-    setToast(true);
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(false), 3000);
+  const resetFlow = () => {
+    setConfirmed(null);
+    setStep(1);
+    setDirection("forward");
+    setName("");
+    setPhone("");
+    setEmail("");
+    setPronounChoice(null);
+    setCustomPronouns("");
+    setDayChoice(null);
+    setSelectedDate(null);
+    setSelectedTime(null);
+    setSmsCode(null);
+    setCodeDigits(["", "", "", "", "", ""]);
+    setCodeError(false);
+    setBookingError(null);
   };
+
 
   const setCodeDigit = (index: number, raw: string) => {
     const value = raw.replace(/\D/g, "");
