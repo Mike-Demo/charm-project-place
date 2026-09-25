@@ -13,6 +13,7 @@ import {
   Text,
 } from "@react-email/components";
 import needleAsset from "@/assets/email-needle.png.asset.json";
+import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
 
 import type { TemplateEntry } from "./registry";
 
@@ -71,6 +72,15 @@ const SessionPassEmail = ({ name, date, time, passUrl }: SessionPassProps) => (
             </Text>
             <Text style={{ margin: "3px 0 0", color: ink, fontSize: "18px", lineHeight: "26px" }}>
               {time || "Your session time"} <span style={{ color: graphite, fontSize: "14px" }}>· Station 03</span>
+            </Text>
+            <Text style={{ margin: "16px 0 2px", color: cyan, fontFamily: mono, fontSize: "11px", lineHeight: "16px" }}>
+              STUDIO LOCATION
+            </Text>
+            <Text style={{ margin: "0", color: ink, fontSize: "14px", lineHeight: "22px" }}>
+              <Link href={STUDIO_MAP_URL} style={{ color: ink, textDecoration: "underline" }}>{STUDIO_ADDRESS}</Link>
+            </Text>
+            <Text style={{ margin: "3px 0 0", color: graphite, fontSize: "13px", lineHeight: "20px" }}>
+              Hours: {STUDIO_HOURS}
             </Text>
           </Section>
 

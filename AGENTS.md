@@ -13,3 +13,4 @@
 - Mount the first-visit preloader in the shared root shell as a fixed overlay so all pages retain their final layout underneath it.
 - Tattoo idea photos/sketches live in private bucket `tattoo-ideas`, attached server-side after the slot hold via `attachIdea`; concept sketches stream from `/api/sketch-concept` (image edits) — keeps AI key server-side and avoids orphan uploads.
 - Email illustrations use hosted assets with an absolute public URL, because inboxes cannot resolve project-relative image paths.
+- Keep studio address and appointment-only hours in one shared location module so website and email copy remain consistent.
