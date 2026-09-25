@@ -1,3 +1,4 @@
+import { AdminIdea } from "@/components/IdeaGallery";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
@@ -344,6 +345,7 @@ function SlotRow({
           <p className="text-sm text-ink-pencil">
             {appointment.phone} · {appointment.email}
           </p>
+          <AdminIdea id={appointment.id} description={appointment.idea_description ?? null} referencePath={appointment.reference_image_path ?? null} sketchPath={appointment.concept_sketch_path ?? null} />
           <div className="mt-2 flex flex-wrap gap-2">
             {appointment.status === "confirmed" && (
               <Button

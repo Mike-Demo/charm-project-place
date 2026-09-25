@@ -16,6 +16,7 @@ import {
   type Appointment,
 } from "@/lib/atelier";
 import { fetchUnavailableSlots, rescheduleBooking } from "@/lib/atelier-service";
+import { PassIdea } from "@/components/IdeaGallery";
 import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
 
 const MAX_RESCHEDULES = 3;
@@ -107,6 +108,8 @@ export function ConfirmedPass({ booking, token, onReset, onRescheduled }: Confir
           </Button>
         )}
       </div>
+
+      {token && <PassIdea token={token} />}
 
       {token && !canReschedule && (
         <p className="mt-2 text-sm text-ink-pencil">
