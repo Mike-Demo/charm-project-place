@@ -12,7 +12,7 @@
 The $1 goes to your payment account, not straight to A Thousand Pansies. You would pass the money on to them yourself, for example in one monthly transfer. The checkout and receipt will say "$1 booking donation, passed on to A Thousand Pansies" so clients know how it works. Payment providers also watch for "donation" wording, so the charge will be set up as a $1 booking fee that you pass on.
 
 ## Steps
-1. Run the payment eligibility check and pick one provider (Stripe or Paddle), then confirm the choice with you before turning it on. Payments need a Pro plan. A test mode is set up right away so you can try it with test cards and no real money. Taking real payments later needs a quick account verification.
+1. Run the payment eligibility check and pick one provider (Stripe or Paddle), then confirm the choice with you before turning it on. Only the test flow is set up for now, with no live payments. Payments need a Pro plan. A test mode is set up right away so you can try it with test cards and no real money. Taking real payments later needs a quick account verification.
 2. Create one product: "Atelier slot lock – $1 donation to A Thousand Pansies" at $1.00, charged once.
 3. Change how bookings are saved: a booking starts as "pending payment" and holds its time for 15 minutes. It becomes "confirmed" only after the payment provider confirms the payment.
 4. Add the in-page checkout to the review step, with success, cancel and expired messages written in the same sketchbook style.
