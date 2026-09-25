@@ -25,8 +25,8 @@ export interface BookingInput {
   pronouns: string;
 }
 
-export async function bookAppointment(input: BookingInput): Promise<string> {
-  const { data, error } = await supabase.rpc("book_appointment", {
+export async function holdAppointment(input: BookingInput): Promise<string> {
+  const { data, error } = await supabase.rpc("create_pending_appointment", {
     p_name: input.name,
     p_phone: input.phone,
     p_email: input.email,
@@ -36,6 +36,17 @@ export async function bookAppointment(input: BookingInput): Promise<string> {
   });
   if (error) throw new Error(error.message);
   return data as string;
+}
+
+export async function releaseAppointment(id: string): Promise<void> {
+  const { error } = await supabase.rpc("release_pending_appointment", { p_id: id });
+  if (error) throw new Error(error.message);
+}
+
+export async function getBookingStatus(id: string): Promise<string | null> {
+  const { data, error } = await supabase.rpc("get_booking_status", { p_id: id });
+  if (error) throw new Error(error.message);
+  return (data as string | null) ?? null;
 }
 
 export async function fetchAppointments(from: Date, to: Date): Promise<Appointment[]> {

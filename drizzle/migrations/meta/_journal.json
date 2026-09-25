@@ -15,6 +15,20 @@
       "when": 1790353335301,
       "tag": "0001_add_pronouns_to_appointments",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790359624236,
+      "tag": "0002_slot_hold_payments",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790359717276,
+      "tag": "0003_revoke_unpaid_booking",
+      "breakpoints": true
     }
   ]
 }

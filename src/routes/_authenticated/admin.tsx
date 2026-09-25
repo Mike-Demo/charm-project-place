@@ -215,7 +215,7 @@ function AdminPage() {
             {Array.from({ length: 14 }, (_, index) => addDays(today, index)).map((date) => {
               const key = toDateKey(date);
               const count = appointments.filter(
-                (item) => item.booking_date === key && item.status !== "cancelled",
+                (item) => item.booking_date === key && item.status !== "cancelled" && item.status !== "expired",
               ).length;
               const closed = blocked.some((item) => item.blocked_date === key && item.time_slot === null);
               const active = key === focusKey;
@@ -266,7 +266,7 @@ function AdminPage() {
           <div className="space-y-2">
             {TIME_SLOTS.map((slot) => {
               const appointment = dayAppointments.find(
-                (item) => item.time_slot === slot && item.status !== "cancelled",
+                (item) => item.time_slot === slot && item.status !== "cancelled" && item.status !== "expired",
               );
               const block = dayBlocks.find((item) => item.time_slot === slot);
               return (
@@ -372,7 +372,7 @@ function SlotRow({
           </div>
           {appointment.status !== "confirmed" && (
             <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-ink-pencil/70">
-              {appointment.status}
+              {appointment.status === "pending" ? "Awaiting payment" : appointment.status}
             </p>
           )}
         </div>

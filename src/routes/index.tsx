@@ -16,7 +16,8 @@ import {
   startOfDay,
   toDateKey,
 } from "@/lib/atelier";
-import { bookAppointment, fetchUnavailableSlots } from "@/lib/atelier-service";
+import { fetchUnavailableSlots, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
+import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
 import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startLineBoil } from "@/lib/motion";
 import { NEEDLE_MARK_D } from "@/lib/logo-marks";
 
@@ -147,13 +148,68 @@ function TattooAtelier() {
     [availabilityQuery.data],
   );
 
+  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming">("idle");
+  const heldIdRef = useRef<string | null>(null);
+  const paidRef = useRef(false);
+
+  const waitForConfirmation = async (id: string) => {
+    setPaymentState("confirming");
+    for (let attempt = 0; attempt < 30; attempt += 1) {
+      const status = await getBookingStatus(id).catch(() => null);
+      if (status === "confirmed") {
+        setPaymentState("idle");
+        heldIdRef.current = null;
+        showConfirmation();
+        void availabilityQuery.refetch();
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
+    setPaymentState("idle");
+    setBookingError("Payment received, but confirmation is taking a while. We'll email you once it's locked in.");
+  };
+
+  useEffect(() => {
+    setPaddleEventListener((event) => {
+      const id = heldIdRef.current;
+      if (!id) return;
+      if (event.name === "checkout.completed") {
+        paidRef.current = true;
+        void waitForConfirmation(id);
+      } else if (event.name === "checkout.closed" && !paidRef.current) {
+        heldIdRef.current = null;
+        setPaymentState("idle");
+        setBookingError("Checkout closed — your slot hold was released. Try again whenever you're ready.");
+        void releaseAppointment(id).finally(() => void availabilityQuery.refetch());
+      }
+    });
+    const paidId = new URLSearchParams(window.location.search).get("paid");
+    if (paidId) {
+      window.history.replaceState(null, "", window.location.pathname);
+      void waitForConfirmation(paidId);
+    }
+    return () => setPaddleEventListener(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const bookingMutation = useMutation({
-    mutationFn: bookAppointment,
-    onSuccess: () => {
-      showConfirmation();
+    mutationFn: async (input: BookingInput) => {
+      const id = await holdAppointment(input);
+      heldIdRef.current = id;
+      paidRef.current = false;
+      try {
+        await openSlotCheckout({ appointmentId: id, email: input.email });
+      } catch (error) {
+        heldIdRef.current = null;
+        await releaseAppointment(id).catch(() => undefined);
+        throw error;
+      }
+    },
+    onSuccess: () => setPaymentState("checkout"),
+    onError: (error: Error) => {
+      setBookingError(error.message);
       void availabilityQuery.refetch();
     },
-    onError: (error: Error) => setBookingError(error.message),
   });
 
   const firstOpenDate = (from: Date): Date => {
@@ -641,6 +697,7 @@ function TattooAtelier() {
                 <ReviewRow label="Linework & Stencil:" value={email.trim() || "—"} last />
               </div>
               {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
+              <p className="mt-3 text-sm text-ink-dim">Test mode: use card 4242 4242 4242 4242, any future date, CVC 123. Your slot is held for 15 minutes while you pay.</p>
               {bookingError !== null && <p className="mt-3 text-pencil-red">{bookingError}</p>}
             </section>
           )}
@@ -651,7 +708,7 @@ function TattooAtelier() {
             <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
           </Button>
           <Button disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
-            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Locking in…" : "Lock In Appointment ✦") : "Continue →"}<span className="text-cyan-draft">✦</span>
+            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "confirming" ? "Confirming payment…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">

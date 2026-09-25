@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import {
   Outlet,
   Link,
@@ -107,6 +108,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <PaymentTestModeBanner />
         {children}
         <Scripts />
       </body>

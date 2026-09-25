@@ -20,8 +20,11 @@ export type Database = {
           client_name: string
           created_at: string
           email: string
+          hold_expires_at: string | null
           id: string
           notes: string | null
+          paddle_transaction_id: string | null
+          payment_status: string
           phone: string
           pronouns: string | null
           status: string
@@ -32,8 +35,11 @@ export type Database = {
           client_name: string
           created_at?: string
           email: string
+          hold_expires_at?: string | null
           id?: string
           notes?: string | null
+          paddle_transaction_id?: string | null
+          payment_status?: string
           phone: string
           pronouns?: string | null
           status?: string
@@ -44,8 +50,11 @@ export type Database = {
           client_name?: string
           created_at?: string
           email?: string
+          hold_expires_at?: string | null
           id?: string
           notes?: string | null
+          paddle_transaction_id?: string | null
+          payment_status?: string
           phone?: string
           pronouns?: string | null
           status?: string
@@ -126,6 +135,18 @@ export type Database = {
             Returns: string
           }
       claim_admin: { Args: never; Returns: boolean }
+      create_pending_appointment: {
+        Args: {
+          p_date: string
+          p_email: string
+          p_name: string
+          p_phone: string
+          p_pronouns: string
+          p_time_slot: string
+        }
+        Returns: string
+      }
+      get_booking_status: { Args: { p_id: string }; Returns: string }
       get_unavailable_slots: {
         Args: { p_from: string; p_to: string }
         Returns: {
@@ -140,6 +161,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      release_pending_appointment: {
+        Args: { p_id: string }
+        Returns: undefined
       }
     }
     Enums: {
