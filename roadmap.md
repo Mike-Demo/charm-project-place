@@ -7,6 +7,6 @@
 
 # Studio location
 
-- [ ] Add the address and appointment-only hours to the footer and booking page.
-- [ ] Add the address and hours to the confirmation email.
-- [ ] Verify desktop/mobile booking, email rendering, and build status.
+- [x] Add the address and appointment-only hours to the footer and booking page.
+- [x] Add the address and hours to the confirmation email.
+- [x] Verify desktop/mobile booking, email rendering, and build status.
