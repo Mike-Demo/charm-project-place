@@ -286,7 +286,12 @@ function AdminPage() {
               <Button variant="outline" disabled={bookingPageQuery.isFetching || (page + 1) * PAGE_SIZE >= (bookingPageQuery.data?.total ?? 0)} onClick={() => setPage((value) => value + 1)}>Next</Button>
             </div>
           </div>
-          <AdminBookingDetails booking={selectedBookingQuery.data ?? null} loading={selectedBookingQuery.isPending && selectedId !== null} error={selectedBookingQuery.isError} busy={statusMutation.isPending} onStatus={(id, nextStatus) => statusMutation.mutate({ id, status: nextStatus })} onClose={() => setSelectedId(null)} />
+          <Sheet open={selectedId !== null} onOpenChange={(open) => { if (!open) setSelectedId(null); }}>
+            <SheetContent side="right" className="sketchbook-canvas w-full overflow-y-auto border-l border-ink-dim/40 font-hand text-foreground sm:max-w-xl">
+              <SheetHeader className="sr-only"><SheetTitle>Session file / details</SheetTitle></SheetHeader>
+              <AdminBookingDetails hideClose booking={selectedBookingQuery.data ?? null} loading={selectedBookingQuery.isPending && selectedId !== null} error={selectedBookingQuery.isError} busy={statusMutation.isPending} onStatus={(id, nextStatus) => statusMutation.mutate({ id, status: nextStatus })} onClose={() => setSelectedId(null)} />
+            </SheetContent>
+          </Sheet>
         </div>
       </section>
 
