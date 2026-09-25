@@ -77,15 +77,12 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Fresh Ink: Book your session" },
-      { name: "description", content: "Tattoo Atelier: appointment-only custom linework studio in Saint Paul. Book a session in a few steps — pick a day, lock your slot, and get a session pass." },
       { name: "author", content: "Tattoo Atelier" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
