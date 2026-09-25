@@ -1,17 +1,63 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Button } from "@/components/ui/button";
 
 const LOGO_URL =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDAu9QNrCXk_urBKujcVbca3Cdj5VngkuhS3swjUdPbM1JlupcNQGPsZkSNR7DfCkVyu99WbLOQavsgFgHD17SAnEWckD09sGYDcglwhx1Nd6WNiOU4tgnqGb_QDUkDu9iPNccPYyuclLbeJNMw8Y2JOy1oYD7WI0cDxpGCEkTBvCdcbgjZP4mHpDvlt83-IvObvv38xwfPuJe7mUFrKd366VgSRKJhNU7cUmwMeEs7bM_mlsEzeIvawllyngvsubZ4cjQ";
 
 const stepMeta = [
-  { badge: "Step 01 // 04", hint: "Your name", title: "Step 1: Name" },
-  { badge: "Step 02 // 04", hint: "Date & time", title: "Step 2: Date & Time" },
-  { badge: "Step 03 // 04", hint: "Phone verification", title: "Step 3: Phone" },
-  { badge: "Step 04 // 04", hint: "Digital stencil", title: "Step 4: Email" },
+  { badge: "Step 01 // 05", hint: "Your name", title: "Step 1: Name" },
+  { badge: "Step 02 // 05", hint: "Preferred day", title: "Step 2: Day" },
+  { badge: "Step 03 // 05", hint: "Date & time", title: "Step 3: Date & Time" },
+  { badge: "Step 04 // 05", hint: "Phone verification", title: "Step 4: Phone" },
+  { badge: "Step 05 // 05", hint: "Digital stencil", title: "Step 5: Email" },
   { badge: "Review // Final", hint: "Ready to ink", title: "Review & Lock In" },
 ] as const;
+
+const TOTAL_STEPS = stepMeta.length;
+
+const TIME_SLOTS = ["10:00 AM", "11:30 AM", "1:00 PM", "2:30 PM", "4:00 PM", "6:30 PM"] as const;
+
+type DayChoice = "today" | "tomorrow" | "weekend" | "other";
+
+const DAY_OPTIONS: ReadonlyArray<{ id: DayChoice; label: string; note: string; mark: string }> = [
+  { id: "today", label: "Today", note: "If a station is still open", mark: "✦" },
+  { id: "tomorrow", label: "Tomorrow", note: "Fresh sheet, fresh ink", mark: "✧" },
+  { id: "weekend", label: "This weekend", note: "Saturday or Sunday", mark: "✸" },
+  { id: "other", label: "Another day", note: "Pick it on the calendar", mark: "✎" },
+];
+
+const WEEKDAY_MARKS = ["S", "M", "T", "W", "T", "F", "S"] as const;
+
+function startOfDay(value: Date): Date {
+  const next = new Date(value);
+  next.setHours(0, 0, 0, 0);
+  return next;
+}
+
+function addDays(value: Date, amount: number): Date {
+  const next = startOfDay(value);
+  next.setDate(next.getDate() + amount);
+  return next;
+}
+
+function sameDay(a: Date, b: Date): boolean {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+function formatLongDate(value: Date): string {
+  return value.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+}
+
+function resolveChoiceDate(choice: DayChoice, today: Date): Date {
+  if (choice === "today") return today;
+  if (choice === "tomorrow") return addDays(today, 1);
+  if (choice === "weekend") {
+    const offset = (6 - today.getDay() + 7) % 7;
+    return addDays(today, offset === 0 ? 7 : offset);
+  }
+  return addDays(today, 2);
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,12 +82,16 @@ function WaveUnderline() {
 }
 
 function TattooAtelier() {
+  const today = useMemo(() => startOfDay(new Date()), []);
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [date, setDate] = useState("Friday, Oct 25 @ 11:30 AM");
+  const [dayChoice, setDayChoice] = useState<DayChoice | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [monthCursor, setMonthCursor] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [toast, setToast] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -49,17 +99,32 @@ function TattooAtelier() {
   const nameValid = name.trim().length >= 2;
   const phoneValid = phone.replace(/\D/g, "").length >= 10;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
-  const allValid = nameValid && phoneValid && emailValid;
+  const scheduleValid = selectedDate !== null && selectedTime !== null;
+  const allValid = nameValid && scheduleValid && phoneValid && emailValid;
   const currentMeta = stepMeta[step - 1] ?? stepMeta[0];
+
+  const sessionLabel = selectedDate && selectedTime ? `${formatLongDate(selectedDate)} @ ${selectedTime}` : "Not picked yet";
 
   useEffect(() => () => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
   }, []);
 
   const goToStep = (next: number) => {
-    if (next < 1 || next > 5 || next === step) return;
+    if (next < 1 || next > TOTAL_STEPS || next === step) return;
     setDirection(next > step ? "forward" : "backward");
     setStep(next);
+  };
+
+  const pickDayChoice = (choice: DayChoice) => {
+    setDayChoice(choice);
+    const target = resolveChoiceDate(choice, today);
+    setMonthCursor(new Date(target.getFullYear(), target.getMonth(), 1));
+    if (choice === "other") {
+      setSelectedDate(null);
+    } else {
+      setSelectedDate(target);
+    }
+    setSelectedTime(null);
   };
 
   const showConfirmation = () => {
@@ -70,9 +135,11 @@ function TattooAtelier() {
 
   const continueFlow = () => {
     if (step === 1 && !nameValid) return;
-    if (step === 3 && !phoneValid) return;
-    if (step === 4 && !emailValid) return;
-    if (step === 5) {
+    if (step === 2 && dayChoice === null) return;
+    if (step === 3 && !scheduleValid) return;
+    if (step === 4 && !phoneValid) return;
+    if (step === 5 && !emailValid) return;
+    if (step === TOTAL_STEPS) {
       if (allValid) showConfirmation();
       return;
     }
@@ -83,8 +150,21 @@ function TattooAtelier() {
     if (event.key === "Enter") continueFlow();
   };
 
+  const currentValid =
+    step === 1 ? nameValid : step === 2 ? dayChoice !== null : step === 3 ? scheduleValid : step === 4 ? phoneValid : step === 5 ? emailValid : allValid;
 
-  const currentValid = step === 1 ? nameValid : step === 3 ? phoneValid : step === 4 ? emailValid : step === 5 ? allValid : true;
+  const calendarCells = useMemo(() => {
+    const firstOfMonth = new Date(monthCursor.getFullYear(), monthCursor.getMonth(), 1);
+    const daysInMonth = new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 0).getDate();
+    const leading = firstOfMonth.getDay();
+    const cells: Array<Date | null> = Array.from({ length: leading }, () => null);
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      cells.push(new Date(monthCursor.getFullYear(), monthCursor.getMonth(), day));
+    }
+    return cells;
+  }, [monthCursor]);
+
+  const canGoPrevMonth = monthCursor > new Date(today.getFullYear(), today.getMonth(), 1);
 
   return (
     <div className="sketchbook-canvas relative flex min-h-screen flex-col overflow-x-hidden px-5 py-5 font-hand text-foreground selection:bg-paper-line sm:px-10 sm:py-10">
@@ -97,7 +177,7 @@ function TattooAtelier() {
       <header className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
         <div className="group flex flex-col items-center">
           <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-16 w-16 opacity-95 mix-blend-multiply" src={LOGO_URL} />
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink & Needle</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink &amp; Needle</span>
         </div>
       </header>
 
@@ -111,7 +191,7 @@ function TattooAtelier() {
             {stepMeta.map((item, index) => (
               <Button key={item.title} variant="ghost" size="icon" onClick={() => goToStep(index + 1)} title={item.title} aria-label={item.title}
                 className={`h-7 w-7 rounded-full p-0 font-mono text-xs shadow-none ${step === index + 1 ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/40 hover:bg-foreground hover:text-background" : "bg-paper-deep/80 text-ink-pencil hover:bg-paper-line hover:text-foreground"}`}>
-                {index === 4 ? "✦" : String(index + 1).padStart(2, "0")}
+                {index === TOTAL_STEPS - 1 ? "✦" : String(index + 1).padStart(2, "0")}
               </Button>
             ))}
           </div>
@@ -120,7 +200,7 @@ function TattooAtelier() {
         <div className={`step-pane min-h-[300px] ${direction === "forward" ? "paper-in-forward" : "paper-in-backward"}`} key={step}>
           {step === 1 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 04</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 05</p>
               <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">What should we call you?</h2>
                 <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : name.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -136,21 +216,100 @@ function TattooAtelier() {
 
           {step === 2 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 04</p>
-              <h2 className="mb-6 text-3xl font-normal leading-snug sm:text-4xl">When do you want to book?</h2>
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-4 py-2 shadow-xs">
-                  <span className="text-cyan-draft">✦</span><strong className="text-xl sm:text-3xl">{date}</strong>
-                  <Button variant="link" className="h-auto p-0 font-mono text-xs text-cyan-draft sm:text-sm" onClick={() => setDate(date.includes("Oct 25") ? "Saturday, Oct 26 @ 2:00 PM" : "Friday, Oct 25 @ 11:30 AM")}>(change)</Button>
-                </div>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 05</p>
+              <h2 className="mb-6 text-3xl font-normal leading-snug sm:text-4xl">What day do you want?</h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {DAY_OPTIONS.map((option) => {
+                  const active = dayChoice === option.id;
+                  const preview = option.id === "other" ? "You choose" : formatLongDate(resolveChoiceDate(option.id, today));
+                  return (
+                    <button key={option.id} type="button" onClick={() => pickDayChoice(option.id)} aria-pressed={active}
+                      className={`group rounded-2xl border px-4 py-3 text-left transition-all ${active ? "border-foreground bg-paper-deep/90 shadow-[3px_3px_0_0_var(--color-cyan-draft,#22b8cf)]" : "border-ink-dim/30 bg-paper-deep/50 hover:-translate-y-0.5 hover:border-foreground/60"}`}>
+                      <span className="flex items-baseline gap-2">
+                        <span className={active ? "text-cyan-draft" : "text-ink-dim"}>{option.mark}</span>
+                        <strong className="text-xl sm:text-2xl">{option.label}</strong>
+                      </span>
+                      <span className="mt-1 block font-mono text-[11px] uppercase tracking-wider text-ink-pencil/70">{preview}</span>
+                      <span className="mt-0.5 block text-sm text-ink-pencil">{option.note}</span>
+                    </button>
+                  );
+                })}
               </div>
-              <p className="mt-4 flex items-center gap-1.5 text-sm text-ink-pencil"><span className="h-2 w-2 rounded-full bg-pencil-green" />90 min custom linework session at Station 03 • Studio Downtown</p>
+              <p className="mt-4 flex items-center gap-1.5 text-sm text-ink-pencil"><span className="h-2 w-2 rounded-full bg-pencil-green" />You&apos;ll confirm the exact date and time next.</p>
             </section>
           )}
 
           {step === 3 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 04</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 05</p>
+              <h2 className="mb-5 text-3xl font-normal leading-snug sm:text-4xl">Pick your exact date &amp; time</h2>
+
+              <div className="rounded-2xl border border-ink-dim/30 bg-paper-deep/50 p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <Button variant="ghost" size="icon" disabled={!canGoPrevMonth} aria-label="Previous month"
+                    onClick={() => setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() - 1, 1))}
+                    className="h-8 w-8 rounded-full border border-ink-dim/30 text-ink-pencil hover:bg-paper-line">←</Button>
+                  <strong className="font-mono text-sm uppercase tracking-[0.2em] text-foreground">
+                    {monthCursor.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                  </strong>
+                  <Button variant="ghost" size="icon" aria-label="Next month"
+                    onClick={() => setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1))}
+                    className="h-8 w-8 rounded-full border border-ink-dim/30 text-ink-pencil hover:bg-paper-line">→</Button>
+                </div>
+
+                <div className="mb-1 grid grid-cols-7 gap-1 text-center font-mono text-[10px] uppercase tracking-widest text-ink-pencil/60">
+                  {WEEKDAY_MARKS.map((markLabel, index) => <span key={`${markLabel}-${index}`}>{markLabel}</span>)}
+                </div>
+                <div className="grid grid-cols-7 gap-1">
+                  {calendarCells.map((cell, index) => {
+                    if (!cell) return <span key={`empty-${index}`} />;
+                    const past = cell < today;
+                    const active = selectedDate !== null && sameDay(cell, selectedDate);
+                    const isToday = sameDay(cell, today);
+                    return (
+                      <button key={cell.toISOString()} type="button" disabled={past}
+                        onClick={() => { setSelectedDate(cell); setSelectedTime(null); }}
+                        aria-label={formatLongDate(cell)} aria-pressed={active}
+                        className={`relative aspect-square rounded-full text-base transition-all sm:text-lg ${
+                          past ? "cursor-not-allowed text-ink-dim/40 line-through" :
+                          active ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/50" :
+                          "text-foreground hover:bg-paper-line"}`}>
+                        {cell.getDate()}
+                        {isToday && !active && <span aria-hidden="true" className="absolute inset-x-0 bottom-1 mx-auto h-1 w-1 rounded-full bg-cyan-draft" />}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-4 border-t border-dashed border-ink-dim/30 pt-3">
+                  <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-ink-pencil/70">Open studio slots</p>
+                  <div className="flex flex-wrap gap-2">
+                    {TIME_SLOTS.map((slot) => {
+                      const active = selectedTime === slot;
+                      return (
+                        <button key={slot} type="button" disabled={selectedDate === null} onClick={() => setSelectedTime(slot)} aria-pressed={active}
+                          className={`rounded-full border px-3 py-1.5 text-base transition-all ${
+                            selectedDate === null ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50" :
+                            active ? "border-foreground bg-foreground font-bold text-background" :
+                            "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                          {slot}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <p className="mt-4 flex items-center gap-1.5 text-sm text-ink-pencil">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-pencil-green" />
+                {scheduleValid ? `${sessionLabel} • 90 min custom linework at Station 03` : "Choose a day on the sheet, then a time slot."}
+              </p>
+            </section>
+          )}
+
+          {step === 4 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 05</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where can we text your reminder?</h2>
                 <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : phone.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -162,26 +321,26 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 4 && (
+          {step === 5 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 04</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 05 of 05</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
-                <h2 className="font-normal">Where should we send your stencil & guide?</h2>
+                <h2 className="font-normal">Where should we send your stencil &amp; guide?</h2>
                 <span className={`relative inline-block border-b-2 ${emailValid ? "border-pencil-green" : email.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
                   <input autoFocus aria-label="Email address" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setEmail(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. you@example.com" style={{ width: `${Math.max(21, email.length + 1)}ch` }} type="email" value={email} />
                   {!emailValid && email.trim() !== "" && <WaveUnderline />}
                 </span>
               </div>
-              {emailValid ? <ValidNote>Looks good! Stencil & prep guides will head to your inbox.</ValidNote> : email.trim() === "" ? <p className="mt-3 text-sm text-ink-pencil">We'll send your stencil and prep guide here.</p> : <ErrorNote icon="✉️" title={firstName ? `Almost there, ${firstName}! Don't forget the .com at the end.` : "Almost there! Don't forget the .com at the end."}>We need a valid domain so your high-res linework and aftercare guide won't bounce!</ErrorNote>}
+              {emailValid ? <ValidNote>Looks good! Stencil &amp; prep guides will head to your inbox.</ValidNote> : email.trim() === "" ? <p className="mt-3 text-sm text-ink-pencil">We&apos;ll send your stencil and prep guide here.</p> : <ErrorNote icon="✉️" title={firstName ? `Almost there, ${firstName}! Don't forget the .com at the end.` : "Almost there! Don't forget the .com at the end."}>We need a valid domain so your high-res linework and aftercare guide won&apos;t bounce!</ErrorNote>}
             </section>
           )}
 
-          {step === 5 && (
+          {step === 6 && (
             <section className="flex min-h-[280px] flex-col justify-center">
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Review // Final Protocol</p>
               <h2 className="mb-4 text-3xl font-normal leading-snug sm:text-4xl">Almost ready to ink{firstName ? `, ${firstName}` : ""} <span className="animate-pulse text-2xl">✨</span></h2>
               <div className="space-y-3 rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-4 text-lg">
-                <ReviewRow label="Session:" value={`${date} (Station 03)`} />
+                <ReviewRow label="Session:" value={scheduleValid ? `${sessionLabel} (Station 03)` : "—"} />
                 <ReviewRow label="Client:" value={name.trim() || "—"} />
                 <ReviewRow label="SMS Reminder:" value={phone.trim() || "—"} />
                 <ReviewRow label="Linework & Stencil:" value={email.trim() || "—"} last />
@@ -195,8 +354,8 @@ function TattooAtelier() {
           <Button variant="link" disabled={step === 1} onClick={() => goToStep(step - 1)} className="group h-auto p-0 font-hand text-lg text-ink-pencil hover:text-foreground">
             <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
           </Button>
-          <Button disabled={!currentValid} onClick={continueFlow} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === 5 ? "final-stamp" : ""}`}>
-            {step === 5 ? "Lock In Appointment ✦" : "Continue →"}<span className="text-cyan-draft">✦</span>
+          <Button disabled={!currentValid} onClick={continueFlow} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
+            {step === TOTAL_STEPS ? "Lock In Appointment ✦" : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
