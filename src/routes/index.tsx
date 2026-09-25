@@ -150,6 +150,7 @@ function TattooAtelier() {
         // Storage can be unavailable in private browsing; the entrance remains optional.
       }
     }
+  (window as unknown as { __entranceRan?: boolean }).__entranceRan = true;
     animateStudioDraftEntrance({
       linework: draftRef.current,
       paper: paperRef.current,
