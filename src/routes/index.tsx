@@ -697,6 +697,7 @@ function TattooAtelier() {
                 <ReviewRow label="Linework & Stencil:" value={email.trim() || "—"} last />
               </div>
               {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
+              <p className="mt-3 text-sm text-ink-dim">Test mode: use card 4242 4242 4242 4242, any future date, CVC 123. Your slot is held for 15 minutes while you pay.</p>
               {bookingError !== null && <p className="mt-3 text-pencil-red">{bookingError}</p>}
             </section>
           )}
@@ -707,7 +708,7 @@ function TattooAtelier() {
             <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
           </Button>
           <Button disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
-            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Locking in…" : "Lock In Appointment ✦") : "Continue →"}<span className="text-cyan-draft">✦</span>
+            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "confirming" ? "Confirming payment…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
