@@ -30,6 +30,22 @@ export function displayDate(value?: string): string {
   return new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" }).format(d);
 }
 
+export function SectionLabel({ children }: { children: ReactNode }) {
+  return <Text style={{ margin: "18px 0 6px", color: cyan, fontFamily: mono, fontSize: "11px", lineHeight: "16px", letterSpacing: "1px" }}>{children}</Text>;
+}
+
+export function Checklist({ items }: { items: string[] }) {
+  return (
+    <Text style={bodyText}>
+      {items.map((item, i) => (<span key={item}>{i > 0 ? <br /> : null}✎ {item}</span>))}
+    </Text>
+  );
+}
+
+export function SketchDivider() {
+  return <Text style={{ margin: "14px 0", textAlign: "center", color: "#aaa69a", fontFamily: mono, fontSize: "12px", lineHeight: "14px" }}>~ ~ ~ ✦ ~ ~ ~</Text>;
+}
+
 export function EmailButton({ href, children }: { href: string; children: ReactNode }) {
   return (
     <Button href={href} style={{ display: "inline-block", backgroundColor: ink, border: `1px solid ${ink}`, borderRadius: "3px", color: "#ffffff", fontFamily: hand, fontSize: "16px", lineHeight: "22px", padding: "13px 20px", textDecoration: "none", margin: "4px 8px 8px 0" }}>

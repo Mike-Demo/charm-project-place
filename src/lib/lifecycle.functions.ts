@@ -25,7 +25,7 @@ export const sendLifecycleEmail = createServerFn({ method: "POST" })
 
     const { data: row, error } = await context.supabase
       .from("appointments")
-      .select("id,client_name,email,booking_date,time_slot,access_token,status")
+      .select("id,client_name,email,booking_date,time_slot,access_token,status,idea_description")
       .eq("id", data.id)
       .maybeSingle();
     if (error || !row) throw new Error("Booking not found.");
@@ -36,16 +36,28 @@ export const sendLifecycleEmail = createServerFn({ method: "POST" })
     const passUrl = row.access_token ? `${origin}/pass/${row.access_token}` : undefined;
 
     const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
-    const result = await sendTemplateEmail(config.template, row.email, {
-      templateData: {
-        name: row.client_name.split(" ")[0],
-        date: row.booking_date,
-        time: row.time_slot,
-        passUrl,
-        confirmUrl: passUrl ? `${passUrl}/confirm` : undefined,
-      },
-      idempotencyKey: `${data.stage}-${row.id}`,
-    });
+    const { EmailAPIError } = await import("@lovable.dev/email-js");
+    let result: { sent: boolean };
+    try {
+      result = await sendTemplateEmail(config.template, row.email, {
+        templateData: {
+          name: row.client_name.split(" ")[0],
+          date: row.booking_date,
+          time: row.time_slot,
+          passUrl,
+          confirmUrl: passUrl ? `${passUrl}/confirm` : undefined,
+          idea: row.idea_description ?? undefined,
+        },
+        idempotencyKey: `${data.stage}-${row.id}-${Date.now()}`,
+      });
+    } catch (err) {
+      if (err instanceof EmailAPIError) {
+        if (err.code === "domain_not_verified") throw new Error("Not sent yet: the studio email domain is still being verified.");
+        if (err.code === "emails_disabled") throw new Error("Not sent: studio emails are turned off.");
+        if (err.status === 429) throw new Error(`Too many emails right now. Try again in ${err.retryAfterSeconds ?? 60} seconds.`);
+      }
+      throw new Error("Email could not be sent. Please try again.");
+    }
     if (!result.sent) return { sent: false, reason: "recipient_suppressed" };
 
     const at = new Date().toISOString();
