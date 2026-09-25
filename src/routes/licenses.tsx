@@ -138,6 +138,40 @@ const GROUPS: readonly LicenseGroup[] = [
   },
 ];
 
+interface TestLink {
+  readonly href: string;
+  readonly label: string;
+  readonly note: string;
+}
+
+const TEST_LINKS: readonly TestLink[] = [
+  {
+    href: "/?replay=1",
+    label: "/?replay=1",
+    note: "Replays the sketch loading animation and the studio-draft entrance, as many times as you like.",
+  },
+  {
+    href: "/?intro=1",
+    label: "/?intro=1",
+    note: "Same as above — an alias. “?sketch=1” works too, on any page address.",
+  },
+  {
+    href: "/licenses?replay=1",
+    label: "/licenses?replay=1",
+    note: "The same trick on this page, so you can see the entrance over any screen.",
+  },
+  {
+    href: "/auth",
+    label: "/auth",
+    note: "Studio ledger sign-in — the only way into the admin view.",
+  },
+  {
+    href: "/admin",
+    label: "/admin",
+    note: "Booking ledger and calendar. Locked until you sign in through the link above.",
+  },
+];
+
 export const Route = createFileRoute("/licenses")({
   staticData: { sitemap: true },
   head: () => ({
