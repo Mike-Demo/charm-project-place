@@ -434,7 +434,7 @@ function TattooAtelier() {
   const canGoPrevMonth = monthCursor > new Date(today.getFullYear(), today.getMonth(), 1);
 
   return (
-    <div className="sketchbook-canvas relative flex min-h-screen flex-col overflow-x-hidden px-5 py-2.5 font-hand text-foreground selection:bg-paper-line sm:px-10 sm:py-5">
+    <div className="sketchbook-canvas relative flex min-h-dvh flex-col overflow-x-hidden px-5 py-2.5 font-hand text-foreground selection:bg-paper-line sm:px-10 sm:py-5">
       <div aria-hidden="true" className="paper-fiber" />
       <div ref={draftRef} aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 text-ink-dim/50">
         <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1000 1000" preserveAspectRatio="none" fill="none" stroke="currentColor" strokeWidth="1.5" vectorEffect="non-scaling-stroke">
@@ -453,6 +453,7 @@ function TattooAtelier() {
       </header>
 
       <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl pb-8 sm:pb-12">
+        <h1 className="sr-only">Book a tattoo session</h1>
         {confirmed ? <ConfirmedPass booking={confirmed} token={passToken} onReset={resetFlow} onRescheduled={() => { if (passToken) void fetchBookingByToken(passToken).then((b) => b && setConfirmed(b)); }} /> : paymentState === "confirming" || paymentState === "failed" ? (
           <div className="flex flex-col items-center">
             <ConfirmingSketch note={paymentState === "failed" ? bookingError ?? undefined : undefined} />
@@ -471,10 +472,10 @@ function TattooAtelier() {
             <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
             <span className="hidden font-hand text-sm text-ink-pencil sm:inline">• {currentMeta.hint}</span>
           </div>
-          <div ref={pillsRef} className="flex w-full shrink-0 items-center justify-end gap-1 sm:w-auto sm:gap-1.5" aria-label="Appointment steps">
+          <div ref={pillsRef} className="flex w-full shrink-0 flex-wrap items-center justify-end gap-1 sm:w-auto sm:gap-1.5" aria-label="Appointment steps">
             {stepMeta.map((item, index) => (
               <Button key={item.title} variant="ghost" size="icon" onClick={() => goToStep(index + 1)} title={item.title} aria-label={item.title}
-                className={`h-7 w-7 rounded-full p-0 font-mono text-xs shadow-none ${step === index + 1 ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/40 hover:bg-foreground hover:text-background" : "bg-paper-deep/80 text-ink-pencil hover:bg-paper-line hover:text-foreground"}`}>
+                className={`h-11 w-11 min-w-11 shrink-0 sm:h-7 sm:w-7 sm:min-w-7 rounded-full p-0 font-mono text-xs shadow-none ${step === index + 1 ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/40 hover:bg-foreground hover:text-background" : "bg-paper-deep/80 text-ink-pencil hover:bg-paper-line hover:text-foreground"}`}>
                 {index === TOTAL_STEPS - 1 ? "✦" : String(index + 1).padStart(2, "0")}
               </Button>
             ))}
@@ -492,7 +493,7 @@ function TattooAtelier() {
                   <BoilRule tone={nameValid ? "text-cyan-draft/60" : "text-ink-dim/50"} />
                 </span>
               </div>
-              <p className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : name.trim() ? "border-pencil-red/25 bg-invalid-soft text-pencil-red" : "border-ink-dim/30 bg-paper-deep/60 text-ink-pencil"}`}>
+              <p aria-live="polite" className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : name.trim() ? "border-pencil-red/25 bg-invalid-soft text-pencil-red" : "border-ink-dim/30 bg-paper-deep/60 text-ink-pencil"}`}>
                 {nameValid ? (hasFullName ? `(Looking great, ${firstName}! Full name locked in ✍️)` : `(Just "${firstName}"? Cool, I like it. ✨)`) : name.trim() ? "(let us know who to ink for ✏️)" : "(your name goes here)"}
               </p>
               <p className="mt-3 text-xs text-ink-pencil sm:text-sm">First &amp; last name is preferred for studio check-in, but whatever you go by is fine.</p>
@@ -573,13 +574,13 @@ function TattooAtelier() {
                 <div className="mb-3 flex items-center justify-between">
                   <Button variant="ghost" size="icon" disabled={!canGoPrevMonth} aria-label="Previous month"
                     onClick={() => setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() - 1, 1))}
-                    className="h-8 w-8 rounded-full border border-ink-dim/30 text-ink-pencil hover:bg-paper-line">←</Button>
+                    className="h-11 w-11 rounded-full border border-ink-dim/30 text-ink-pencil hover:bg-paper-line">←</Button>
                   <strong className="font-mono text-sm uppercase tracking-[0.2em] text-foreground">
                     {monthCursor.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
                   </strong>
                   <Button variant="ghost" size="icon" aria-label="Next month"
                     onClick={() => setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1))}
-                    className="h-8 w-8 rounded-full border border-ink-dim/30 text-ink-pencil hover:bg-paper-line">→</Button>
+                    className="h-11 w-11 rounded-full border border-ink-dim/30 text-ink-pencil hover:bg-paper-line">→</Button>
                 </div>
 
                 <div className="mb-1 grid grid-cols-7 gap-1 text-center font-mono text-[10px] uppercase tracking-widest text-ink-pencil/60">
@@ -717,7 +718,7 @@ function TattooAtelier() {
               </div>
               {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
               <p className="mt-3 text-sm text-ink-dim">Test mode: use card 4242 4242 4242 4242, any future date, CVC 123. Your slot is held for 15 minutes while you pay.</p>
-              {bookingError !== null && <p className="mt-3 text-pencil-red">{bookingError}</p>}
+              {bookingError !== null && <p role="alert" className="mt-3 text-pencil-red">{bookingError}</p>}
             </section>
           )}
         </div>
@@ -731,7 +732,7 @@ function TattooAtelier() {
           </Button>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />$1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies</a> locks in your slot</span>
+          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />$1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies<span className="sr-only"> (opens in a new tab)</span></a> locks in your slot</span>
           <span>Free rescheduling up to 24h prior</span>
         </div>
         </>
@@ -746,7 +747,7 @@ function ValidNote({ children }: { children: string }) {
 }
 
 function ErrorNote({ icon, title, children }: { icon: string; title: string; children: string }) {
-  return <div className="mt-3 flex max-w-xl items-start gap-2"><span className="mt-0.5 shrink-0 text-lg">{icon}</span><div className="text-base leading-snug text-pencil-red"><strong>{title}</strong><span className="mt-0.5 block text-xs text-ink-pencil sm:text-sm">{children}</span></div></div>;
+  return <div role="status" aria-live="polite" className="mt-3 flex max-w-xl items-start gap-2"><span className="mt-0.5 shrink-0 text-lg">{icon}</span><div className="text-base leading-snug text-pencil-red"><strong>{title}</strong><span className="mt-0.5 block text-xs text-ink-pencil sm:text-sm">{children}</span></div></div>;
 }
 
 function ReviewRow({ label, value, last = false }: { label: string; value: ReactNode; last?: boolean }) {

@@ -24,7 +24,7 @@ function PassPage() {
   const query = useQuery({ queryKey: ["pass", token], queryFn: () => fetchBookingByToken(token) });
 
   return (
-    <div className="min-h-screen px-4 py-5 sm:px-8">
+    <div className="min-h-dvh px-4 py-5 sm:px-8">
       <main className="paper-sheet relative mx-auto max-w-3xl rounded-2xl p-6 sm:p-10">
         {query.isPending ? (
           <p className="font-hand text-xl text-ink-pencil">Pulling your pass from the drawer…</p>
