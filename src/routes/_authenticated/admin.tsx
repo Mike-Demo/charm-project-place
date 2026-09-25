@@ -191,9 +191,7 @@ function AdminPage() {
               If you are the studio owner and nobody has claimed the ledger yet, claim it now.
             </p>
           </div>
-          <ReminderRunStatus />
-
-      {actionError !== null && <p className="mt-3 text-pencil-red">{actionError}</p>}
+          {actionError !== null && <p className="mt-3 text-pencil-red">{actionError}</p>}
           <div className="mt-6 flex flex-wrap gap-3">
             <Button
               disabled={claimMutation.isPending}
@@ -241,6 +239,8 @@ function AdminPage() {
           </Button>
         </div>
       </div>
+
+      <ReminderRunStatus />
 
       {actionError !== null && <p className="mt-4 text-pencil-red">{actionError}</p>}
 
