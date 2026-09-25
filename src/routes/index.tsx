@@ -83,17 +83,6 @@ function TattooAtelier() {
     if (event.key === "Enter") continueFlow();
   };
 
-  const toggleValid = () => {
-    if (allValid) {
-      setPhone("555-019");
-      setEmail("gail@example");
-      setStep(3);
-      return;
-    }
-    setName(nameValid ? name : "Gail");
-    setPhone("+1 (555) 019-2834");
-    setEmail("gail@example.com");
-  };
 
   const currentValid = step === 1 ? nameValid : step === 3 ? phoneValid : step === 4 ? emailValid : step === 5 ? allValid : true;
 
@@ -216,12 +205,11 @@ function TattooAtelier() {
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
           <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />No deposit charged today</span>
-          <span>Pay in atelier via Card or Cash</span><span>Free rescheduling up to 24h prior</span>
+          <span>Free rescheduling up to 24h prior</span>
         </div>
       </main>
 
       <footer className="relative z-10 mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-3 border-t border-ink-dim/20 pb-2 pt-4 text-xs text-ink-pencil">
-        <div className="flex flex-wrap items-center gap-2"><span>Need to test the valid state?</span><Button variant="ghost" onClick={toggleValid} className="h-auto rounded-full bg-cyan-soft px-2.5 py-0.5 font-hand font-bold text-cyan-draft hover:bg-cyan-soft/70">⚡ Toggle Auto-Fix / Valid State</Button></div>
         <span className="font-mono text-[11px] uppercase tracking-wider text-ink-dim">Tattoo Atelier // Novo // P. 02</span>
       </footer>
 
