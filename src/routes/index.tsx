@@ -747,7 +747,7 @@ function ErrorNote({ icon, title, children }: { icon: string; title: string; chi
   return <div className="mt-3 flex max-w-xl items-start gap-2"><span className="mt-0.5 shrink-0 text-lg">{icon}</span><div className="text-base leading-snug text-pencil-red"><strong>{title}</strong><span className="mt-0.5 block text-xs text-ink-pencil sm:text-sm">{children}</span></div></div>;
 }
 
-function ReviewRow({ label, value, last = false }: { label: string; value: string; last?: boolean }) {
+function ReviewRow({ label, value, last = false }: { label: string; value: ReactNode; last?: boolean }) {
   return <div data-review-row="" className={`flex flex-col justify-between gap-1 pb-2 sm:flex-row sm:items-center ${last ? "" : "border-b border-ink-dim/20"}`}><span className="shrink-0 font-mono text-sm text-ink-pencil">{label}</span><strong className="break-words text-left sm:text-right">{value}</strong></div>;
 }
 
