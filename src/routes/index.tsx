@@ -382,7 +382,7 @@ function TattooAtelier() {
 
           {step === 3 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 06</p>
               <h2 className="mb-5 text-3xl font-normal leading-snug sm:text-4xl">Pick your exact date &amp; time</h2>
 
               <div className="rounded-2xl border border-ink-dim/30 bg-paper-deep/50 p-4">
@@ -456,9 +456,9 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 4 && (
+          {step === 5 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 04 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 05 of 06</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where can we text your reminder?</h2>
                 <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : phone.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -470,9 +470,9 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 5 && (
+          {step === 6 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 05 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 06 of 06</p>
               <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">Where should we send your stencil &amp; guide?</h2>
                 <span className={`relative inline-block border-b-2 ${emailValid ? "border-pencil-green" : email.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -484,7 +484,7 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 6 && (
+          {step === TOTAL_STEPS && (
             <section className="flex min-h-[280px] flex-col justify-center">
               <p className="mb-2 font-mono text-sm text-ink-pencil/60">Review // Final Protocol</p>
               <h2 className="mb-4 text-3xl font-normal leading-snug sm:text-4xl">Almost ready to ink{firstName ? `, ${firstName}` : ""} <span className="animate-pulse text-2xl">✨</span></h2>
