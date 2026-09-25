@@ -19,17 +19,21 @@ export type Database = {
           access_token: string | null
           booking_date: string
           client_name: string
+          concept_sketch_path: string | null
           created_at: string
           email: string
           hold_expires_at: string | null
           id: string
+          idea_description: string | null
           notes: string | null
           paddle_transaction_id: string | null
           payment_status: string
           phone: string
           pronouns: string | null
+          reference_image_path: string | null
           reschedule_count: number
           rescheduled_at: string | null
+          sketch_attempts: number
           status: string
           time_slot: string
         }
@@ -37,17 +41,21 @@ export type Database = {
           access_token?: string | null
           booking_date: string
           client_name: string
+          concept_sketch_path?: string | null
           created_at?: string
           email: string
           hold_expires_at?: string | null
           id?: string
+          idea_description?: string | null
           notes?: string | null
           paddle_transaction_id?: string | null
           payment_status?: string
           phone: string
           pronouns?: string | null
+          reference_image_path?: string | null
           reschedule_count?: number
           rescheduled_at?: string | null
+          sketch_attempts?: number
           status?: string
           time_slot: string
         }
@@ -55,17 +63,21 @@ export type Database = {
           access_token?: string | null
           booking_date?: string
           client_name?: string
+          concept_sketch_path?: string | null
           created_at?: string
           email?: string
           hold_expires_at?: string | null
           id?: string
+          idea_description?: string | null
           notes?: string | null
           paddle_transaction_id?: string | null
           payment_status?: string
           phone?: string
           pronouns?: string | null
+          reference_image_path?: string | null
           reschedule_count?: number
           rescheduled_at?: string | null
+          sketch_attempts?: number
           status?: string
           time_slot?: string
         }
