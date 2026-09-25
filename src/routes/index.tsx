@@ -157,9 +157,14 @@ function TattooAtelier() {
     for (let attempt = 0; attempt < 30; attempt += 1) {
       const status = await getBookingStatus(id).catch(() => null);
       if (status === "confirmed") {
+        const booking = await fetchConfirmedBooking(id).catch(() => null);
         setPaymentState("idle");
         heldIdRef.current = null;
-        showConfirmation();
+        if (booking) {
+          setConfirmed(booking);
+        } else {
+          setBookingError("Payment received, but we couldn't load your confirmation pass. We'll email you the details.");
+        }
         void availabilityQuery.refetch();
         return;
       }
