@@ -348,7 +348,7 @@ function TattooAtelier() {
     setConfirmed(null);
     setPassToken(null);
     setPaymentState("idle");
-
+    setIdea(EMPTY_IDEA);
     setStep(1);
     setDirection("forward");
     setName("");

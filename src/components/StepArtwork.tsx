@@ -56,6 +56,12 @@ const artwork: ReadonlyArray<ReactNode> = [
     <path d="M198 196 C211 188 231 188 244 197" {...lineStyle} strokeWidth="3" />
   </>,
   <>
+    <path d="M112 96 C170 84 276 86 336 102 L330 372 C268 386 172 384 110 366 Z" {...lineStyle} strokeWidth="5" />
+    <path d="M150 150 C190 140 244 142 290 152 M150 190 C182 184 214 184 240 188" {...lineStyle} strokeWidth="3" opacity="0.55" />
+    <path d="M168 318 C184 262 232 236 262 262 C288 286 256 322 222 306 C196 294 210 258 244 250" {...lineStyle} strokeWidth="4" opacity="0.8" />
+    <path d="M300 128 L372 356 L360 392 L338 364 L266 136 Z M266 136 L300 128 M338 364 L372 356" {...lineStyle} strokeWidth="5" />
+  </>,
+  <>
     <path d="M117 81 C176 69 278 74 331 91 L325 382 C264 395 171 391 113 373 Z" {...lineStyle} strokeWidth="5" />
     <path d="M147 132 C193 122 257 124 298 137 M147 170 C191 162 254 163 297 176 M147 208 C191 200 254 201 296 214 M147 246 C191 238 252 239 294 252 M147 284 C188 277 230 278 259 284" {...lineStyle} strokeWidth="3" opacity="0.62" />
     <path d="M248 289 C278 270 323 277 344 306 C359 332 351 366 323 382 C292 399 252 387 237 357 C226 334 232 308 248 289 Z" {...lineStyle} strokeWidth="5" />
