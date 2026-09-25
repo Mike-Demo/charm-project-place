@@ -98,6 +98,7 @@ function TattooAtelier() {
   const headerRef = useRef<HTMLElement | null>(null);
   const indicatorRef = useRef<HTMLDivElement | null>(null);
   const initialStepEffect = useRef(true);
+  const logoPathRef = useRef<SVGPathElement | null>(null);
 
   const firstName = name.trim().split(/\s+/)[0] || "";
   const hasFullName = name.trim().split(/\s+/).filter(Boolean).length >= 2;
@@ -282,7 +283,12 @@ function TattooAtelier() {
 
       <header ref={headerRef} className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center pt-2 text-center sm:pt-4">
         <div className="group flex flex-col items-center">
-          <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-48 w-48 opacity-95 mix-blend-multiply" src={LOGO_URL} />
+          <svg aria-hidden="true" className="doodle-hover mb-1 h-48 w-48 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
+            <path ref={logoPathRef} d={NEEDLE_MARK_D} fill="currentColor" className="text-foreground" />
+          </svg>
+          <svg aria-hidden="true" className="hidden" viewBox="0 0 512 512">
+            <path id="atelier-morph-target" d={CALENDAR_MARK_D} fill="none" />
+          </svg>
         </div>
       </header>
 
