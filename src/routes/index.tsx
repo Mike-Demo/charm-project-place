@@ -438,6 +438,7 @@ function TattooAtelier() {
       : step === 5 ? phoneValid
       : step === 6 ? codeValid
       : step === 7 ? emailValid
+      : step === 8 ? true
       : allValid;
 
   const calendarCells = useMemo(() => {
