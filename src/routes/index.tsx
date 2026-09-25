@@ -273,10 +273,6 @@ function TattooAtelier() {
     if (step === TOTAL_STEPS) staggerRows(paneRef.current);
   }, [step, direction]);
 
-  useEffect(() => {
-    if (toast) noteDrop(toastRef.current);
-  }, [toast]);
-
   // Demo SMS: mint a studio pass when the verification step opens, focus the first box.
   useEffect(() => {
     if (step !== 6) return;
