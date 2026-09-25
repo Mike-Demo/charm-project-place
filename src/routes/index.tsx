@@ -50,6 +50,7 @@ function TattooAtelier() {
   const phoneValid = phone.replace(/\D/g, "").length >= 10;
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
   const allValid = nameValid && phoneValid && emailValid;
+  const currentMeta = stepMeta[step - 1] ?? stepMeta[0];
 
   useEffect(() => () => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -118,8 +119,8 @@ function TattooAtelier() {
       <main className="relative z-10 mx-auto my-auto w-full max-w-2xl py-8 sm:py-12">
         <div className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
           <div className="flex min-w-0 items-center gap-2">
-            <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{stepMeta[step - 1].badge}</span>
-            <span className="hidden font-hand text-sm text-ink-pencil sm:inline">• {stepMeta[step - 1].hint}</span>
+            <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
+            <span className="hidden font-hand text-sm text-ink-pencil sm:inline">• {currentMeta.hint}</span>
           </div>
           <div className="flex shrink-0 items-center gap-1 sm:gap-1.5" aria-label="Appointment steps">
             {stepMeta.map((item, index) => (
