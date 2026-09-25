@@ -17,10 +17,13 @@ export type Database = {
       appointments: {
         Row: {
           access_token: string | null
+          aftercare_sent_at: string | null
           booking_date: string
+          client_confirmed_at: string | null
           client_name: string
           concept_sketch_path: string | null
           created_at: string
+          day_of_sent_at: string | null
           email: string
           hold_expires_at: string | null
           hold_secret: string | null
@@ -32,18 +35,23 @@ export type Database = {
           phone: string
           pronouns: string | null
           reference_image_path: string | null
+          reminder_sent_at: string | null
           reschedule_count: number
           rescheduled_at: string | null
           sketch_attempts: number
+          social_sent_at: string | null
           status: string
           time_slot: string
         }
         Insert: {
           access_token?: string | null
+          aftercare_sent_at?: string | null
           booking_date: string
+          client_confirmed_at?: string | null
           client_name: string
           concept_sketch_path?: string | null
           created_at?: string
+          day_of_sent_at?: string | null
           email: string
           hold_expires_at?: string | null
           hold_secret?: string | null
@@ -55,18 +63,23 @@ export type Database = {
           phone: string
           pronouns?: string | null
           reference_image_path?: string | null
+          reminder_sent_at?: string | null
           reschedule_count?: number
           rescheduled_at?: string | null
           sketch_attempts?: number
+          social_sent_at?: string | null
           status?: string
           time_slot: string
         }
         Update: {
           access_token?: string | null
+          aftercare_sent_at?: string | null
           booking_date?: string
+          client_confirmed_at?: string | null
           client_name?: string
           concept_sketch_path?: string | null
           created_at?: string
+          day_of_sent_at?: string | null
           email?: string
           hold_expires_at?: string | null
           hold_secret?: string | null
@@ -78,9 +91,11 @@ export type Database = {
           phone?: string
           pronouns?: string | null
           reference_image_path?: string | null
+          reminder_sent_at?: string | null
           reschedule_count?: number
           rescheduled_at?: string | null
           sketch_attempts?: number
+          social_sent_at?: string | null
           status?: string
           time_slot?: string
         }
@@ -177,6 +192,7 @@ export type Database = {
             Returns: string
           }
       claim_admin: { Args: never; Returns: boolean }
+      confirm_attendance: { Args: { p_token: string }; Returns: string }
       consume_sketch_quota: {
         Args: { p_key: string; p_limit: number }
         Returns: boolean
@@ -210,6 +226,13 @@ export type Database = {
           rescheduled_at: string
           status: string
           time_slot: string
+        }[]
+      }
+      get_booking_confirmation: {
+        Args: { p_token: string }
+        Returns: {
+          client_confirmed_at: string
+          reminder_sent_at: string
         }[]
       }
       get_booking_status: { Args: { p_id: string }; Returns: string }

@@ -17,6 +17,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiSketchConceptRouteImport } from './routes/api/sketch-concept'
 import { Route as PassTokenRouteImport } from './routes/pass.$token'
+import { Route as PassTokenConfirmRouteImport } from './routes/pass_.$token.confirm'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
@@ -59,6 +60,11 @@ const PassTokenRoute = PassTokenRouteImport.update({
   path: '/pass/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PassTokenConfirmRoute = PassTokenConfirmRouteImport.update({
+  id: '/pass_/$token/confirm',
+  path: '/pass/$token/confirm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/pass/$token': typeof PassTokenRoute
+  '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/pass/$token': typeof PassTokenRoute
+  '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/pass/$token': typeof PassTokenRoute
+  '/pass_/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api/sketch-concept'
     | '/pass/$token'
+    | '/pass/$token/confirm'
     | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api/sketch-concept'
     | '/pass/$token'
+    | '/pass/$token/confirm'
     | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
   id:
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/api/sketch-concept'
     | '/pass/$token'
+    | '/pass_/$token/confirm'
     | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiSketchConceptRoute: typeof ApiSketchConceptRoute
   PassTokenRoute: typeof PassTokenRoute
+  PassTokenConfirmRoute: typeof PassTokenConfirmRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
@@ -214,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PassTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pass_/$token/confirm': {
+      id: '/pass_/$token/confirm'
+      path: '/pass/$token/confirm'
+      fullPath: '/pass/$token/confirm'
+      preLoaderRoute: typeof PassTokenConfirmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -250,6 +270,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiSketchConceptRoute: ApiSketchConceptRoute,
   PassTokenRoute: PassTokenRoute,
+  PassTokenConfirmRoute: PassTokenConfirmRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }

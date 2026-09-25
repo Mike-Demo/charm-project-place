@@ -34,6 +34,11 @@ export interface Appointment {
   idea_description?: string | null;
   reference_image_path?: string | null;
   concept_sketch_path?: string | null;
+  reminder_sent_at?: string | null;
+  client_confirmed_at?: string | null;
+  day_of_sent_at?: string | null;
+  aftercare_sent_at?: string | null;
+  social_sent_at?: string | null;
 }
 
 export const PRONOUN_OPTIONS = [
