@@ -84,6 +84,21 @@ function AuthPage() {
     await navigate({ to: "/admin" });
   };
 
+  const appleSignIn = async () => {
+    setBusy(true);
+    setError(null);
+    const result = await lovable.auth.signInWithOAuth("apple", {
+      redirect_uri: window.location.origin,
+    });
+    if (result.error) {
+      setError("Apple sign-in did not complete. Try again.");
+      setBusy(false);
+      return;
+    }
+    if (result.redirected) return;
+    await navigate({ to: "/admin" });
+  };
+
   return (
     <div className="sketchbook-canvas relative flex min-h-dvh items-center justify-center px-5 py-10 font-hand text-foreground">
       <div aria-hidden="true" className="paper-fiber" />
@@ -140,6 +155,16 @@ function AuthPage() {
           className="mt-3 h-auto w-full rounded-2xl border-ink-dim/40 bg-transparent px-6 py-3 font-hand text-lg text-foreground hover:bg-paper-line"
         >
           Continue with Google
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          disabled={busy}
+          onClick={() => void appleSignIn()}
+          className="mt-3 h-auto w-full rounded-2xl border-ink-dim/40 bg-transparent px-6 py-3 font-hand text-lg text-foreground hover:bg-paper-line"
+        >
+          Continue with Apple
         </Button>
 
         <button
