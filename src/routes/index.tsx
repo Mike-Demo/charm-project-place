@@ -16,7 +16,8 @@ import {
   startOfDay,
   toDateKey,
 } from "@/lib/atelier";
-import { bookAppointment, fetchUnavailableSlots } from "@/lib/atelier-service";
+import { fetchUnavailableSlots, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
+import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
 import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startLineBoil } from "@/lib/motion";
 import { NEEDLE_MARK_D } from "@/lib/logo-marks";
 
@@ -147,13 +148,68 @@ function TattooAtelier() {
     [availabilityQuery.data],
   );
 
+  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming">("idle");
+  const heldIdRef = useRef<string | null>(null);
+  const paidRef = useRef(false);
+
+  const waitForConfirmation = async (id: string) => {
+    setPaymentState("confirming");
+    for (let attempt = 0; attempt < 30; attempt += 1) {
+      const status = await getBookingStatus(id).catch(() => null);
+      if (status === "confirmed") {
+        setPaymentState("idle");
+        heldIdRef.current = null;
+        showConfirmation();
+        void availabilityQuery.refetch();
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
+    setPaymentState("idle");
+    setBookingError("Payment received, but confirmation is taking a while. We'll email you once it's locked in.");
+  };
+
+  useEffect(() => {
+    setPaddleEventListener((event) => {
+      const id = heldIdRef.current;
+      if (!id) return;
+      if (event.name === "checkout.completed") {
+        paidRef.current = true;
+        void waitForConfirmation(id);
+      } else if (event.name === "checkout.closed" && !paidRef.current) {
+        heldIdRef.current = null;
+        setPaymentState("idle");
+        setBookingError("Checkout closed — your slot hold was released. Try again whenever you're ready.");
+        void releaseAppointment(id).finally(() => void availabilityQuery.refetch());
+      }
+    });
+    const paidId = new URLSearchParams(window.location.search).get("paid");
+    if (paidId) {
+      window.history.replaceState(null, "", window.location.pathname);
+      void waitForConfirmation(paidId);
+    }
+    return () => setPaddleEventListener(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const bookingMutation = useMutation({
-    mutationFn: bookAppointment,
-    onSuccess: () => {
-      showConfirmation();
+    mutationFn: async (input: BookingInput) => {
+      const id = await holdAppointment(input);
+      heldIdRef.current = id;
+      paidRef.current = false;
+      try {
+        await openSlotCheckout({ appointmentId: id, email: input.email });
+      } catch (error) {
+        heldIdRef.current = null;
+        await releaseAppointment(id).catch(() => undefined);
+        throw error;
+      }
+    },
+    onSuccess: () => setPaymentState("checkout"),
+    onError: (error: Error) => {
+      setBookingError(error.message);
       void availabilityQuery.refetch();
     },
-    onError: (error: Error) => setBookingError(error.message),
   });
 
   const firstOpenDate = (from: Date): Date => {
