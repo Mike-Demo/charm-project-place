@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
+import { ReminderRunStatus } from "@/components/ReminderRunStatus";
 import {
   TIME_SLOTS,
   addDays,
@@ -190,7 +191,9 @@ function AdminPage() {
               If you are the studio owner and nobody has claimed the ledger yet, claim it now.
             </p>
           </div>
-          {actionError !== null && <p className="mt-3 text-pencil-red">{actionError}</p>}
+          <ReminderRunStatus />
+
+      {actionError !== null && <p className="mt-3 text-pencil-red">{actionError}</p>}
           <div className="mt-6 flex flex-wrap gap-3">
             <Button
               disabled={claimMutation.isPending}
