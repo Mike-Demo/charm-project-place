@@ -241,6 +241,25 @@ function Licenses(): ReactElement {
                 no donation is collected yet.
               </p>
             </article>
+            <article className="sketch-card p-4 sm:col-span-2">
+              <h3 className="font-hand text-xl font-bold text-foreground">Test links</h3>
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink-dim">
+                Try the flow yourself
+              </p>
+              <ul className="mt-3 space-y-3">
+                {TEST_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="font-mono text-xs text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
+                    >
+                      {link.label}
+                    </a>
+                    <p className="mt-1 font-hand text-base text-ink-pencil">{link.note}</p>
+                  </li>
+                ))}
+              </ul>
+            </article>
           </div>
           <p className="mt-5 font-hand text-lg text-ink-pencil">
             Studio artist?{" "}
