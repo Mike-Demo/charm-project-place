@@ -305,10 +305,6 @@ function TattooAtelier() {
     if (target) pickPop(target);
   };
 
-  useEffect(() => () => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-  }, []);
-
   const goToStep = (next: number) => {
     if (next < 1 || next > TOTAL_STEPS || next === step) return;
     setDirection(next > step ? "forward" : "backward");
