@@ -14,3 +14,4 @@
 - Tattoo idea photos/sketches live in private bucket `tattoo-ideas`, attached server-side after the slot hold via `attachIdea`; concept sketches stream from `/api/sketch-concept` (image edits) — keeps AI key server-side and avoids orphan uploads.
 - Email illustrations use hosted assets with an absolute public URL, because inboxes cannot resolve project-relative image paths.
 - Keep studio address and appointment-only hours in one shared location module so website and email copy remain consistent.
+- Keep the site title "Fresh Ink: Book your session" and each page's meta description as literal strings inside that route's existing `head()` block (subpages prefix a short page label); no shared metadata module or new head mechanism, so every page's tags stay visible where the page is defined.
