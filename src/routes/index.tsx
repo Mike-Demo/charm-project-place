@@ -520,6 +520,7 @@ function TattooAtelier() {
                 <h2 className="font-normal">Where should we send your stencil &amp; guide?</h2>
                 <span className={`relative inline-block border-b-2 ${emailValid ? "border-pencil-green" : email.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
                   <input autoFocus aria-label="Email address" className="paper-inline-input max-w-[78vw] font-bold" onChange={(e) => setEmail(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. you@example.com" style={{ width: `${Math.max(21, email.length + 1)}ch` }} type="email" value={email} />
+                  {emailValid ? <BoilRule tone="text-pencil-green/50" /> : null}
                   {!emailValid && email.trim() !== "" && <WaveUnderline />}
                 </span>
               </div>
