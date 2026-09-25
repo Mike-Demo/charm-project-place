@@ -23,6 +23,7 @@ export type Database = {
           created_at: string
           email: string
           hold_expires_at: string | null
+          hold_secret: string | null
           id: string
           idea_description: string | null
           notes: string | null
@@ -45,6 +46,7 @@ export type Database = {
           created_at?: string
           email: string
           hold_expires_at?: string | null
+          hold_secret?: string | null
           id?: string
           idea_description?: string | null
           notes?: string | null
@@ -67,6 +69,7 @@ export type Database = {
           created_at?: string
           email?: string
           hold_expires_at?: string | null
+          hold_secret?: string | null
           id?: string
           idea_description?: string | null
           notes?: string | null
@@ -104,6 +107,24 @@ export type Database = {
           id?: string
           reason?: string | null
           time_slot?: string | null
+        }
+        Relationships: []
+      }
+      sketch_usage: {
+        Row: {
+          bucket_key: string
+          usage_day: string
+          uses: number
+        }
+        Insert: {
+          bucket_key: string
+          usage_day?: string
+          uses?: number
+        }
+        Update: {
+          bucket_key?: string
+          usage_day?: string
+          uses?: number
         }
         Relationships: []
       }
@@ -156,6 +177,10 @@ export type Database = {
             Returns: string
           }
       claim_admin: { Args: never; Returns: boolean }
+      consume_sketch_quota: {
+        Args: { p_key: string; p_limit: number }
+        Returns: boolean
+      }
       create_pending_appointment: {
         Args: {
           p_date: string
@@ -165,7 +190,10 @@ export type Database = {
           p_pronouns: string
           p_time_slot: string
         }
-        Returns: string
+        Returns: {
+          hold_secret: string
+          id: string
+        }[]
       }
       gen_access_token: { Args: never; Returns: string }
       get_booking_by_token: {
