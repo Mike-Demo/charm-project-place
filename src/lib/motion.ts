@@ -67,3 +67,27 @@ export const inkSettle = (el: Target): void => {
   if (!el || prefersReducedMotion()) return;
   animate(el, { opacity: [0, 0.95], scale: [0.9, 1], rotate: [-4, 0], duration: 600, ease: "outElastic(1, .6)" });
 };
+
+type StudioDraftTargets = {
+  linework: Element | null;
+  paper: Element | null;
+  header: Element | null;
+  stepIndicator: Element | null;
+  question: Element | null;
+};
+
+export const animateStudioDraftEntrance = ({ linework, paper, header, stepIndicator, question }: StudioDraftTargets): void => {
+  if (prefersReducedMotion()) return;
+
+  linework?.querySelectorAll<SVGPathElement>("[data-draft-stroke]").forEach((path) => {
+    const length = path.getTotalLength();
+    path.style.strokeDasharray = String(length);
+    path.style.strokeDashoffset = String(length);
+    animate(path, { strokeDashoffset: [length, 0], duration: 240, ease: "outQuad" });
+  });
+
+  if (paper) animate(paper, { scale: [0.995, 1], opacity: [0.85, 1], delay: 100, duration: 280, ease: "outQuad" });
+  if (header) animate(header, { y: [6, 0], opacity: [0.7, 1], delay: 180, duration: 170, ease: "outQuad" });
+  if (stepIndicator) animate(stepIndicator, { y: [6, 0], opacity: [0.7, 1], delay: 215, duration: 170, ease: "outQuad" });
+  if (question) animate(question, { y: [8, 0], opacity: [0.75, 1], delay: 250, duration: 170, ease: "outQuad" });
+};
