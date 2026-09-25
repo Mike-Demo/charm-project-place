@@ -73,7 +73,7 @@ function AuthPage() {
     setBusy(true);
     setError(null);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/auth`,
     });
     if (result.error) {
       setError("Google sign-in did not complete. Try again.");
@@ -88,7 +88,7 @@ function AuthPage() {
     setBusy(true);
     setError(null);
     const result = await lovable.auth.signInWithOAuth("microsoft", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/auth`,
     });
     if (result.error) {
       setError("Microsoft sign-in did not complete. Try again.");
@@ -103,7 +103,7 @@ function AuthPage() {
     setBusy(true);
     setError(null);
     const result = await lovable.auth.signInWithOAuth("apple", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/auth`,
     });
     if (result.error) {
       setError("Apple sign-in did not complete. Try again.");
