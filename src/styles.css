@@ -59,12 +59,36 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-paper-sheet: var(--paper-sheet);
+  --color-paper-deep: var(--paper-deep);
+  --color-paper-line: var(--paper-line);
+  --color-ink-pencil: var(--ink-pencil);
+  --color-ink-dim: var(--ink-dim);
+  --color-cyan-draft: var(--cyan-draft);
+  --color-cyan-soft: var(--cyan-soft);
+  --color-pencil-red: var(--pencil-red);
+  --color-pencil-green: var(--pencil-green);
+  --color-valid-soft: var(--valid-soft);
+  --color-invalid-soft: var(--invalid-soft);
+  --font-hand: "Coming Soon", cursive;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.5rem;
+  --background: oklch(0.963 0.015 85);
+  --foreground: oklch(0.19 0.014 235);
+  --paper-sheet: oklch(0.98 0.009 84);
+  --paper-deep: oklch(0.94 0.023 85);
+  --paper-line: oklch(0.89 0.025 84);
+  --ink-pencil: oklch(0.46 0.016 83);
+  --ink-dim: oklch(0.62 0.014 81);
+  --cyan-draft: oklch(0.58 0.15 229);
+  --cyan-soft: oklch(0.58 0.15 229 / 12%);
+  --pencil-red: oklch(0.55 0.18 25);
+  --pencil-green: oklch(0.49 0.14 153);
+  --valid-soft: oklch(0.95 0.04 150);
+  --invalid-soft: oklch(0.95 0.025 25);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
@@ -140,5 +164,45 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    margin: 0;
+    min-width: 320px;
   }
+}
+
+.sketchbook-canvas {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse at 50% 10%, oklch(1 0 0 / 75%) 0%, transparent 60%),
+    radial-gradient(circle at 10% 90%, oklch(0.88 0.025 82 / 50%) 0%, transparent 45%),
+    radial-gradient(circle at 90% 85%, oklch(0.89 0.022 82 / 42%) 0%, transparent 40%);
+}
+
+.paper-fiber {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    repeating-linear-gradient(45deg, oklch(0.36 0.02 72 / 3%) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(-45deg, oklch(0.36 0.02 72 / 2%) 0 1px, transparent 1px 4px);
+}
+
+.corner-tick { position: fixed; z-index: 20; width: 1.5rem; height: 1.5rem; pointer-events: none; border-color: color-mix(in oklch, var(--ink-dim) 40%, transparent); }
+.paper-inline-input { margin: 0; min-width: 7rem; border: 0; background: transparent; padding: 0 0.25rem 0.125rem; color: var(--foreground); outline: none; font: inherit; }
+.paper-inline-input:focus { outline: none; box-shadow: none; }
+.ink-stamp-btn { background: var(--foreground); color: var(--paper-sheet); box-shadow: 3px 4px 0 var(--cyan-draft); transition: transform 200ms cubic-bezier(.34,1.56,.64,1), box-shadow 200ms; }
+.ink-stamp-btn:hover { background: var(--foreground); color: var(--paper-sheet); transform: translate(-2px,-2px); box-shadow: 5px 6px 0 var(--cyan-draft); }
+.ink-stamp-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--cyan-draft); }
+.ink-stamp-btn.final-stamp { box-shadow: 4px 5px 0 var(--pencil-green); }
+.ink-stamp-btn:disabled { opacity: .45; box-shadow: 2px 2px 0 var(--ink-dim); }
+
+@keyframes organic-wobble { from { transform: scale(1) rotate(0); } to { transform: scale(1.08) rotate(2deg); } }
+@keyframes paper-in-right { from { opacity: 0; transform: translate3d(28px,0,0) rotate(.5deg); } to { opacity: 1; transform: none; } }
+@keyframes paper-in-left { from { opacity: 0; transform: translate3d(-28px,0,0) rotate(-.5deg); } to { opacity: 1; transform: none; } }
+.doodle-hover:hover { animation: organic-wobble .75s cubic-bezier(.34,1.56,.64,1) infinite alternate; filter: drop-shadow(0 4px 10px oklch(0.19 0.014 235 / 15%)); }
+.paper-in-forward { animation: paper-in-right .38s cubic-bezier(.22,1,.36,1); }
+.paper-in-backward { animation: paper-in-left .38s cubic-bezier(.22,1,.36,1); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
