@@ -20,6 +20,8 @@ import {
   type Appointment,
 } from "@/lib/atelier";
 import { ConfirmedPass } from "@/components/ConfirmedPass";
+import { ConfirmingSketch } from "@/components/ConfirmingSketch";
+
 import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
@@ -147,22 +149,36 @@ function TattooAtelier() {
     [availabilityQuery.data],
   );
 
-  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming">("idle");
+  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming" | "failed">(() =>
+    new URLSearchParams(window.location.search).get("paid") ? "confirming" : "idle",
+  );
+
+
   const heldIdRef = useRef<string | null>(null);
   const paidRef = useRef(false);
 
   const waitForConfirmation = async (id: string) => {
     setPaymentState("confirming");
+    let consecutiveErrors = 0;
     for (let attempt = 0; attempt < 30; attempt += 1) {
-      const status = await getBookingStatus(id).catch(() => null);
+      const status = await getBookingStatus(id).catch(() => {
+        setBookingError("We couldn't find that payment yet. If you just paid, give it a minute and reopen the link from your email — or head back to the form and we'll sort it out.");
+        return null;
+      });
+      if (status !== null) consecutiveErrors = 0; else consecutiveErrors += 1;
+      if (consecutiveErrors >= 3) {
+        setPaymentState("failed");
+        return;
+      }
       if (status === "confirmed") {
         const booking = await fetchConfirmedBooking(id).catch(() => null);
-        setPaymentState("idle");
         heldIdRef.current = null;
         if (booking) {
+          setPaymentState("idle");
           setConfirmed(booking);
           void fetchBookingToken(id).then(setPassToken).catch(() => undefined);
         } else {
+          setPaymentState("failed");
           setBookingError("Payment received, but we couldn't load your confirmation pass. We'll email you the details.");
         }
         void availabilityQuery.refetch();
@@ -170,9 +186,11 @@ function TattooAtelier() {
       }
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
-    setPaymentState("idle");
-    setBookingError("Payment received, but confirmation is taking a while. We'll email you once it's locked in.");
+    setPaymentState("failed");
+    setBookingError("Payment received, but confirmation is taking a while. We'll email you your session pass once it's locked in.");
   };
+
+
 
   useEffect(() => {
     setPaddleEventListener((event) => {
@@ -314,6 +332,8 @@ function TattooAtelier() {
   const resetFlow = () => {
     setConfirmed(null);
     setPassToken(null);
+    setPaymentState("idle");
+
     setStep(1);
     setDirection("forward");
     setName("");
@@ -433,8 +453,19 @@ function TattooAtelier() {
       </header>
 
       <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl pb-8 sm:pb-12">
-        {confirmed ? <ConfirmedPass booking={confirmed} token={passToken} onReset={resetFlow} onRescheduled={() => { if (passToken) void fetchBookingByToken(passToken).then((b) => b && setConfirmed(b)); }} /> : (
+        {confirmed ? <ConfirmedPass booking={confirmed} token={passToken} onReset={resetFlow} onRescheduled={() => { if (passToken) void fetchBookingByToken(passToken).then((b) => b && setConfirmed(b)); }} /> : paymentState === "confirming" || paymentState === "failed" ? (
+          <div className="flex flex-col items-center">
+            <ConfirmingSketch note={paymentState === "failed" ? bookingError ?? undefined : undefined} />
+            {paymentState === "failed" ? (
+              <Button onClick={resetFlow} className="ink-stamp-btn mt-4 h-auto rounded-2xl px-8 py-3 font-hand text-lg font-bold">
+                ← Back to the form
+              </Button>
+            ) : null}
+          </div>
+        ) : (
         <>
+
+
         <div ref={indicatorRef} className="mb-8 flex flex-wrap items-center justify-between gap-3 gap-y-3 font-mono text-xs text-ink-pencil/70">
           <div className="flex min-w-0 items-center gap-2">
             <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
@@ -696,7 +727,7 @@ function TattooAtelier() {
             <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
           </Button>
           <Button disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
-            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "confirming" ? "Confirming payment…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
+            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
