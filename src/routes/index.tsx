@@ -99,10 +99,6 @@ function TattooAtelier() {
           <img alt="Tattoo Atelier needle doodle" className="doodle-hover mb-1 h-16 w-16 opacity-95 mix-blend-multiply" src={LOGO_URL} />
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink & Needle</span>
         </div>
-        <h1 className="mt-4 flex items-center justify-center gap-2 text-3xl font-normal tracking-wide sm:text-4xl">
-          One question at a time, {firstName} <span className="animate-pulse text-2xl">✨</span>
-        </h1>
-        <p className="mt-1 text-base text-ink-pencil sm:text-lg">No overwhelming forms — answer one relaxed prompt directly on paper.</p>
       </header>
 
       <main className="relative z-10 mx-auto my-auto w-full max-w-2xl py-8 sm:py-12">
