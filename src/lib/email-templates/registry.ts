@@ -1,5 +1,9 @@
 import type { ComponentType } from 'react'
 import { template as sessionPassTemplate } from './session-pass'
+import { template as sessionReminderTemplate } from './session-reminder'
+import { template as sessionDayOfTemplate } from './session-day-of'
+import { template as sessionAftercareTemplate } from './session-aftercare'
+import { template as sessionShareTemplate } from './session-share'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -22,4 +26,8 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   // Add templates here as they are created, e.g.:
   // 'welcome': welcomeTemplate,
   'session-pass': sessionPassTemplate,
+  'session-reminder': sessionReminderTemplate,
+  'session-day-of': sessionDayOfTemplate,
+  'session-aftercare': sessionAftercareTemplate,
+  'session-share': sessionShareTemplate,
 }
