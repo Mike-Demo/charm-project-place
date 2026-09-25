@@ -23,6 +23,7 @@ export type Database = {
           id: string
           notes: string | null
           phone: string
+          pronouns: string | null
           status: string
           time_slot: string
         }
@@ -34,6 +35,7 @@ export type Database = {
           id?: string
           notes?: string | null
           phone: string
+          pronouns?: string | null
           status?: string
           time_slot: string
         }
@@ -45,6 +47,7 @@ export type Database = {
           id?: string
           notes?: string | null
           phone?: string
+          pronouns?: string | null
           status?: string
           time_slot?: string
         }
@@ -100,16 +103,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      book_appointment: {
-        Args: {
-          p_date: string
-          p_email: string
-          p_name: string
-          p_phone: string
-          p_time_slot: string
-        }
-        Returns: string
-      }
+      book_appointment:
+        | {
+            Args: {
+              p_date: string
+              p_email: string
+              p_name: string
+              p_phone: string
+              p_time_slot: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_date: string
+              p_email: string
+              p_name: string
+              p_phone: string
+              p_pronouns: string
+              p_time_slot: string
+            }
+            Returns: string
+          }
       claim_admin: { Args: never; Returns: boolean }
       get_unavailable_slots: {
         Args: { p_from: string; p_to: string }
