@@ -460,7 +460,7 @@ function TattooAtelier() {
       <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl pb-8 sm:pb-12">
         {confirmed ? <ConfirmedPass booking={confirmed} onReset={resetFlow} /> : (
         <>
-        <div ref={indicatorRef} className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
+        <div ref={indicatorRef} className="mb-8 flex flex-wrap items-center justify-between gap-3 gap-y-3 font-mono text-xs text-ink-pencil/70">
           <div className="flex min-w-0 items-center gap-2">
             <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
             <span className="hidden font-hand text-sm text-ink-pencil sm:inline">• {currentMeta.hint}</span>
