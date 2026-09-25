@@ -216,13 +216,14 @@ function TattooAtelier() {
   };
 
   const continueFlow = () => {
-    const blocked = (step === 1 && !nameValid) || (step === 4 && !phoneValid) || (step === 5 && !emailValid);
+    const blocked = (step === 1 && !nameValid) || (step === 2 && !pronounsValid) || (step === 5 && !phoneValid) || (step === 6 && !emailValid);
     if (blocked) shakeField(paneRef.current?.querySelector("input"));
     if (step === 1 && !nameValid) return;
-    if (step === 2 && dayChoice === null) return;
-    if (step === 3 && !scheduleValid) return;
-    if (step === 4 && !phoneValid) return;
-    if (step === 5 && !emailValid) return;
+    if (step === 2 && !pronounsValid) return;
+    if (step === 3 && dayChoice === null) return;
+    if (step === 4 && !scheduleValid) return;
+    if (step === 5 && !phoneValid) return;
+    if (step === 6 && !emailValid) return;
     if (step === TOTAL_STEPS) {
       if (!allValid || selectedDate === null || selectedTime === null) return;
       setBookingError(null);
@@ -232,6 +233,7 @@ function TattooAtelier() {
         email: email.trim(),
         date: selectedDate,
         timeSlot: selectedTime,
+        pronouns: pronounsValue,
       });
       return;
     }
@@ -243,7 +245,13 @@ function TattooAtelier() {
   };
 
   const currentValid =
-    step === 1 ? nameValid : step === 2 ? dayChoice !== null : step === 3 ? scheduleValid : step === 4 ? phoneValid : step === 5 ? emailValid : allValid;
+    step === 1 ? nameValid
+      : step === 2 ? pronounsValid
+      : step === 3 ? dayChoice !== null
+      : step === 4 ? scheduleValid
+      : step === 5 ? phoneValid
+      : step === 6 ? emailValid
+      : allValid;
 
   const calendarCells = useMemo(() => {
     const firstOfMonth = new Date(monthCursor.getFullYear(), monthCursor.getMonth(), 1);
