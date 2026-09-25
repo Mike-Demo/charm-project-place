@@ -15,6 +15,7 @@ function addDay(ymd: string): string {
 }
 
 export const Route = createFileRoute("/api/public/hooks/send-reminders")({
+  staticData: { sitemap: false },
   server: {
     handlers: {
       POST: async ({ request }) => {
