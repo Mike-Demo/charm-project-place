@@ -655,7 +655,7 @@ function TattooAtelier() {
           </Button>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />No deposit charged today</span>
+          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />$1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies</a> locks in your slot</span>
           <span>Free rescheduling up to 24h prior</span>
         </div>
       </main>
