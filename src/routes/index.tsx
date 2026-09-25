@@ -505,6 +505,7 @@ function TattooAtelier() {
                 <h2 className="font-normal">Where can we text your reminder?</h2>
                 <span className={`relative inline-block border-b-2 ${phoneValid ? "border-pencil-green" : phone.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
                   <input autoFocus aria-label="Phone number" className="paper-inline-input max-w-[78vw] font-bold" inputMode="tel" onChange={(e) => setPhone(formatPhone(e.target.value))} onKeyDown={handleEnter} placeholder="e.g. (555) 019-2834" style={{ width: `${Math.max(20, phone.length + 1)}ch` }} type="tel" value={phone} />
+                  {phoneValid ? <BoilRule tone="text-pencil-green/50" /> : null}
                   {!phoneValid && phone.trim() !== "" && <WaveUnderline />}
                 </span>
               </div>
