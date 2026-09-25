@@ -441,7 +441,7 @@ function TattooAtelier() {
 
       <header ref={headerRef} className="relative z-10 flex flex-col items-center text-center">
         <div className="group flex flex-col items-center">
-          <svg aria-hidden="true" className="doodle-hover mb-1 h-56 w-56 opacity-95 mix-blend-multiply" viewBox="0 0 512 512">
+          <svg aria-hidden="true" className="doodle-hover mb-1 h-48 w-36 opacity-95 mix-blend-multiply" viewBox="69.4 34.1 318 424">
             <defs>
               <filter id="atelier-line-boil" x="-5%" y="-5%" width="110%" height="110%">
                 <feTurbulence ref={boilTurbulenceRef} type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="1" result="noise" />
