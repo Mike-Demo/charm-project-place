@@ -784,9 +784,13 @@ function TattooAtelier() {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-6 border-t border-dashed border-ink-dim/30 pt-6 sm:flex-row">
-          <Button variant="link" aria-disabled={step === 1} onClick={() => { if (step === 1) return; goToStep(step - 1); }} className={`group h-auto p-0 font-hand text-lg text-ink-pencil hover:text-foreground ${step === 1 ? "opacity-50" : ""}`}>
-            <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
-          </Button>
+          {step > 1 ? (
+            <Button variant="link" onClick={() => goToStep(step - 1)} className="group h-auto p-0 font-hand text-lg text-ink-pencil hover:text-foreground">
+              <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
+            </Button>
+          ) : (
+            <span aria-hidden="true" className="hidden sm:block" />
+          )}
           <Button aria-disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { if (bookingMutation.isPending) return; stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""} ${!currentValid || bookingMutation.isPending ? "opacity-60" : ""}`}>
             {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
