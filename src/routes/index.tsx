@@ -20,6 +20,8 @@ import {
   type Appointment,
 } from "@/lib/atelier";
 import { ConfirmedPass } from "@/components/ConfirmedPass";
+import { ConfirmingSketch } from "@/components/ConfirmingSketch";
+
 import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
