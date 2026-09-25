@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import { template as sessionPassTemplate } from './session-pass'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -20,4 +21,5 @@ export interface TemplateEntry {
 export const TEMPLATES: Record<string, TemplateEntry> = {
   // Add templates here as they are created, e.g.:
   // 'welcome': welcomeTemplate,
+  'session-pass': sessionPassTemplate,
 }
