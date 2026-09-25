@@ -1,5 +1,6 @@
 import { CalendarPlus, Check, ExternalLink, Mail, Phone, X } from "lucide-react";
 import { AdminIdea } from "@/components/IdeaGallery";
+import { LifecycleTimeline } from "@/components/LifecycleTimeline";
 import { Button } from "@/components/ui/button";
 import { fromDateKey, formatLongDate, type Appointment } from "@/lib/atelier";
 import { googleCalendarUrl } from "@/lib/ics";
@@ -35,6 +36,7 @@ export function AdminBookingDetails({ booking, loading, error, busy, onStatus, o
             <div className="min-w-0"><dt className="font-mono text-[11px] uppercase text-ink-pencil">Phone</dt><dd className="mt-1 break-words"><a className="inline-flex items-center gap-2 underline underline-offset-4" href={`tel:${booking.phone}`}><Phone className="size-4 shrink-0" />{booking.phone}</a></dd></div>
             <div className="min-w-0"><dt className="font-mono text-[11px] uppercase text-ink-pencil">Email</dt><dd className="mt-1 break-all"><a className="inline-flex items-center gap-2 underline underline-offset-4" href={`mailto:${booking.email}`}><Mail className="size-4 shrink-0" />{booking.email}</a></dd></div>
           </dl>
+          <LifecycleTimeline booking={booking} />
           <div className="border-t border-dashed border-ink-dim/50 pt-5">
             <h4 className="text-xl">Tattoo idea</h4>
             {booking.idea_description || booking.reference_image_path || booking.concept_sketch_path ? (
