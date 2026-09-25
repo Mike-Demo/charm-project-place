@@ -20,12 +20,13 @@ import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersR
 import { NEEDLE_MARK_D } from "@/lib/logo-marks";
 
 const stepMeta = [
-  { badge: "Step 01 // 06", hint: "Your name", title: "Step 1: Name" },
-  { badge: "Step 02 // 06", hint: "Your pronouns", title: "Step 2: Pronouns" },
-  { badge: "Step 03 // 06", hint: "Preferred day", title: "Step 3: Day" },
-  { badge: "Step 04 // 06", hint: "Date & time", title: "Step 4: Date & Time" },
-  { badge: "Step 05 // 06", hint: "Phone verification", title: "Step 5: Phone" },
-  { badge: "Step 06 // 06", hint: "Digital stencil", title: "Step 6: Email" },
+  { badge: "Step 01 // 07", hint: "Your name", title: "Step 1: Name" },
+  { badge: "Step 02 // 07", hint: "Your pronouns", title: "Step 2: Pronouns" },
+  { badge: "Step 03 // 07", hint: "Preferred day", title: "Step 3: Day" },
+  { badge: "Step 04 // 07", hint: "Date & time", title: "Step 4: Date & Time" },
+  { badge: "Step 05 // 07", hint: "Phone number", title: "Step 5: Phone" },
+  { badge: "Step 06 // 07", hint: "SMS pass code", title: "Step 6: Verify" },
+  { badge: "Step 07 // 07", hint: "Digital stencil", title: "Step 7: Email" },
   { badge: "Review // Final", hint: "Ready to ink", title: "Review & Lock In" },
 ] as const;
 
