@@ -717,7 +717,7 @@ function TattooAtelier() {
             <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
           </Button>
           <Button disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
-            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "confirming" ? "Confirming payment…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
+            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
