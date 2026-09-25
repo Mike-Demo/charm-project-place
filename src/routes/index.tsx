@@ -15,6 +15,7 @@ import {
   sameDay,
   startOfDay,
   toDateKey,
+  type Appointment,
 } from "@/lib/atelier";
 import { fetchUnavailableSlots, fetchConfirmedBooking, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
