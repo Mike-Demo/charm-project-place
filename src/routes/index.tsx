@@ -724,12 +724,13 @@ function TattooAtelier() {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-6 border-t border-dashed border-ink-dim/30 pt-6 sm:flex-row">
-          <Button variant="link" disabled={step === 1} onClick={() => goToStep(step - 1)} className="group h-auto p-0 font-hand text-lg text-ink-pencil hover:text-foreground">
+          <Button variant="link" aria-disabled={step === 1} onClick={() => { if (step === 1) return; goToStep(step - 1); }} className={`group h-auto p-0 font-hand text-lg text-ink-pencil hover:text-foreground ${step === 1 ? "opacity-50" : ""}`}>
             <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Previous question</span>
           </Button>
-          <Button disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""}`}>
+          <Button aria-disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { if (bookingMutation.isPending) return; stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""} ${!currentValid || bookingMutation.isPending ? "opacity-60" : ""}`}>
             {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
+
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
           <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />$1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies<span className="sr-only"> (opens in a new tab)</span></a> locks in your slot</span>
