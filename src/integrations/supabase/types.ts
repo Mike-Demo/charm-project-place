@@ -125,6 +125,24 @@ export type Database = {
         }
         Relationships: []
       }
+      cron_tokens: {
+        Row: {
+          created_at: string
+          name: string
+          token_hash: string
+        }
+        Insert: {
+          created_at?: string
+          name: string
+          token_hash: string
+        }
+        Update: {
+          created_at?: string
+          name?: string
+          token_hash?: string
+        }
+        Relationships: []
+      }
       sketch_usage: {
         Row: {
           bucket_key: string
@@ -191,6 +209,7 @@ export type Database = {
             }
             Returns: string
           }
+      check_reminder_cron_token: { Args: { p_token: string }; Returns: boolean }
       claim_admin: { Args: never; Returns: boolean }
       confirm_attendance: { Args: { p_token: string }; Returns: string }
       consume_sketch_quota: {

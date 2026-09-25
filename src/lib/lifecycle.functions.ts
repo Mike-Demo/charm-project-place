@@ -7,13 +7,6 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 export const LIFECYCLE_EMAIL_STAGES = ["reminder", "day_of", "aftercare", "social"] as const;
 export type LifecycleEmailStage = (typeof LIFECYCLE_EMAIL_STAGES)[number];
 
-const STAGE_CONFIG = {
-  reminder: { template: "session-reminder", column: "reminder_sent_at" },
-  day_of: { template: "session-day-of", column: "day_of_sent_at" },
-  aftercare: { template: "session-aftercare", column: "aftercare_sent_at" },
-  social: { template: "session-share", column: "social_sent_at" },
-} as const;
-
 export type SendLifecycleResult = { sent: true; at: string } | { sent: false; reason: "recipient_suppressed" };
 
 export const sendLifecycleEmail = createServerFn({ method: "POST" })
@@ -23,45 +16,18 @@ export const sendLifecycleEmail = createServerFn({ method: "POST" })
     const { data: isAdmin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin) throw new Error("Studio access required.");
 
-    const { data: row, error } = await context.supabase
-      .from("appointments")
-      .select("id,client_name,email,booking_date,time_slot,access_token,status,idea_description")
-      .eq("id", data.id)
-      .maybeSingle();
+    const { STAGE_CONFIG, LIFECYCLE_ROW_COLUMNS, sendLifecycleForRow } = await import("@/lib/lifecycle-send.server");
+    const { data: row, error } = await context.supabase.from("appointments").select(LIFECYCLE_ROW_COLUMNS).eq("id", data.id).maybeSingle();
     if (error || !row) throw new Error("Booking not found.");
     if (row.status === "cancelled" || row.status === "expired") throw new Error("This booking is not active.");
 
-    const config = STAGE_CONFIG[data.stage];
     const origin = new URL(getRequest().url).origin;
-    const passUrl = row.access_token ? `${origin}/pass/${row.access_token}` : undefined;
-
-    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
-    const { EmailAPIError } = await import("@lovable.dev/email-js");
-    let result: { sent: boolean };
-    try {
-      result = await sendTemplateEmail(config.template, row.email, {
-        templateData: {
-          name: row.client_name.split(" ")[0],
-          date: row.booking_date,
-          time: row.time_slot,
-          passUrl,
-          confirmUrl: passUrl ? `${passUrl}/confirm` : undefined,
-          idea: row.idea_description ?? undefined,
-        },
-        idempotencyKey: `${data.stage}-${row.id}-${Date.now()}`,
-      });
-    } catch (err) {
-      if (err instanceof EmailAPIError) {
-        if (err.code === "domain_not_verified") throw new Error("Not sent yet: the studio email domain is still being verified.");
-        if (err.code === "emails_disabled") throw new Error("Not sent: studio emails are turned off.");
-        if (err.status === 429) throw new Error(`Too many emails right now. Try again in ${err.retryAfterSeconds ?? 60} seconds.`);
-      }
-      throw new Error("Email could not be sent. Please try again.");
-    }
+    const result = await sendLifecycleForRow(row, data.stage, origin, `${data.stage}-${row.id}-${Date.now()}`);
     if (!result.sent) return { sent: false, reason: "recipient_suppressed" };
 
     const at = new Date().toISOString();
-    const { error: updateError } = await context.supabase.from("appointments").update({ [config.column]: at } as TablesUpdate<"appointments">).eq("id", row.id);
+    const column = STAGE_CONFIG[data.stage].column;
+    const { error: updateError } = await context.supabase.from("appointments").update({ [column]: at } as TablesUpdate<"appointments">).eq("id", row.id);
     if (updateError) throw new Error("Email sent, but the timeline could not be updated.");
     return { sent: true, at };
   });
