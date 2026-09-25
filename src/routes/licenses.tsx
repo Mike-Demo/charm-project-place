@@ -15,7 +15,7 @@ interface LicenseGroup {
 }
 
 const DESCRIPTION =
-  "Licenses and credits for the open-source libraries, typefaces, and services used by Tattoo Atelier.";
+  "Licenses and credits for the open-source libraries, typefaces, and services used by Tattoo Atelier. Appointment-only custom linework studio in Saint Paul.";
 
 const GROUPS: readonly LicenseGroup[] = [
   {

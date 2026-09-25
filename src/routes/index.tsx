@@ -68,10 +68,10 @@ function resolveChoiceDate(choice: DayChoice, today: Date): Date {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Session Details — Tattoo Atelier" },
-      { name: "description", content: "Confirm your custom linework session at Tattoo Atelier." },
-      { property: "og:title", content: "Session Details — Tattoo Atelier" },
-      { property: "og:description", content: "Confirm your custom linework session at Tattoo Atelier." },
+      { title: "Fresh Ink: Book your session" },
+      { name: "description", content: "Tattoo Atelier: appointment-only custom linework studio in Saint Paul. Book a session in a few steps — pick a day, lock your slot, and get a session pass." },
+      { property: "og:title", content: "Fresh Ink: Book your session" },
+      { property: "og:description", content: "Tattoo Atelier: appointment-only custom linework studio in Saint Paul. Book a session in a few steps — pick a day, lock your slot, and get a session pass." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
