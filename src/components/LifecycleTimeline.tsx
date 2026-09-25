@@ -49,7 +49,7 @@ export function LifecycleTimeline({ booking }: { booking: Appointment }) {
           return (
             <li key={stage.label} className="relative flex gap-3 pb-4 last:pb-0">
               {index < stages.length - 1 && <span aria-hidden className={`absolute left-[13px] top-7 h-[calc(100%-1.5rem)] w-px ${done ? "bg-ink" : "border-l border-dashed border-ink-dim/60"}`} />}
-              <span aria-hidden className={`relative mt-0.5 grid size-7 shrink-0 place-items-center rounded-full border ${done ? "border-ink bg-ink text-paper" : "border-ink-dim bg-paper"}`}>
+              <span aria-hidden className={`relative mt-0.5 grid size-7 shrink-0 place-items-center rounded-full border ${done ? "border-ink bg-ink text-paper-sheet" : "border-ink-dim bg-paper-sheet"}`}>
                 {done && <Check className="size-4" />}
               </span>
               <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2">
