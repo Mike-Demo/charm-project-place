@@ -25,6 +25,7 @@ export interface Appointment {
   booking_date: string;
   time_slot: string;
   status: string;
+  payment_status?: string;
   notes: string | null;
   pronouns: string | null;
   created_at: string;

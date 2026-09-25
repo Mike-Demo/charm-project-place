@@ -93,6 +93,44 @@ export async function fetchAppointments(from: Date, to: Date): Promise<Appointme
   return (data ?? []) as Appointment[];
 }
 
+export type BookingPeriod = "upcoming" | "past" | "all";
+
+export interface BookingListOptions {
+  period: BookingPeriod;
+  status: string;
+  search: string;
+  page: number;
+  pageSize: number;
+  today: string;
+}
+
+export async function fetchBookingPage(options: BookingListOptions): Promise<{ bookings: Appointment[]; total: number }> {
+  const { period, status, search, page, pageSize, today } = options;
+  const ascending = period === "upcoming";
+  const fields = "id,client_name,phone,email,booking_date,time_slot,status,payment_status,pronouns,created_at,reschedule_count,rescheduled_at,idea_description,reference_image_path,concept_sketch_path,notes";
+  let query = supabase.from("appointments").select(fields, { count: "exact" });
+  if (period === "upcoming") query = query.gte("booking_date", today);
+  if (period === "past") query = query.lt("booking_date", today);
+  if (status !== "all") query = query.eq("status", status);
+  const term = search.trim();
+  if (term) query = query.ilike("client_name", `%${term.replace(/[\\%_]/g, "\\$&")}%`);
+  const start = page * pageSize;
+  const { data, count, error } = await query
+    .order("booking_date", { ascending })
+    .order("time_slot", { ascending })
+    .range(start, start + pageSize - 1);
+  if (error) throw new Error(error.message);
+  return { bookings: (data ?? []) as Appointment[], total: count ?? 0 };
+}
+
+export async function fetchAdminBooking(id: string): Promise<Appointment | null> {
+  const { data, error } = await supabase.from("appointments")
+    .select("id,client_name,phone,email,booking_date,time_slot,status,payment_status,pronouns,created_at,reschedule_count,rescheduled_at,idea_description,reference_image_path,concept_sketch_path,notes")
+    .eq("id", id).maybeSingle();
+  if (error) throw new Error(error.message);
+  return data as Appointment | null;
+}
+
 export async function fetchBlockedSlots(from: Date, to: Date): Promise<BlockedSlot[]> {
   const { data, error } = await supabase
     .from("blocked_slots")
