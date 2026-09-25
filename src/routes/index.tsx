@@ -149,9 +149,10 @@ function TattooAtelier() {
     [availabilityQuery.data],
   );
 
-  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming">(() =>
+  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming" | "failed">(() =>
     new URLSearchParams(window.location.search).get("paid") ? "confirming" : "idle",
   );
+
 
   const heldIdRef = useRef<string | null>(null);
   const paidRef = useRef(false);
