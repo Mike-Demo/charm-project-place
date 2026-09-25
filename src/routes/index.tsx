@@ -304,7 +304,7 @@ function TattooAtelier() {
         <div ref={paneRef} onClick={handlePaneClick} className="step-pane min-h-[300px]" key={step}>
           {step === 1 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 01 of 06</p>
               <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-3xl leading-snug sm:text-4xl">
                 <h2 className="font-normal">What should we call you?</h2>
                 <span className={`relative inline-block border-b-2 ${nameValid ? "border-foreground/70 focus-within:border-cyan-draft" : name.trim() ? "border-pencil-red" : "border-ink-dim/40"}`}>
@@ -320,7 +320,44 @@ function TattooAtelier() {
 
           {step === 2 && (
             <section className="flex min-h-[280px] flex-col justify-center">
-              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 05</p>
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 02 of 06</p>
+              <h2 className="mb-2 text-3xl font-normal leading-snug sm:text-4xl">What are your pronouns{firstName ? `, ${firstName}` : ""}?</h2>
+              <p className="mb-5 text-sm text-ink-pencil">So your artist addresses you right from the first sketch.</p>
+              <div className="flex flex-wrap gap-2">
+                {PRONOUN_OPTIONS.map((option) => {
+                  const active = pronounChoice === option;
+                  return (
+                    <button key={option} type="button" aria-pressed={active}
+                      onClick={() => { setPronounChoice(option); setCustomPronouns(""); }}
+                      className={`rounded-full border px-4 py-2 text-lg transition-all ${active ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                      {option}
+                    </button>
+                  );
+                })}
+                <button type="button" aria-pressed={pronounChoice === "custom"} onClick={() => setPronounChoice("custom")}
+                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "custom" ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                  ✎ Something else
+                </button>
+                <button type="button" aria-pressed={pronounChoice === "private"} onClick={() => { setPronounChoice("private"); setCustomPronouns(""); }}
+                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "private" ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                  Prefer not to say
+                </button>
+              </div>
+              {pronounChoice === "custom" && (
+                <span className={`mt-5 inline-block w-fit border-b-2 text-2xl sm:text-3xl ${customPronouns.trim() ? "border-foreground/70" : "border-ink-dim/40"}`}>
+                  <input autoFocus aria-label="Your pronouns" className="paper-inline-input font-bold" onChange={(e) => setCustomPronouns(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. ze / hir" style={{ width: `${Math.max(12, customPronouns.length + 1)}ch` }} value={customPronouns} />
+                </span>
+              )}
+              <p className="mt-4 flex items-center gap-1.5 text-sm text-ink-pencil">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-pencil-green" />
+                {pronounsValid ? (pronounChoice === "private" ? "Noted — we'll keep it neutral." : `Noted — we'll use ${pronounsValue}.`) : "Pick one so we get it right."}
+              </p>
+            </section>
+          )}
+
+          {step === 3 && (
+            <section className="flex min-h-[280px] flex-col justify-center">
+              <p className="mb-2 font-mono text-sm text-ink-pencil/60">Question 03 of 06</p>
               <h2 className="mb-6 text-3xl font-normal leading-snug sm:text-4xl">What day do you want?</h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {DAY_OPTIONS.map((option) => {
