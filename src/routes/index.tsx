@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
   PRONOUN_OPTIONS,
@@ -9,16 +9,19 @@ import {
   buildAvailability,
   formatLongDate,
   formatPhone,
+  fromDateKey,
   generateVerificationCode,
   isDayFull,
   isSlotTaken,
   sameDay,
   startOfDay,
   toDateKey,
+  type Appointment,
 } from "@/lib/atelier";
-import { fetchUnavailableSlots, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
+import { fetchUnavailableSlots, fetchConfirmedBooking, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
-import { animateSheetIn, animateStudioDraftEntrance, noteDrop, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startLineBoil } from "@/lib/motion";
+import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
+import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows, startLineBoil } from "@/lib/motion";
 import { NEEDLE_MARK_D } from "@/lib/logo-marks";
 
 const stepMeta = [
@@ -99,17 +102,15 @@ function TattooAtelier() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [monthCursor, setMonthCursor] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
-  const [toast, setToast] = useState(false);
+  const [confirmed, setConfirmed] = useState<Appointment | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [smsCode, setSmsCode] = useState<string | null>(null);
   const [codeDigits, setCodeDigits] = useState<string[]>(["", "", "", "", "", ""]);
   const [codeError, setCodeError] = useState(false);
   const [resendIn, setResendIn] = useState(0);
   const codeInputRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const paneRef = useRef<HTMLDivElement | null>(null);
   const pillsRef = useRef<HTMLDivElement | null>(null);
-  const toastRef = useRef<HTMLDivElement | null>(null);
   const draftRef = useRef<HTMLDivElement | null>(null);
   const paperRef = useRef<HTMLElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
@@ -157,9 +158,14 @@ function TattooAtelier() {
     for (let attempt = 0; attempt < 30; attempt += 1) {
       const status = await getBookingStatus(id).catch(() => null);
       if (status === "confirmed") {
+        const booking = await fetchConfirmedBooking(id).catch(() => null);
         setPaymentState("idle");
         heldIdRef.current = null;
-        showConfirmation();
+        if (booking) {
+          setConfirmed(booking);
+        } else {
+          setBookingError("Payment received, but we couldn't load your confirmation pass. We'll email you the details.");
+        }
         void availabilityQuery.refetch();
         return;
       }
@@ -268,10 +274,6 @@ function TattooAtelier() {
     if (step === TOTAL_STEPS) staggerRows(paneRef.current);
   }, [step, direction]);
 
-  useEffect(() => {
-    if (toast) noteDrop(toastRef.current);
-  }, [toast]);
-
   // Demo SMS: mint a studio pass when the verification step opens, focus the first box.
   useEffect(() => {
     if (step !== 6) return;
@@ -304,10 +306,6 @@ function TattooAtelier() {
     if (target) pickPop(target);
   };
 
-  useEffect(() => () => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-  }, []);
-
   const goToStep = (next: number) => {
     if (next < 1 || next > TOTAL_STEPS || next === step) return;
     setDirection(next > step ? "forward" : "backward");
@@ -327,11 +325,24 @@ function TattooAtelier() {
     setSelectedTime(null);
   };
 
-  const showConfirmation = () => {
-    setToast(true);
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(false), 3000);
+  const resetFlow = () => {
+    setConfirmed(null);
+    setStep(1);
+    setDirection("forward");
+    setName("");
+    setPhone("");
+    setEmail("");
+    setPronounChoice(null);
+    setCustomPronouns("");
+    setDayChoice(null);
+    setSelectedDate(null);
+    setSelectedTime(null);
+    setSmsCode(null);
+    setCodeDigits(["", "", "", "", "", ""]);
+    setCodeError(false);
+    setBookingError(null);
   };
+
 
   const setCodeDigit = (index: number, raw: string) => {
     const value = raw.replace(/\D/g, "");
@@ -447,6 +458,8 @@ function TattooAtelier() {
       </header>
 
       <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl py-8 sm:py-12">
+        {confirmed ? <ConfirmedPass booking={confirmed} onReset={resetFlow} /> : (
+        <>
         <div ref={indicatorRef} className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
           <div className="flex min-w-0 items-center gap-2">
             <span className="shrink-0 rounded-full border border-ink-dim/30 bg-paper-deep/80 px-2 py-0.5 text-[11px] font-medium text-foreground">{currentMeta.badge}</span>
@@ -715,16 +728,14 @@ function TattooAtelier() {
           <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />$1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies</a> locks in your slot</span>
           <span>Free rescheduling up to 24h prior</span>
         </div>
+        </>
+        )}
       </main>
 
       <footer className="relative z-10 mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-3 border-t border-ink-dim/20 pb-2 pt-4 text-xs text-ink-pencil">
         <span className="font-mono text-[11px] uppercase tracking-wider text-ink-dim">Tattoo Atelier // Novo // P. 02</span>
         <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">Atelier Session Protocol // Ink &amp; Needle</span>
       </footer>
-
-      <div ref={toastRef} role="status" aria-live="polite" className={`fixed left-1/2 top-8 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl border-2 border-foreground bg-paper-sheet px-6 py-3 shadow-2xl transition-all duration-300 ${toast ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0"}`}>
-        <span className="h-3 w-3 animate-ping rounded-full bg-cyan-draft" /><strong className="text-xl">Booking locked in{firstName ? ` for ${firstName}` : ""}!</strong>
-      </div>
     </div>
   );
 }
@@ -737,6 +748,56 @@ function ErrorNote({ icon, title, children }: { icon: string; title: string; chi
   return <div className="mt-3 flex max-w-xl items-start gap-2"><span className="mt-0.5 shrink-0 text-lg">{icon}</span><div className="text-base leading-snug text-pencil-red"><strong>{title}</strong><span className="mt-0.5 block text-xs text-ink-pencil sm:text-sm">{children}</span></div></div>;
 }
 
-function ReviewRow({ label, value, last = false }: { label: string; value: string; last?: boolean }) {
+function ReviewRow({ label, value, last = false }: { label: string; value: ReactNode; last?: boolean }) {
   return <div data-review-row="" className={`flex flex-col justify-between gap-1 pb-2 sm:flex-row sm:items-center ${last ? "" : "border-b border-ink-dim/20"}`}><span className="shrink-0 font-mono text-sm text-ink-pencil">{label}</span><strong className="break-words text-left sm:text-right">{value}</strong></div>;
+}
+
+// Full-page receipt shown after payment succeeds — replaces the questionnaire.
+function ConfirmedPass({ booking, onReset }: { booking: Appointment; onReset: () => void }) {
+  const sessionDate = fromDateKey(booking.booking_date);
+  const clientFirstName = booking.client_name.trim().split(/\s+/)[0] || "";
+  const pronounsTag = booking.pronouns ? booking.pronouns : null;
+
+  return (
+    <div data-review-row="" className="flex min-h-[420px] flex-col justify-center">
+      <p className="mb-2 font-mono text-sm text-ink-pencil/60">Session Pass // Studio Copy</p>
+      <div className="relative mb-6 w-fit">
+        <h2 className="text-3xl font-normal leading-snug sm:text-4xl">
+          You&apos;re on the books{clientFirstName ? `, ${clientFirstName}` : ""}!
+        </h2>
+        <span aria-hidden="true" className="absolute -right-8 -top-6 hidden rotate-12 rounded-lg border-2 border-pencil-green px-3 py-1 font-mono text-xs font-bold uppercase tracking-widest text-pencil-green sm:inline-block">
+          ✦ Paid ✦
+        </span>
+      </div>
+
+      <div className="space-y-3 rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-4 text-lg sm:p-5">
+        <ReviewRow label="Session:" value={`${formatLongDate(sessionDate)} @ ${booking.time_slot} (Station 03)`} />
+        <ReviewRow label="Client:" value={<span className="inline-flex flex-wrap items-center gap-2">{booking.client_name}{pronounsTag ? <span className="rounded-full border border-ink-dim/30 px-2 py-0.5 text-xs text-ink-pencil">{pronounsTag}</span> : null}</span>} />
+        <ReviewRow label="SMS Reminder:" value={formatPhone(booking.phone)} />
+        <ReviewRow label="Linework & Stencil:" value={booking.email} />
+        <ReviewRow label="Donation:" value={<span className="text-pencil-green">$1 to A Thousand Pansies — received, thank you ✦</span>} last />
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Button onClick={() => window.open(googleCalendarUrl(booking), "_blank", "noopener")} className="ink-stamp-btn h-auto rounded-2xl px-5 py-3 font-hand text-lg font-bold">
+          Add to Google Calendar<span className="text-cyan-draft">✦</span>
+        </Button>
+        <Button variant="outline" onClick={() => downloadIcs([booking], "tattoo-session.ics")} className="h-auto rounded-2xl border-ink-dim/40 bg-transparent px-5 py-3 font-hand text-lg text-foreground hover:bg-paper-deep">
+          Download .ics invite
+        </Button>
+      </div>
+
+      <div className="mt-6 space-y-1.5 text-sm text-ink-pencil">
+        <p className="flex items-start gap-2"><span className="mt-0.5 shrink-0">✎</span>Your stencil &amp; prep guide are on their way to {booking.email} — give it a few minutes.</p>
+        <p className="flex items-start gap-2"><span className="mt-0.5 shrink-0">✎</span>We&apos;ll text a reminder to {formatPhone(booking.phone)} the day before your session.</p>
+        <p className="flex items-start gap-2"><span className="mt-0.5 shrink-0">✎</span>Free rescheduling up to 24h prior — just reply to the reminder.</p>
+      </div>
+
+      <div className="mt-8 border-t border-dashed border-ink-dim/30 pt-5">
+        <Button variant="link" onClick={onReset} className="group h-auto p-0 font-hand text-lg text-ink-pencil hover:text-foreground">
+          <span className="font-mono text-sm transition-transform group-hover:-translate-x-1">←</span><span className="underline decoration-ink-dim/40 underline-offset-4">Book another session</span>
+        </Button>
+      </div>
+    </div>
+  );
 }

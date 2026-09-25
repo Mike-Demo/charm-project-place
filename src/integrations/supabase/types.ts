@@ -147,6 +147,20 @@ export type Database = {
         Returns: string
       }
       get_booking_status: { Args: { p_id: string }; Returns: string }
+      get_confirmed_booking: {
+        Args: { p_id: string }
+        Returns: {
+          booking_date: string
+          client_name: string
+          created_at: string
+          email: string
+          id: string
+          phone: string
+          pronouns: string
+          status: string
+          time_slot: string
+        }[]
+      }
       get_unavailable_slots: {
         Args: { p_from: string; p_to: string }
         Returns: {
