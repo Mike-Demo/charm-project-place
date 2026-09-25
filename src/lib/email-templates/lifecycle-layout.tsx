@@ -4,10 +4,10 @@ import needleAsset from "@/assets/email-needle.png.asset.json";
 import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
 
 export interface LifecycleProps {
-  name?: string;
-  date?: string;
-  time?: string;
-  passUrl?: string;
+  name?: string | undefined;
+  date?: string | undefined;
+  time?: string | undefined;
+  passUrl?: string | undefined;
 }
 
 export const ink = "#292825";
@@ -43,8 +43,8 @@ interface LayoutProps {
   eyebrow: string;
   heading: string;
   showLocation?: boolean;
-  date?: string;
-  time?: string;
+  date?: string | undefined;
+  time?: string | undefined;
   children: ReactNode;
 }
 

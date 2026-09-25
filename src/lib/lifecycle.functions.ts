@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const LIFECYCLE_EMAIL_STAGES = ["reminder", "day_of", "aftercare", "social"] as const;
@@ -48,7 +49,7 @@ export const sendLifecycleEmail = createServerFn({ method: "POST" })
     if (!result.sent) return { sent: false, reason: "recipient_suppressed" };
 
     const at = new Date().toISOString();
-    const { error: updateError } = await context.supabase.from("appointments").update({ [config.column]: at }).eq("id", row.id);
+    const { error: updateError } = await context.supabase.from("appointments").update({ [config.column]: at } as TablesUpdate<"appointments">).eq("id", row.id);
     if (updateError) throw new Error("Email sent, but the timeline could not be updated.");
     return { sent: true, at };
   });
