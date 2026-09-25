@@ -127,8 +127,8 @@ function TattooAtelier() {
                   <input autoFocus aria-label="Your name" className="paper-inline-input max-w-[75vw] font-bold focus:text-cyan-draft" onChange={(e) => setName(e.target.value)} onKeyDown={handleEnter} placeholder="e.g. Sara Tattoo" style={{ width: `${Math.max(17, name.length + 1)}ch` }} value={name} />
                 </span>
               </div>
-              <p className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : "border-pencil-red/25 bg-invalid-soft text-pencil-red"}`}>
-                {nameValid ? `(looking great, ${firstName}! ✨)` : "(let us know who to ink for ✏️)"}
+              <p className={`w-fit rotate-[-1deg] rounded-full border px-3 py-1 text-base font-bold sm:text-lg ${nameValid ? "border-pencil-green/25 bg-valid-soft text-pencil-green" : name.trim() ? "border-pencil-red/25 bg-invalid-soft text-pencil-red" : "border-ink-dim/30 bg-paper-deep/60 text-ink-pencil"}`}>
+                {nameValid ? `(looking great, ${firstName}! ✨)` : name.trim() ? "(let us know who to ink for ✏️)" : "(your name goes here)"}
               </p>
               <p className="mt-3 text-xs text-ink-pencil sm:text-sm">Press Enter ↵ or click Continue below when ready.</p>
             </section>
