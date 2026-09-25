@@ -141,9 +141,9 @@ const GROUPS: readonly LicenseGroup[] = [
 export const Route = createFileRoute("/licenses")({
   head: () => ({
     meta: [
-      { title: "Open Source & Credits — Tattoo Atelier" },
+      { title: "Open Source & Credits — Fresh Ink: Book your session" },
       { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: "Open Source & Credits — Tattoo Atelier" },
+      { property: "og:title", content: "Open Source & Credits — Fresh Ink: Book your session" },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
