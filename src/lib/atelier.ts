@@ -39,6 +39,8 @@ export interface Appointment {
   day_of_sent_at?: string | null;
   aftercare_sent_at?: string | null;
   social_sent_at?: string | null;
+  sms_reminder_status?: string | null;
+  sms_reminder_at?: string | null;
 }
 
 export const PRONOUN_OPTIONS = [
