@@ -24,6 +24,7 @@ import {
 import { ConfirmedPass } from "@/components/ConfirmedPass";
 import { ConfirmingSketch } from "@/components/ConfirmingSketch";
 import { PRELOADER_COMPLETE_EVENT } from "@/components/SitePreloader";
+import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
 
 import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
@@ -659,6 +660,10 @@ function TattooAtelier() {
                 <span className="h-2 w-2 shrink-0 rounded-full bg-pencil-green" />
                 {scheduleValid ? `${sessionLabel} • 90 min custom linework at Station 03` : "Choose a day on the sheet, then a time slot."}
               </p>
+              <p className="mt-3 text-sm leading-relaxed text-ink-pencil">
+                Studio: <a href={STUDIO_MAP_URL} target="_blank" rel="noopener noreferrer" className="underline decoration-ink-dim/50 underline-offset-4 hover:text-foreground">{STUDIO_ADDRESS}<span className="sr-only"> (opens in a new tab)</span></a>
+                <span className="block font-mono text-xs">Hours: {STUDIO_HOURS}</span>
+              </p>
             </section>
           )}
 
@@ -734,6 +739,8 @@ function TattooAtelier() {
               <h2 className="mb-4 text-3xl font-normal leading-snug sm:text-4xl">Almost ready to ink{firstName ? `, ${firstName}` : ""} <span className="animate-pulse text-2xl">✨</span></h2>
               <div className="space-y-3 rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-4 text-lg">
                 <ReviewRow label="Session:" value={scheduleValid ? `${sessionLabel} (Station 03)` : "—"} />
+                <ReviewRow label="Studio:" value={STUDIO_ADDRESS} />
+                <ReviewRow label="Hours:" value={STUDIO_HOURS} />
                 <ReviewRow label="Client:" value={name.trim() || "—"} />
                 <ReviewRow label="Pronouns:" value={pronounsValid ? pronounsLabel : "—"} />
                 <ReviewRow label="SMS Reminder:" value={phone.trim() || "—"} />

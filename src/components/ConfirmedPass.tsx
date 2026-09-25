@@ -18,6 +18,7 @@ import {
 import { fetchUnavailableSlots, rescheduleBooking } from "@/lib/atelier-service";
 import { PassIdea } from "@/components/IdeaGallery";
 import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
+import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
 
 const MAX_RESCHEDULES = 3;
 
@@ -69,6 +70,8 @@ export function ConfirmedPass({ booking, token, onReset, onRescheduled }: Confir
 
       <div className="space-y-3 rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-4 text-lg sm:p-5">
         <PassRow label="Session:" value={`${formatLongDate(sessionDate)} @ ${booking.time_slot} (Station 03)`} />
+        <PassRow label="Studio:" value={<a href={STUDIO_MAP_URL} target="_blank" rel="noopener noreferrer" className="underline decoration-ink-dim/50 underline-offset-4 hover:text-foreground">{STUDIO_ADDRESS}<span className="sr-only"> (opens in a new tab)</span></a>} />
+        <PassRow label="Hours:" value={STUDIO_HOURS} />
         <PassRow label="Client:" value={<span className="inline-flex flex-wrap items-center gap-2">{booking.client_name}{booking.pronouns ? <span className="rounded-full border border-ink-dim/30 px-2 py-0.5 text-xs text-ink-pencil">{booking.pronouns}</span> : null}</span>} />
         <PassRow label="SMS Reminder:" value={formatPhone(booking.phone)} />
         <PassRow label="Linework & Stencil:" value={booking.email} />

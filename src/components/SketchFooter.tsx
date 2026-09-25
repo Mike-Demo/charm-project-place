@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ReactElement } from "react";
+import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
 
 interface SocialLink {
   /** Accessible label, e.g. "MikeDemo on LinkedIn". */
@@ -60,6 +61,13 @@ export function SketchFooter(): ReactElement {
         <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">
           Atelier Session Protocol // Ink &amp; Needle
         </span>
+      </div>
+
+      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-1 font-mono text-[11px] leading-relaxed text-ink-pencil">
+        <a href={STUDIO_MAP_URL} target="_blank" rel="noopener noreferrer" className="underline decoration-ink-dim/40 underline-offset-4 hover:text-foreground">
+          {STUDIO_ADDRESS}<span className="sr-only"> (opens in a new tab)</span>
+        </a>
+        <span>Hours: {STUDIO_HOURS}</span>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
