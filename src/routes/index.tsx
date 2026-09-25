@@ -457,7 +457,7 @@ function TattooAtelier() {
         </div>
       </header>
 
-      <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl py-8 sm:py-12">
+      <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl pb-8 sm:pb-12">
         {confirmed ? <ConfirmedPass booking={confirmed} onReset={resetFlow} /> : (
         <>
         <div ref={indicatorRef} className="mb-8 flex items-start justify-between gap-3 font-mono text-xs text-ink-pencil/70">
