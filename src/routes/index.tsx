@@ -370,17 +370,17 @@ function TattooAtelier() {
                   return (
                     <button key={option} type="button" aria-pressed={active}
                       onClick={() => { setPronounChoice(option); setCustomPronouns(""); }}
-                      className={`rounded-full border px-4 py-2 text-lg transition-all ${active ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                      className={`rounded-full border px-4 py-2 text-lg transition-all ${active ? "ink-bloom border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
                       {option}
                     </button>
                   );
                 })}
                 <button type="button" aria-pressed={pronounChoice === "custom"} onClick={() => setPronounChoice("custom")}
-                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "custom" ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "custom" ? "ink-bloom border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
                   ✎ Something else
                 </button>
                 <button type="button" aria-pressed={pronounChoice === "private"} onClick={() => { setPronounChoice("private"); setCustomPronouns(""); }}
-                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "private" ? "border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
+                  className={`rounded-full border px-4 py-2 text-lg transition-all ${pronounChoice === "private" ? "ink-bloom border-foreground bg-foreground font-bold text-background" : "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
                   Prefer not to say
                 </button>
               </div>
@@ -481,7 +481,7 @@ function TattooAtelier() {
                           className={`rounded-full border px-3 py-1.5 text-base transition-all ${
                             taken ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50 line-through" :
                             selectedDate === null ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50" :
-                            active ? "border-foreground bg-foreground font-bold text-background" :
+                            active ? "ink-bloom border-foreground bg-foreground font-bold text-background" :
                             "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
                           {slot}
                         </button>
