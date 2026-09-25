@@ -475,7 +475,7 @@ function TattooAtelier() {
           <div ref={pillsRef} className="flex w-full shrink-0 flex-wrap items-center justify-end gap-1 sm:w-auto sm:gap-1.5" aria-label="Appointment steps">
             {stepMeta.map((item, index) => (
               <Button key={item.title} variant="ghost" size="icon" onClick={() => goToStep(index + 1)} title={item.title} aria-label={item.title}
-                className={`h-11 w-11 shrink-0 sm:h-7 sm:w-7 rounded-full p-0 font-mono text-xs shadow-none ${step === index + 1 ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/40 hover:bg-foreground hover:text-background" : "bg-paper-deep/80 text-ink-pencil hover:bg-paper-line hover:text-foreground"}`}>
+                className={`h-11 w-11 min-w-11 shrink-0 sm:h-7 sm:w-7 sm:min-w-7 rounded-full p-0 font-mono text-xs shadow-none ${step === index + 1 ? "bg-foreground font-bold text-background ring-2 ring-cyan-draft/40 hover:bg-foreground hover:text-background" : "bg-paper-deep/80 text-ink-pencil hover:bg-paper-line hover:text-foreground"}`}>
                 {index === TOTAL_STEPS - 1 ? "✦" : String(index + 1).padStart(2, "0")}
               </Button>
             ))}
