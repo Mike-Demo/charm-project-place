@@ -56,10 +56,7 @@ function AgentCheckout(): ReactElement {
         ) : hold.isPending ? (
           <p className="mt-4 text-sm text-muted-foreground" aria-live="polite">Finding your hold…</p>
         ) : h && (locked || h.status === "confirmed") ? (
-          <>
-            <p className="mt-4 text-sm">Locked in — check your email for your session pass.</p>
-            <Link className="mt-3 inline-block text-sm underline" to={`/pass/${""}`}>Session pass</Link>
-          </>
+          <p className="mt-4 text-sm">Locked in — check your email for your session pass.</p>
         ) : h && h.status === "pending" ? (
           <>
             <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 font-mono text-sm">
