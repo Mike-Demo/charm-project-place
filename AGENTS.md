@@ -16,5 +16,6 @@
 - Keep studio address and appointment-only hours in one shared location module so website and email copy remain consistent.
 - Keep the site title "Fresh Ink: Book your session" and each page's meta description as literal strings inside that route's existing `head()` block (subpages prefix a short page label); no shared metadata module or new head mechanism, so every page's tags stay visible where the page is defined.
 - Day-before reminders run from /api/public/hooks/send-reminders, called by pg_cron at 14:00 and 15:00 UTC and gated to 9 AM America/Chicago; the caller is verified against a hashed token in cron_tokens, because this agent can't read vault or LOVABLE_CRON_SECRET.
-- AI agents book via a hand-rolled MCP (JSON-RPC over HTTP) route at /api/public/mcp using server-only helpers in agent-booking.server.ts; agent holds pay through /checkout/$id?s=<hold secret> so the client, not the agent, completes payment.
+- AI agents book via a hand-rolled MCP (JSON-RPC) route at /api/public/mcp (helpers in agent-booking.server.ts); agent holds pay through /checkout/$id?s=<hold secret> so the client, not the agent, completes payment.
+- Public REST API routes reuse `src/lib/public-api.server.ts` for CORS, structured errors, rate limits, idempotency, HMAC webhooks; every confirmation fires notifyWebhooks("booking.confirmed").
 - Share card and PWA icons are static files in public/ referenced by absolute https://freshink.art URLs (OG_IMAGE_URL); manifest-only install, no service worker.
