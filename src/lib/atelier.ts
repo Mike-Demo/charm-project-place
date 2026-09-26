@@ -20,6 +20,7 @@ export interface UnavailableSlot {
 export interface Appointment {
   id: string;
   client_name: string;
+  source?: string;
   phone: string;
   email: string;
   booking_date: string;

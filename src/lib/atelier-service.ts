@@ -131,7 +131,7 @@ export interface BookingListOptions {
 export async function fetchBookingPage(options: BookingListOptions): Promise<{ bookings: Appointment[]; total: number }> {
   const { period, status, search, page, pageSize, today } = options;
   const ascending = period === "upcoming";
-  const fields = "id,client_name,phone,email,booking_date,time_slot,status,payment_status,pronouns,created_at,reschedule_count,rescheduled_at,idea_description,reference_image_path,concept_sketch_path,notes";
+  const fields = "id,client_name,phone,email,booking_date,time_slot,status,payment_status,pronouns,created_at,reschedule_count,rescheduled_at,idea_description,reference_image_path,concept_sketch_path,notes,source";
   let query = supabase.from("appointments").select(fields, { count: "exact" });
   if (period === "upcoming") query = query.gte("booking_date", today);
   if (period === "past") query = query.lt("booking_date", today);
