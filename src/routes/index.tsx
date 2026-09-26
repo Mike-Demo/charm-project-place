@@ -30,6 +30,8 @@ import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-locat
 import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
+import { DEFAULT_FAVICON, faviconForStep, setFavicon } from "@/lib/step-favicons";
+
 
 const stepMeta = [
   { badge: "Step 01 // 07", hint: "Your name", title: "Step 1: Name" },
