@@ -79,6 +79,22 @@ function AgentsPage(): ReactElement {
       </section>
 
       <section className="mt-6 rounded-sm border border-ink-dim/30 bg-card p-5">
+        <h2 className="font-hand text-2xl font-bold">Prefer REST?</h2>
+        <p className="mt-2 text-sm">Every MCP tool is also a plain HTTP endpoint, plus events and webhooks.</p>
+        <ul className="mt-3 space-y-2 text-sm">
+          <li><code className="font-mono font-semibold">GET /api/public/studio</code> — studio info.</li>
+          <li><code className="font-mono font-semibold">GET /api/public/availability?from=&amp;to=</code> — open times.</li>
+          <li><code className="font-mono font-semibold">POST /api/public/holds</code> — create a hold (idempotency supported).</li>
+          <li><code className="font-mono font-semibold">GET /api/public/bookings/&#123;id&#125;</code> — booking status.</li>
+          <li><code className="font-mono font-semibold">GET /api/public/events</code> — live availability stream (SSE).</li>
+          <li><code className="font-mono font-semibold">POST /api/public/webhooks</code> — get signed push events.</li>
+          <li><code className="font-mono font-semibold">POST /api/public/agent-keys</code> — optional API key for higher rate limits.</li>
+        </ul>
+        <p className="mt-4 text-sm">Full spec:</p>
+        <CodeBlock code={`${APP_ORIGIN}/api/public/openapi.json`} label="OpenAPI spec URL" />
+      </section>
+
+      <section className="mt-6 rounded-sm border border-ink-dim/30 bg-card p-5">
         <h2 className="font-hand text-2xl font-bold">Tools</h2>
         <ul className="mt-3 space-y-2 text-sm">
           {TOOLS.map(([name, desc]) => (
