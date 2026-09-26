@@ -214,6 +214,20 @@ function Licenses(): ReactElement {
             This studio is built on freely licensed software and typefaces.
             Every library and service it relies on is credited below.
           </p>
+          <div className="mt-4">
+          <a
+            href="https://app.aikido.dev/audit-report/external/smlvhLoPnScdRnVeF7TjudEr/request"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Aikido Security Audit Report (opens in new tab)"
+          >
+            <img
+              src="https://app.aikido.dev/assets/badges/full-light-theme.svg"
+              alt="Aikido Security Audit Report"
+              height={40}
+            />
+          </a>
+          </div>
         </header>
 
         <section className="mt-10" aria-labelledby="proof-of-concept">
