@@ -1,12 +1,5 @@
-# Studio booking dashboard
-
-- [x] Add a bounded, searchable booking list with date and status filters.
-- [x] Show private session details, pronouns, contact, payment and tattoo idea.
-- [x] Preserve the availability calendar and status controls.
-- [x] Verify signed-in desktop/mobile dashboard, filters and private images.
-
-# Studio location
-
-- [x] Add the address and appointment-only hours to the footer and booking page.
-- [x] Add the address and hours to the confirmation email.
-- [x] Verify desktop/mobile booking, email rendering, and build status.
+- [ ] Capture all filled booking steps and confirmation on mobile, tablet, and desktop
+- [ ] Create simulated email and SMS client captures on each device
+- [ ] Capture the admin/management view on each device
+- [ ] Create device-framed versions of every capture
+- [ ] Visually inspect all deliverables and package them in Files
