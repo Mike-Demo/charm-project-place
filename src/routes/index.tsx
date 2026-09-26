@@ -16,6 +16,7 @@ import {
 
   generateVerificationCode,
   isDayFull,
+  isSlotPast,
   isSlotTaken,
   sameDay,
   startOfDay,
