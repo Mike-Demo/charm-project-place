@@ -26,7 +26,7 @@ This produces 30 screenshots total.
 - Check every screenshot for clipping, overlaps, two-line controls, missing artwork, loading overlays, and incorrect confirmation details.
 - Record any functional or visual issue encountered; do not change the app unless separately requested.
 
-## Deliverables
+## Deliverables — standalone and device-framed versions
 - Save organized `mobile`, `tablet`, and `desktop` folders in Files.
 - Save a ZIP containing the complete screenshot set and generated test reference image.
 - Group the files into a booking walkthrough collection when collection tooling is available.
