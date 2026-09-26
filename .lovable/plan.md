@@ -1,6 +1,6 @@
 # Full booking walkthrough screenshots
 
-## Goal
+## Goal — booking and admin/management views
 Run the current $0 proof-of-concept booking flow from start to confirmation on mobile, tablet, and desktop, saving a screenshot after each completed step.
 
 ## Booking, simulated email, and simulated SMS capture set
