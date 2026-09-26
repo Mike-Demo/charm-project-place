@@ -14,7 +14,7 @@
   "overrides": {
     "rolldown": "1.2.1",
     "seroval": "https://npm.aikido.io/259bdd65156c8f75910de/seroval@1.5.6-aikido.1",
-    "srvx": "0.12.0"
+    "srvx": "^0.12.4"
   },
   "dependencies": {
     "@eslint/eslintrc": "^3.3.7",
