@@ -201,7 +201,6 @@ function TattooAtelier() {
       }
       if (status === "confirmed") {
         const booking = await fetchConfirmedBooking(id).catch(() => null);
-        heldIdRef.current = null;
         if (booking) {
           setPaymentState("idle");
           setConfirmed(booking);
