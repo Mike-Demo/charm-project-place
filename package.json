@@ -13,7 +13,8 @@
   },
   "overrides": {
     "rolldown": "1.2.1",
-    "seroval": "https://npm.aikido.io/259bdd65156c8f75910de/seroval@1.5.6-aikido.1"
+    "seroval": "https://npm.aikido.io/259bdd65156c8f75910de/seroval@1.5.6-aikido.1",
+    "srvx": "0.12.0"
   },
   "dependencies": {
     "@eslint/eslintrc": "^3.3.7",
@@ -74,7 +75,7 @@
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.2",
     "react-resizable-panels": "^4.6.5",
-    "recharts": "^2.15.4",
+    "recharts": "^3.9.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.1",
