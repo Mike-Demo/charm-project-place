@@ -101,7 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "author", content: "Tattoo Atelier" },
+      { name: "author", content: "Fresh Ink" },
       { name: "google-site-verification", content: "TQqMKLXzsEbhXIj_qpMfvRmvCEP_Dz-w7iQ7bV9IVYw" },
       { name: "theme-color", content: "#FBF2DD" },
       { name: "apple-mobile-web-app-title", content: "Fresh Ink" },

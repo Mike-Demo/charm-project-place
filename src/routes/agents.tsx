@@ -30,9 +30,9 @@ export const Route = createFileRoute("/agents")({
   head: () => ({
     meta: [
       { title: "For AI agents — Fresh Ink: Book your session" },
-      { name: "description", content: "Connect ChatGPT, Claude, or any MCP-capable assistant to book Tattoo Atelier sessions in Saint Paul on behalf of its user." },
+      { name: "description", content: "Connect ChatGPT, Claude, or any MCP-capable assistant to book Fresh Ink sessions in Saint Paul on behalf of its user." },
       { property: "og:title", content: "For AI agents — Fresh Ink: Book your session" },
-      { property: "og:description", content: "Connect any MCP-capable assistant to book Tattoo Atelier sessions on behalf of its user." },
+      { property: "og:description", content: "Connect any MCP-capable assistant to book Fresh Ink sessions on behalf of its user." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${APP_ORIGIN}/agents` },
       { property: "og:image", content: OG_IMAGE_URL },

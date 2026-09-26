@@ -38,9 +38,9 @@ export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Studio Ledger — Fresh Ink: Book your session" },
-      { name: "description", content: "Tattoo Atelier studio ledger: manage sessions and availability. Appointment-only custom linework studio in Saint Paul." },
+      { name: "description", content: "Fresh Ink studio ledger: manage sessions and availability. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:title", content: "Studio Ledger — Fresh Ink: Book your session" },
-      { property: "og:description", content: "Tattoo Atelier studio ledger: manage sessions and availability. Appointment-only custom linework studio in Saint Paul." },
+      { property: "og:description", content: "Fresh Ink studio ledger: manage sessions and availability. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -123,7 +123,7 @@ function AdminPage() {
 
   const blockMutation = useMutation({
     mutationFn: ({ date, slot }: { date: Date; slot: string | null }) =>
-      blockSlot(date, slot, slot === null ? "Atelier closed" : "Artist hold"),
+      blockSlot(date, slot, slot === null ? "Studio closed" : "Artist hold"),
     onSuccess: refresh,
     onError: (error: Error) => setActionError(error.message),
   });
@@ -180,7 +180,7 @@ function AdminPage() {
       <Shell>
         <div className="mx-auto max-w-xl rounded-lg border border-ink-dim/30 bg-paper-deep/50 p-6 shadow-sm sm:p-8">
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">
-            Tattoo Atelier // Studio Ledger
+            Fresh Ink // Studio Ledger
           </p>
           <h1 className="mt-2 text-3xl font-normal sm:text-4xl">Studio access required</h1>
           <div className="mt-4 space-y-3 border-t border-dashed border-ink-dim/30 pt-4">
@@ -218,7 +218,7 @@ function AdminPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">
-            Tattoo Atelier // Studio Ledger
+            Fresh Ink // Studio Ledger
           </p>
           <h1 className="mt-1 text-3xl font-normal sm:text-4xl">Sessions &amp; availability</h1>
         </div>

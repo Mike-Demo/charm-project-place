@@ -8,9 +8,9 @@ export const Route = createFileRoute("/pass/$token")({
   head: () => ({
     meta: [
       { title: "Session Pass — Fresh Ink: Book your session" },
-      { name: "description", content: "Your private session pass: Tattoo Atelier details, calendar invite, and rescheduling. Appointment-only custom linework studio in Saint Paul." },
+      { name: "description", content: "Your private session pass: Fresh Ink details, calendar invite, and rescheduling. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:title", content: "Session Pass — Fresh Ink: Book your session" },
-      { property: "og:description", content: "Your private session pass: Tattoo Atelier details, calendar invite, and rescheduling. Appointment-only custom linework studio in Saint Paul." },
+      { property: "og:description", content: "Your private session pass: Fresh Ink details, calendar invite, and rescheduling. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },

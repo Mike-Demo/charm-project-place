@@ -52,10 +52,10 @@ const SessionPassEmail = ({ name, date, time, passUrl }: SessionPassProps) => (
       <Container style={{ width: "100%", maxWidth: "560px", margin: "0 auto", padding: "24px 12px 40px" }}>
         <Section style={{ border: "1px solid #d5d1c8", backgroundColor: paper, padding: "28px 24px 22px" }}>
           <Text style={{ margin: "0 0 18px", color: graphite, fontFamily: mono, fontSize: "11px", lineHeight: "18px" }}>
-            TATTOO ATELIER <span style={{ color: cyan }}>✦</span> STUDIO COPY
+            FRESH INK <span style={{ color: cyan }}>✦</span> STUDIO COPY
           </Text>
 
-          <Img src={needleUrl} width="76" height="76" alt="Tattoo Atelier needle illustration" style={{ display: "block", width: "76px", height: "76px", margin: "0 auto 14px" }} />
+          <Img src={needleUrl} width="76" height="76" alt="Fresh Ink needle illustration" style={{ display: "block", width: "76px", height: "76px", margin: "0 auto 14px" }} />
           <Heading as="h1" style={{ margin: "0 0 8px", textAlign: "center", color: ink, fontFamily: hand, fontWeight: "normal", fontSize: "26px", lineHeight: "34px" }}>
             You&apos;re on the books{name ? `, ${name}` : ""}!
           </Heading>
