@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import { z } from "zod";
 import { TIME_SLOTS } from "@/lib/atelier";
 import { APP_ORIGIN, STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
+import { idempotencyLookup, idempotencyStore, notifyWebhooks } from "@/lib/public-api.server";
 
 const HOLDS_PER_CALLER_PER_HOUR = 5;
 const MAX_ACTIVE_AGENT_HOLDS = 20;
@@ -45,6 +46,7 @@ export const AGENT_TOOLS = [
         phone: { type: "string", description: "US phone, 10 digits" },
         pronouns: { type: "string", description: "Optional, e.g. she/her" },
         idea: { type: "string", description: "Optional short description of the tattoo idea" },
+        idempotency_key: { type: "string", description: "Optional unique key so retrying the same hold never books twice" },
       },
       required: ["date", "time_slot", "name", "email", "phone"],
       additionalProperties: false,
@@ -122,8 +124,13 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
             phone: z.string().trim().max(30),
             pronouns: z.string().trim().max(40).optional(),
             idea: z.string().trim().max(2000).optional(),
+            idempotency_key: z.string().trim().min(8).max(120).optional(),
           })
           .parse(args);
+        if (input.idempotency_key) {
+          const replayed = await idempotencyLookup(input.idempotency_key, callerId);
+          if (replayed) return replayed as ToolResult;
+        }
         const db = await admin();
         const hourAgo = new Date(Date.now() - 3600000).toISOString();
         const { count: recent } = await db.from("agent_hold_log").select("id", { count: "exact", head: true }).eq("caller_hash", callerId).gte("created_at", hourAgo);
@@ -144,13 +151,16 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
         if (!row) return text({ error: "Could not hold that slot." }, true);
         await db.from("appointments").update({ source: "agent", ...(input.idea ? { idea_description: input.idea } : {}) }).eq("id", row.id);
         await db.from("agent_hold_log").insert({ caller_hash: callerId, appointment_id: row.id });
-        return text({
+        const result = text({
           booking_id: row.id,
           status: "pending",
           hold_expires_in_minutes: 15,
           checkout_url: `${APP_ORIGIN}/checkout/${row.id}?s=${encodeURIComponent(row.hold_secret)}`,
           next_step: "Send checkout_url to the user. The slot is released if they don't lock in within 15 minutes.",
         });
+        if (input.idempotency_key) await idempotencyStore(input.idempotency_key, callerId, result);
+        await notifyWebhooks("hold.created", { booking_id: row.id, date: input.date, time_slot: input.time_slot });
+        return result;
       }
       case "get_booking_status": {
         const { booking_id } = z.object({ booking_id: z.string().uuid() }).parse(args);

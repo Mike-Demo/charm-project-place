@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_api_keys: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          key_hash: string
+          label: string | null
+          last_used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          key_hash: string
+          label?: string | null
+          last_used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          key_hash?: string
+          label?: string | null
+          last_used_at?: string | null
+        }
+        Relationships: []
+      }
       agent_hold_log: {
         Row: {
           appointment_id: string | null
@@ -42,6 +69,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      api_rate_log: {
+        Row: {
+          bucket: string
+          caller_hash: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          bucket: string
+          caller_hash: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          bucket?: string
+          caller_hash?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
       }
       appointments: {
         Row: {
@@ -181,6 +229,27 @@ export type Database = {
         }
         Relationships: []
       }
+      idempotency_keys: {
+        Row: {
+          caller_hash: string
+          created_at: string
+          key: string
+          response: Json
+        }
+        Insert: {
+          caller_hash: string
+          created_at?: string
+          key: string
+          response: Json
+        }
+        Update: {
+          caller_hash?: string
+          created_at?: string
+          key?: string
+          response?: Json
+        }
+        Relationships: []
+      }
       reminder_runs: {
         Row: {
           failed: number
@@ -247,6 +316,33 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      webhook_subscriptions: {
+        Row: {
+          created_at: string
+          events: string[]
+          id: string
+          manage_token: string
+          secret: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          events?: string[]
+          id?: string
+          manage_token: string
+          secret: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          events?: string[]
+          id?: string
+          manage_token?: string
+          secret?: string
+          url?: string
         }
         Relationships: []
       }

@@ -30,6 +30,8 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
                 .in("status", ["pending", "expired"]);
               if (error) console.error("Failed to confirm appointment", error.message);
               else {
+                const { notifyWebhooks } = await import("@/lib/public-api.server");
+                await notifyWebhooks("booking.confirmed", { booking_id: custom.data.appointmentId }).catch(() => undefined);
                 const { data: row } = await supabaseAdmin
                   .from("appointments")
                   .select("client_name,email,booking_date,time_slot,access_token")

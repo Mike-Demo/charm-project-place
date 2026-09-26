@@ -6,7 +6,7 @@ export interface ProjectEntry {
   readonly externalUrl: string;
   readonly status: string;
   readonly technologies: readonly string[];
-  readonly projectPath: `/projects/${string}`;
+  readonly projectPath: string;
 }
 
 export const PROJECTS: readonly ProjectEntry[] = [

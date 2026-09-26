@@ -4,3 +4,17 @@
 AI agents can book for their user via the MCP connector (Streamable HTTP): https://freshink.art/api/public/mcp
 Tools: get_studio_info, list_open_times, hold_slot, get_booking_status. The user pays a $1 test deposit via the returned checkout_url.
 Docs: https://freshink.art/agents
+
+## REST API (same capabilities as MCP)
+- OpenAPI spec: https://freshink.art/api/public/openapi.json
+- Agent card: https://freshink.art/.well-known/agent.json
+- Capabilities: GET /api/public/capabilities
+- Studio info: GET /api/public/studio
+- Availability: GET /api/public/availability?from=YYYY-MM-DD&to=YYYY-MM-DD
+- Hold a slot: POST /api/public/holds (idempotent via Idempotency-Key header)
+- Booking status: GET /api/public/bookings/{id}
+- Events (SSE): GET /api/public/events
+- Webhooks: POST /api/public/webhooks (events: hold.created, booking.confirmed, hold.expired; HMAC-SHA256 signed)
+- API key (higher limits): POST /api/public/agent-keys
+- Rate limits: anonymous 60 reads/min, 5 writes/hour; with key 600 reads/min, 30 writes/hour; 429 carries Retry-After.
+- Errors are structured JSON: {"error": {"code", "message"}}
