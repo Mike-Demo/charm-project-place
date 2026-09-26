@@ -170,7 +170,7 @@ const spec = {
   },
 };
 
-export const Route = createFileRoute("/api/public/openapi")({
+export const Route = createFileRoute("/api/public/openapi.json")({
   staticData: { sitemap: false },
   server: {
     handlers: {

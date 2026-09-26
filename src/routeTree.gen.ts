@@ -21,12 +21,14 @@ import { Route as ApiSketchConceptRouteImport } from './routes/api/sketch-concep
 import { Route as CheckoutIdRouteImport } from './routes/checkout.$id'
 import { Route as PassTokenRouteImport } from './routes/pass.$token'
 import { Route as ProjectsFreshInkRouteImport } from './routes/projects.fresh-ink'
+import { Route as ApiPublicSplatRouteImport } from './routes/api/public/$'
 import { Route as ApiPublicAgentKeysRouteImport } from './routes/api/public/agent-keys'
 import { Route as ApiPublicAvailabilityRouteImport } from './routes/api/public/availability'
 import { Route as ApiPublicCapabilitiesRouteImport } from './routes/api/public/capabilities'
 import { Route as ApiPublicEventsRouteImport } from './routes/api/public/events'
 import { Route as ApiPublicHoldsRouteImport } from './routes/api/public/holds'
 import { Route as ApiPublicMcpRouteImport } from './routes/api/public/mcp'
+import { Route as ApiPublicOpenapiDotjsonRouteImport } from './routes/api/public/openapi[.]json'
 import { Route as ApiPublicStudioRouteImport } from './routes/api/public/studio'
 import { Route as ApiPublicWebhooksRouteImport } from './routes/api/public/webhooks'
 import { Route as PassTokenConfirmRouteImport } from './routes/pass_.$token.confirm'
@@ -94,6 +96,11 @@ const ProjectsFreshInkRoute = ProjectsFreshInkRouteImport.update({
   path: '/fresh-ink',
   getParentRoute: () => ProjectsRoute,
 } as any)
+const ApiPublicSplatRoute = ApiPublicSplatRouteImport.update({
+  id: '/api/public/$',
+  path: '/api/public/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAgentKeysRoute = ApiPublicAgentKeysRouteImport.update({
   id: '/api/public/agent-keys',
   path: '/api/public/agent-keys',
@@ -122,6 +129,11 @@ const ApiPublicHoldsRoute = ApiPublicHoldsRouteImport.update({
 const ApiPublicMcpRoute = ApiPublicMcpRouteImport.update({
   id: '/api/public/mcp',
   path: '/api/public/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicOpenapiDotjsonRoute = ApiPublicOpenapiDotjsonRouteImport.update({
+  id: '/api/public/openapi.json',
+  path: '/api/public/openapi.json',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicStudioRoute = ApiPublicStudioRouteImport.update({
@@ -175,12 +187,14 @@ export interface FileRoutesByFullPath {
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
   '/projects/fresh-ink': typeof ProjectsFreshInkRoute
+  '/api/public/$': typeof ApiPublicSplatRoute
   '/api/public/agent-keys': typeof ApiPublicAgentKeysRoute
   '/api/public/availability': typeof ApiPublicAvailabilityRoute
   '/api/public/capabilities': typeof ApiPublicCapabilitiesRoute
   '/api/public/events': typeof ApiPublicEventsRoute
   '/api/public/holds': typeof ApiPublicHoldsRoute
   '/api/public/mcp': typeof ApiPublicMcpRoute
+  '/api/public/openapi.json': typeof ApiPublicOpenapiDotjsonRoute
   '/api/public/studio': typeof ApiPublicStudioRoute
   '/api/public/webhooks': typeof ApiPublicWebhooksRoute
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
@@ -201,12 +215,14 @@ export interface FileRoutesByTo {
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
   '/projects/fresh-ink': typeof ProjectsFreshInkRoute
+  '/api/public/$': typeof ApiPublicSplatRoute
   '/api/public/agent-keys': typeof ApiPublicAgentKeysRoute
   '/api/public/availability': typeof ApiPublicAvailabilityRoute
   '/api/public/capabilities': typeof ApiPublicCapabilitiesRoute
   '/api/public/events': typeof ApiPublicEventsRoute
   '/api/public/holds': typeof ApiPublicHoldsRoute
   '/api/public/mcp': typeof ApiPublicMcpRoute
+  '/api/public/openapi.json': typeof ApiPublicOpenapiDotjsonRoute
   '/api/public/studio': typeof ApiPublicStudioRoute
   '/api/public/webhooks': typeof ApiPublicWebhooksRoute
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
@@ -229,12 +245,14 @@ export interface FileRoutesById {
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
   '/projects/fresh-ink': typeof ProjectsFreshInkRoute
+  '/api/public/$': typeof ApiPublicSplatRoute
   '/api/public/agent-keys': typeof ApiPublicAgentKeysRoute
   '/api/public/availability': typeof ApiPublicAvailabilityRoute
   '/api/public/capabilities': typeof ApiPublicCapabilitiesRoute
   '/api/public/events': typeof ApiPublicEventsRoute
   '/api/public/holds': typeof ApiPublicHoldsRoute
   '/api/public/mcp': typeof ApiPublicMcpRoute
+  '/api/public/openapi.json': typeof ApiPublicOpenapiDotjsonRoute
   '/api/public/studio': typeof ApiPublicStudioRoute
   '/api/public/webhooks': typeof ApiPublicWebhooksRoute
   '/pass_/$token/confirm': typeof PassTokenConfirmRoute
@@ -257,12 +275,14 @@ export interface FileRouteTypes {
     | '/checkout/$id'
     | '/pass/$token'
     | '/projects/fresh-ink'
+    | '/api/public/$'
     | '/api/public/agent-keys'
     | '/api/public/availability'
     | '/api/public/capabilities'
     | '/api/public/events'
     | '/api/public/holds'
     | '/api/public/mcp'
+    | '/api/public/openapi.json'
     | '/api/public/studio'
     | '/api/public/webhooks'
     | '/pass/$token/confirm'
@@ -283,12 +303,14 @@ export interface FileRouteTypes {
     | '/checkout/$id'
     | '/pass/$token'
     | '/projects/fresh-ink'
+    | '/api/public/$'
     | '/api/public/agent-keys'
     | '/api/public/availability'
     | '/api/public/capabilities'
     | '/api/public/events'
     | '/api/public/holds'
     | '/api/public/mcp'
+    | '/api/public/openapi.json'
     | '/api/public/studio'
     | '/api/public/webhooks'
     | '/pass/$token/confirm'
@@ -310,12 +332,14 @@ export interface FileRouteTypes {
     | '/checkout/$id'
     | '/pass/$token'
     | '/projects/fresh-ink'
+    | '/api/public/$'
     | '/api/public/agent-keys'
     | '/api/public/availability'
     | '/api/public/capabilities'
     | '/api/public/events'
     | '/api/public/holds'
     | '/api/public/mcp'
+    | '/api/public/openapi.json'
     | '/api/public/studio'
     | '/api/public/webhooks'
     | '/pass_/$token/confirm'
@@ -336,12 +360,14 @@ export interface RootRouteChildren {
   ApiSketchConceptRoute: typeof ApiSketchConceptRoute
   CheckoutIdRoute: typeof CheckoutIdRoute
   PassTokenRoute: typeof PassTokenRoute
+  ApiPublicSplatRoute: typeof ApiPublicSplatRoute
   ApiPublicAgentKeysRoute: typeof ApiPublicAgentKeysRoute
   ApiPublicAvailabilityRoute: typeof ApiPublicAvailabilityRoute
   ApiPublicCapabilitiesRoute: typeof ApiPublicCapabilitiesRoute
   ApiPublicEventsRoute: typeof ApiPublicEventsRoute
   ApiPublicHoldsRoute: typeof ApiPublicHoldsRoute
   ApiPublicMcpRoute: typeof ApiPublicMcpRoute
+  ApiPublicOpenapiDotjsonRoute: typeof ApiPublicOpenapiDotjsonRoute
   ApiPublicStudioRoute: typeof ApiPublicStudioRoute
   ApiPublicWebhooksRoute: typeof ApiPublicWebhooksRoute
   PassTokenConfirmRoute: typeof PassTokenConfirmRoute
@@ -437,6 +463,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsFreshInkRouteImport
       parentRoute: typeof ProjectsRoute
     }
+    '/api/public/$': {
+      id: '/api/public/$'
+      path: '/api/public/$'
+      fullPath: '/api/public/$'
+      preLoaderRoute: typeof ApiPublicSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/agent-keys': {
       id: '/api/public/agent-keys'
       path: '/api/public/agent-keys'
@@ -477,6 +510,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/mcp'
       fullPath: '/api/public/mcp'
       preLoaderRoute: typeof ApiPublicMcpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/openapi.json': {
+      id: '/api/public/openapi.json'
+      path: '/api/public/openapi.json'
+      fullPath: '/api/public/openapi.json'
+      preLoaderRoute: typeof ApiPublicOpenapiDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/studio': {
@@ -565,12 +605,14 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSketchConceptRoute: ApiSketchConceptRoute,
   CheckoutIdRoute: CheckoutIdRoute,
   PassTokenRoute: PassTokenRoute,
+  ApiPublicSplatRoute: ApiPublicSplatRoute,
   ApiPublicAgentKeysRoute: ApiPublicAgentKeysRoute,
   ApiPublicAvailabilityRoute: ApiPublicAvailabilityRoute,
   ApiPublicCapabilitiesRoute: ApiPublicCapabilitiesRoute,
   ApiPublicEventsRoute: ApiPublicEventsRoute,
   ApiPublicHoldsRoute: ApiPublicHoldsRoute,
   ApiPublicMcpRoute: ApiPublicMcpRoute,
+  ApiPublicOpenapiDotjsonRoute: ApiPublicOpenapiDotjsonRoute,
   ApiPublicStudioRoute: ApiPublicStudioRoute,
   ApiPublicWebhooksRoute: ApiPublicWebhooksRoute,
   PassTokenConfirmRoute: PassTokenConfirmRoute,
