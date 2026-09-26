@@ -189,7 +189,7 @@ function TattooAtelier() {
     [availabilityQuery.data],
   );
 
-  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming" | "failed">("idle");
+  const [paymentState, setPaymentState] = useState<"idle" | "confirming" | "failed">("idle");
 
 
   const waitForConfirmation = async (id: string) => {
@@ -640,7 +640,7 @@ function TattooAtelier() {
                     const isToday = sameDay(cell, today);
                     return (
                       <button key={cell.toISOString()} type="button" disabled={disabled}
-                        onClick={() => { setSelectedDate(cell); setSelectedTime(null); }}
+                        onClick={() => { setSelectedDate(cell); setSelectedTime(null); setBookingError(null); }}
                         aria-label={formatLongDate(cell)} aria-pressed={active}
                         className={`relative aspect-square rounded-full text-base transition-all sm:text-lg ${
                           disabled ? "cursor-not-allowed text-ink-dim/40 line-through" :
@@ -661,12 +661,13 @@ function TattooAtelier() {
                     {TIME_SLOTS.map((slot) => {
                       const active = selectedTime === slot;
                       const taken = selectedDate !== null && isSlotTaken(availability, selectedDate, slot);
-                      const disabled = selectedDate === null || taken;
+                      const past = selectedDate !== null && isSlotPast(selectedDate, slot, now);
+                      const disabled = selectedDate === null || taken || past;
                       return (
-                        <button key={slot} type="button" disabled={disabled} onClick={() => setSelectedTime(slot)} aria-pressed={active}
-                          title={taken ? "Already taken" : undefined}
+                        <button key={slot} type="button" disabled={disabled} onClick={() => { setSelectedTime(slot); setBookingError(null); }} aria-pressed={active}
+                          title={taken ? "Already taken" : past ? "Already passed" : undefined}
                           className={`rounded-full border px-3 py-1.5 text-base transition-all ${
-                            taken ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50 line-through" :
+                            taken || past ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50 line-through" :
                             selectedDate === null ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50" :
                             active ? "ink-bloom border-foreground bg-foreground font-bold text-background" :
                             "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
