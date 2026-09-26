@@ -87,6 +87,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#FBF2DD" },
       { name: "apple-mobile-web-app-title", content: "Fresh Ink" },
       { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
