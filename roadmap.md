@@ -1,4 +1,4 @@
-- [ ] Silicon Friendly agent-friendliness plan: verify build/typecheck, then hit each new public endpoint live and confirm structured responses, rate limits, 404s, SSE, OpenAPI, and agent card
+- [x] Silicon Friendly agent-friendliness plan: verify build/typecheck, then hit each new public endpoint live and confirm structured responses, rate limits, 404s, SSE, OpenAPI, and agent card
 - [ ] Run extract_mcp_manifest check only if MCP tool list changes again
 - [ ] Capture all filled booking steps and confirmation on mobile, tablet, and desktop (superseded earlier; resume only if re-requested)
 - [ ] Create simulated email and SMS client captures on each device (superseded earlier; resume only if re-requested)
