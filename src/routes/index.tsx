@@ -31,6 +31,7 @@ import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-locat
 import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, confirmFreeHold, type BookingInput } from "@/lib/atelier-service";
 import { sendFreePassEmail } from "@/lib/free-booking.functions";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
+import { registerWebMcpTools } from "@/lib/webmcp";
 import { DEFAULT_FAVICON, faviconForStep, setFavicon } from "@/lib/step-favicons";
 
 
