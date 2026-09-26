@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, type ReactElement } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { openSlotCheckout } from "@/lib/paddle";
+import { confirmFreeHold } from "@/lib/atelier-service";
 
 export const Route = createFileRoute("/checkout/$id")({
   staticData: { sitemap: false },
@@ -28,19 +28,21 @@ function AgentCheckout(): ReactElement {
   const { id } = Route.useParams();
   const { s } = Route.useSearch();
   const [error, setError] = useState<string | null>(null);
-  const [opening, setOpening] = useState(false);
+  const [locking, setLocking] = useState(false);
+  const [locked, setLocked] = useState(false);
   const hold = useQuery({ queryKey: ["agent-hold", id], queryFn: () => fetchHold(id, s ?? ""), enabled: Boolean(s) });
 
-  const pay = async () => {
+  const lockIn = async () => {
     if (!hold.data) return;
-    setOpening(true);
+    setLocking(true);
     setError(null);
     try {
-      await openSlotCheckout({ appointmentId: id, email: hold.data.email });
+      await confirmFreeHold(id, s ?? "");
+      setLocked(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Checkout failed to open.");
+      setError(e instanceof Error ? e.message : "Could not lock in that slot.");
     } finally {
-      setOpening(false);
+      setLocking(false);
     }
   };
 
@@ -53,7 +55,12 @@ function AgentCheckout(): ReactElement {
           <p className="mt-4 text-sm text-muted-foreground">This checkout link isn't valid. Ask your assistant to hold a new time, or <Link className="underline" to="/">book directly</Link>.</p>
         ) : hold.isPending ? (
           <p className="mt-4 text-sm text-muted-foreground" aria-live="polite">Finding your hold…</p>
-        ) : h ? (
+        ) : h && (locked || h.status === "confirmed") ? (
+          <>
+            <p className="mt-4 text-sm">Locked in — check your email for your session pass.</p>
+            <Link className="mt-3 inline-block text-sm underline" to={`/pass/${""}`}>Session pass</Link>
+          </>
+        ) : h && h.status === "pending" ? (
           <>
             <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 font-mono text-sm">
               <dt className="text-muted-foreground">Name</dt><dd>{h.client_name}</dd>
@@ -61,18 +68,14 @@ function AgentCheckout(): ReactElement {
               <dt className="text-muted-foreground">Time</dt><dd>{h.time_slot}</dd>
               <dt className="text-muted-foreground">Status</dt><dd>{h.status}</dd>
             </dl>
-            {h.status === "pending" ? (
-              <button className="mt-6 min-h-11 w-full rounded-sm bg-primary px-4 py-3 font-mono text-sm text-primary-foreground" disabled={opening} onClick={pay} type="button">
-                {opening ? "Opening checkout…" : "Donate $1 & Lock In"}
-              </button>
-            ) : h.status === "confirmed" ? (
-              <p className="mt-6 text-sm">Already locked in — check your email for your session pass.</p>
-            ) : (
-              <p className="mt-6 text-sm">This hold has expired. <Link className="underline" to="/">Pick a new time</Link>.</p>
-            )}
-            <p className="mt-3 text-xs text-muted-foreground">Test mode: no real charge.</p>
+            <button className="mt-6 min-h-11 w-full rounded-sm bg-primary px-4 py-3 font-mono text-sm text-primary-foreground" disabled={locking} onClick={lockIn} type="button">
+              {locking ? "Locking in…" : "Lock In My Slot"}
+            </button>
+            <p className="mt-3 text-xs text-muted-foreground">Free booking while in proof of concept — no payment needed.</p>
           </>
-        ) : null}
+        ) : (
+          <p className="mt-6 text-sm">This hold has expired. <Link className="underline" to="/">Pick a new time</Link>.</p>
+        )}
         {error || hold.error ? <p className="mt-3 text-sm text-destructive" role="alert">{error ?? hold.error?.message}</p> : null}
       </div>
     </main>
