@@ -263,6 +263,51 @@ function Licenses(): ReactElement {
                 ))}
               </ul>
             </article>
+            <article className="sketch-card p-4 sm:col-span-2">
+              <h3 className="font-hand text-xl font-bold text-foreground">How AI assistants find us</h3>
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink-dim">
+                Three doors · same booking desk
+              </p>
+              <ul className="mt-3 space-y-3">
+                <li>
+                  <Link
+                    to="/agents"
+                    className="font-mono text-xs text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
+                  >
+                    /agents
+                  </Link>
+                  <p className="mt-1 font-hand text-base text-ink-pencil">
+                    The written instructions page, linked in the footer of every page. It has the
+                    connector address and a copy-paste setup block for ChatGPT, Claude, and friends.
+                  </p>
+                </li>
+                <li>
+                  <a
+                    href="/llms.txt"
+                    className="font-mono text-xs text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
+                  >
+                    /llms.txt
+                  </a>
+                  <p className="mt-1 font-hand text-base text-ink-pencil">
+                    A short plain-text note at the root of the site that assistants read on their own.
+                    It names the studio, the connector, and where the full directions live.
+                  </p>
+                </li>
+                <li>
+                  <a
+                    href="/api/public/mcp"
+                    className="font-mono text-xs text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
+                  >
+                    /api/public/mcp
+                  </a>
+                  <p className="mt-1 font-hand text-base text-ink-pencil">
+                    The live connector itself. On connecting, an assistant is handed the house rules
+                    and the four things it may do: studio info, open times, hold a slot, check status.
+                    The client always pays the $1 test deposit themselves.
+                  </p>
+                </li>
+              </ul>
+            </article>
           </div>
           <p className="mt-5 font-hand text-lg text-ink-pencil">
             Studio artist?{" "}
