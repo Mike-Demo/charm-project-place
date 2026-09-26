@@ -1,0 +1,36 @@
+{
+  "name": "Fresh Ink Booking",
+  "description": "Appointment-only custom linework tattoo studio in Saint Paul, MN. AI agents can check availability, hold a slot, and hand the user a checkout link.",
+  "url": "https://freshink.art",
+  "version": "2.0.0",
+  "protocols": ["MCP", "REST", "SSE", "Webhooks", "WebMCP", "llms.txt"],
+  "capabilities": [
+    "studio.info",
+    "availability.search",
+    "booking.hold",
+    "booking.status",
+    "agent.auth",
+    "events.stream",
+    "webhooks.subscribe",
+    "handoff.user_checkout"
+  ],
+  "handoff": {
+    "kind": "user_checkout",
+    "description": "The agent books via hold_slot or POST /api/public/holds, then hands the returned checkout_url to the user's own agent or browser. The user locks the session in themselves; confirmation is observable via get_booking_status, webhooks, or the SSE stream."
+  },
+  "api": {
+    "base_url": "https://freshink.art/api/public",
+    "openapi": "https://freshink.art/api/public/openapi.json",
+    "capabilities": "https://freshink.art/api/public/capabilities",
+    "events_stream": "https://freshink.art/api/public/events",
+    "webhooks": "https://freshink.art/api/public/webhooks",
+    "authentication": "Optional API key via POST /api/public/agent-keys; anonymous access works with lower rate limits. 429 responses carry Retry-After.",
+    "errors": "Structured JSON: {\"error\": {\"code\", \"message\"}}"
+  },
+  "mcp": {
+    "transport": "streamable-http",
+    "url": "https://freshink.art/api/public/mcp",
+    "tools": ["get_studio_info", "list_open_times", "hold_slot", "get_booking_status"]
+  },
+  "contact": "studio@freshink.art"
+}

@@ -21,10 +21,14 @@ import { Route as ApiSketchConceptRouteImport } from './routes/api/sketch-concep
 import { Route as CheckoutIdRouteImport } from './routes/checkout.$id'
 import { Route as PassTokenRouteImport } from './routes/pass.$token'
 import { Route as ProjectsFreshInkRouteImport } from './routes/projects.fresh-ink'
+import { Route as ApiPublicAgentKeysRouteImport } from './routes/api/public/agent-keys'
 import { Route as ApiPublicAvailabilityRouteImport } from './routes/api/public/availability'
+import { Route as ApiPublicCapabilitiesRouteImport } from './routes/api/public/capabilities'
+import { Route as ApiPublicEventsRouteImport } from './routes/api/public/events'
 import { Route as ApiPublicHoldsRouteImport } from './routes/api/public/holds'
 import { Route as ApiPublicMcpRouteImport } from './routes/api/public/mcp'
 import { Route as ApiPublicStudioRouteImport } from './routes/api/public/studio'
+import { Route as ApiPublicWebhooksRouteImport } from './routes/api/public/webhooks'
 import { Route as PassTokenConfirmRouteImport } from './routes/pass_.$token.confirm'
 import { Route as ApiPublicBookingsIdRouteImport } from './routes/api/public/bookings.$id'
 import { Route as ApiPublicHooksSendRemindersRouteImport } from './routes/api/public/hooks/send-reminders'
@@ -90,9 +94,24 @@ const ProjectsFreshInkRoute = ProjectsFreshInkRouteImport.update({
   path: '/fresh-ink',
   getParentRoute: () => ProjectsRoute,
 } as any)
+const ApiPublicAgentKeysRoute = ApiPublicAgentKeysRouteImport.update({
+  id: '/api/public/agent-keys',
+  path: '/api/public/agent-keys',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAvailabilityRoute = ApiPublicAvailabilityRouteImport.update({
   id: '/api/public/availability',
   path: '/api/public/availability',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCapabilitiesRoute = ApiPublicCapabilitiesRouteImport.update({
+  id: '/api/public/capabilities',
+  path: '/api/public/capabilities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicEventsRoute = ApiPublicEventsRouteImport.update({
+  id: '/api/public/events',
+  path: '/api/public/events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicHoldsRoute = ApiPublicHoldsRouteImport.update({
@@ -108,6 +127,11 @@ const ApiPublicMcpRoute = ApiPublicMcpRouteImport.update({
 const ApiPublicStudioRoute = ApiPublicStudioRouteImport.update({
   id: '/api/public/studio',
   path: '/api/public/studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksRoute = ApiPublicWebhooksRouteImport.update({
+  id: '/api/public/webhooks',
+  path: '/api/public/webhooks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PassTokenConfirmRoute = PassTokenConfirmRouteImport.update({
@@ -151,10 +175,14 @@ export interface FileRoutesByFullPath {
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
   '/projects/fresh-ink': typeof ProjectsFreshInkRoute
+  '/api/public/agent-keys': typeof ApiPublicAgentKeysRoute
   '/api/public/availability': typeof ApiPublicAvailabilityRoute
+  '/api/public/capabilities': typeof ApiPublicCapabilitiesRoute
+  '/api/public/events': typeof ApiPublicEventsRoute
   '/api/public/holds': typeof ApiPublicHoldsRoute
   '/api/public/mcp': typeof ApiPublicMcpRoute
   '/api/public/studio': typeof ApiPublicStudioRoute
+  '/api/public/webhooks': typeof ApiPublicWebhooksRoute
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/bookings/$id': typeof ApiPublicBookingsIdRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
@@ -173,10 +201,14 @@ export interface FileRoutesByTo {
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
   '/projects/fresh-ink': typeof ProjectsFreshInkRoute
+  '/api/public/agent-keys': typeof ApiPublicAgentKeysRoute
   '/api/public/availability': typeof ApiPublicAvailabilityRoute
+  '/api/public/capabilities': typeof ApiPublicCapabilitiesRoute
+  '/api/public/events': typeof ApiPublicEventsRoute
   '/api/public/holds': typeof ApiPublicHoldsRoute
   '/api/public/mcp': typeof ApiPublicMcpRoute
   '/api/public/studio': typeof ApiPublicStudioRoute
+  '/api/public/webhooks': typeof ApiPublicWebhooksRoute
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/bookings/$id': typeof ApiPublicBookingsIdRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
@@ -197,10 +229,14 @@ export interface FileRoutesById {
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
   '/projects/fresh-ink': typeof ProjectsFreshInkRoute
+  '/api/public/agent-keys': typeof ApiPublicAgentKeysRoute
   '/api/public/availability': typeof ApiPublicAvailabilityRoute
+  '/api/public/capabilities': typeof ApiPublicCapabilitiesRoute
+  '/api/public/events': typeof ApiPublicEventsRoute
   '/api/public/holds': typeof ApiPublicHoldsRoute
   '/api/public/mcp': typeof ApiPublicMcpRoute
   '/api/public/studio': typeof ApiPublicStudioRoute
+  '/api/public/webhooks': typeof ApiPublicWebhooksRoute
   '/pass_/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/bookings/$id': typeof ApiPublicBookingsIdRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
@@ -221,10 +257,14 @@ export interface FileRouteTypes {
     | '/checkout/$id'
     | '/pass/$token'
     | '/projects/fresh-ink'
+    | '/api/public/agent-keys'
     | '/api/public/availability'
+    | '/api/public/capabilities'
+    | '/api/public/events'
     | '/api/public/holds'
     | '/api/public/mcp'
     | '/api/public/studio'
+    | '/api/public/webhooks'
     | '/pass/$token/confirm'
     | '/api/public/bookings/$id'
     | '/api/public/hooks/send-reminders'
@@ -243,10 +283,14 @@ export interface FileRouteTypes {
     | '/checkout/$id'
     | '/pass/$token'
     | '/projects/fresh-ink'
+    | '/api/public/agent-keys'
     | '/api/public/availability'
+    | '/api/public/capabilities'
+    | '/api/public/events'
     | '/api/public/holds'
     | '/api/public/mcp'
     | '/api/public/studio'
+    | '/api/public/webhooks'
     | '/pass/$token/confirm'
     | '/api/public/bookings/$id'
     | '/api/public/hooks/send-reminders'
@@ -266,10 +310,14 @@ export interface FileRouteTypes {
     | '/checkout/$id'
     | '/pass/$token'
     | '/projects/fresh-ink'
+    | '/api/public/agent-keys'
     | '/api/public/availability'
+    | '/api/public/capabilities'
+    | '/api/public/events'
     | '/api/public/holds'
     | '/api/public/mcp'
     | '/api/public/studio'
+    | '/api/public/webhooks'
     | '/pass_/$token/confirm'
     | '/api/public/bookings/$id'
     | '/api/public/hooks/send-reminders'
@@ -288,10 +336,14 @@ export interface RootRouteChildren {
   ApiSketchConceptRoute: typeof ApiSketchConceptRoute
   CheckoutIdRoute: typeof CheckoutIdRoute
   PassTokenRoute: typeof PassTokenRoute
+  ApiPublicAgentKeysRoute: typeof ApiPublicAgentKeysRoute
   ApiPublicAvailabilityRoute: typeof ApiPublicAvailabilityRoute
+  ApiPublicCapabilitiesRoute: typeof ApiPublicCapabilitiesRoute
+  ApiPublicEventsRoute: typeof ApiPublicEventsRoute
   ApiPublicHoldsRoute: typeof ApiPublicHoldsRoute
   ApiPublicMcpRoute: typeof ApiPublicMcpRoute
   ApiPublicStudioRoute: typeof ApiPublicStudioRoute
+  ApiPublicWebhooksRoute: typeof ApiPublicWebhooksRoute
   PassTokenConfirmRoute: typeof PassTokenConfirmRoute
   ApiPublicBookingsIdRoute: typeof ApiPublicBookingsIdRoute
   ApiPublicHooksSendRemindersRoute: typeof ApiPublicHooksSendRemindersRoute
@@ -385,11 +437,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsFreshInkRouteImport
       parentRoute: typeof ProjectsRoute
     }
+    '/api/public/agent-keys': {
+      id: '/api/public/agent-keys'
+      path: '/api/public/agent-keys'
+      fullPath: '/api/public/agent-keys'
+      preLoaderRoute: typeof ApiPublicAgentKeysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/availability': {
       id: '/api/public/availability'
       path: '/api/public/availability'
       fullPath: '/api/public/availability'
       preLoaderRoute: typeof ApiPublicAvailabilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/capabilities': {
+      id: '/api/public/capabilities'
+      path: '/api/public/capabilities'
+      fullPath: '/api/public/capabilities'
+      preLoaderRoute: typeof ApiPublicCapabilitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/events': {
+      id: '/api/public/events'
+      path: '/api/public/events'
+      fullPath: '/api/public/events'
+      preLoaderRoute: typeof ApiPublicEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/holds': {
@@ -411,6 +484,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/studio'
       fullPath: '/api/public/studio'
       preLoaderRoute: typeof ApiPublicStudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks': {
+      id: '/api/public/webhooks'
+      path: '/api/public/webhooks'
+      fullPath: '/api/public/webhooks'
+      preLoaderRoute: typeof ApiPublicWebhooksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pass_/$token/confirm': {
@@ -485,10 +565,14 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSketchConceptRoute: ApiSketchConceptRoute,
   CheckoutIdRoute: CheckoutIdRoute,
   PassTokenRoute: PassTokenRoute,
+  ApiPublicAgentKeysRoute: ApiPublicAgentKeysRoute,
   ApiPublicAvailabilityRoute: ApiPublicAvailabilityRoute,
+  ApiPublicCapabilitiesRoute: ApiPublicCapabilitiesRoute,
+  ApiPublicEventsRoute: ApiPublicEventsRoute,
   ApiPublicHoldsRoute: ApiPublicHoldsRoute,
   ApiPublicMcpRoute: ApiPublicMcpRoute,
   ApiPublicStudioRoute: ApiPublicStudioRoute,
+  ApiPublicWebhooksRoute: ApiPublicWebhooksRoute,
   PassTokenConfirmRoute: PassTokenConfirmRoute,
   ApiPublicBookingsIdRoute: ApiPublicBookingsIdRoute,
   ApiPublicHooksSendRemindersRoute: ApiPublicHooksSendRemindersRoute,
