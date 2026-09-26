@@ -33,6 +33,7 @@ import { sendFreePassEmail } from "@/lib/free-booking.functions";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
 import { registerWebMcpTools } from "@/lib/webmcp";
 import { DEFAULT_FAVICON, faviconForStep, setFavicon } from "@/lib/step-favicons";
+import { DEFAULT_FAVICON, faviconForStep, setFavicon } from "@/lib/step-favicons";
 
 
 const stepMeta = [
@@ -314,6 +315,12 @@ function TattooAtelier() {
     setFavicon(faviconForStep(step));
     return () => setFavicon(DEFAULT_FAVICON);
   }, [step]);
+
+  // Expose booking tools to the user's own in-browser agent (WebMCP), best-effort.
+  useEffect(() => {
+    registerWebMcpTools();
+  }, []);
+
 
 
 
