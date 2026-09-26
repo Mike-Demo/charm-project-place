@@ -48,7 +48,7 @@ function AgentCheckout(): ReactElement {
   return (
     <main className="relative z-10 mx-auto w-full max-w-lg flex-1 px-4 py-12">
       <div className="paper-sheet rounded-sm border border-ink-dim/30 bg-card p-6 shadow-sm">
-        <h1 className="font-display text-3xl text-foreground">Your held session</h1>
+        <h1 className="font-hand text-3xl font-bold text-foreground">Your held session</h1>
         {!s || (hold.isSuccess && !h) ? (
           <p className="mt-4 text-sm text-muted-foreground">This checkout link isn't valid. Ask your assistant to hold a new time, or <Link className="underline" to="/">book directly</Link>.</p>
         ) : hold.isPending ? (

@@ -65,13 +65,13 @@ function AgentsPage(): ReactElement {
   return (
     <main className="relative z-10 mx-auto w-full max-w-3xl flex-1 px-4 py-10">
       <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Field notes // agents</p>
-      <h1 className="mt-2 font-display text-4xl text-foreground">Book through your AI assistant</h1>
+      <h1 className="mt-2 font-hand text-4xl font-bold text-foreground">Book through your AI assistant</h1>
       <p className="mt-3 max-w-prose text-sm text-muted-foreground">
         Assistants like ChatGPT and Claude can check open times and hold a session for their user through our MCP connector. The client always pays the $1 deposit themselves through the checkout link, then gets their private session pass by email.
       </p>
 
       <section className="mt-8 rounded-sm border border-ink-dim/30 bg-card p-5">
-        <h2 className="font-display text-2xl">Connect</h2>
+        <h2 className="font-hand text-2xl font-bold">Connect</h2>
         <p className="mt-2 text-sm">Connector address (Streamable HTTP, no sign-in):</p>
         <CodeBlock code={MCP_URL} label="connector address" />
         <p className="mt-4 text-sm">Client config snippet:</p>
@@ -79,7 +79,7 @@ function AgentsPage(): ReactElement {
       </section>
 
       <section className="mt-6 rounded-sm border border-ink-dim/30 bg-card p-5">
-        <h2 className="font-display text-2xl">Tools</h2>
+        <h2 className="font-hand text-2xl font-bold">Tools</h2>
         <ul className="mt-3 space-y-2 text-sm">
           {TOOLS.map(([name, desc]) => (
             <li key={name}><code className="font-mono font-semibold">{name}</code> — {desc}</li>
@@ -90,7 +90,7 @@ function AgentsPage(): ReactElement {
       </section>
 
       <section className="mt-6 rounded-sm border border-ink-dim/30 bg-card p-5 text-sm">
-        <h2 className="font-display text-2xl">Rules</h2>
+        <h2 className="font-hand text-2xl font-bold">Rules</h2>
         <ul className="mt-3 list-disc space-y-1 pl-5">
           <li>Confirm name, email, phone, date, and time with the user before holding.</li>
           <li>Holds expire after 15 minutes if unpaid. Up to 5 holds per hour per agent.</li>
