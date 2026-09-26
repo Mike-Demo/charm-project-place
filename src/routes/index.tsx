@@ -33,7 +33,6 @@ import { sendFreePassEmail } from "@/lib/free-booking.functions";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
 import { registerWebMcpTools } from "@/lib/webmcp";
 import { DEFAULT_FAVICON, faviconForStep, setFavicon } from "@/lib/step-favicons";
-import { DEFAULT_FAVICON, faviconForStep, setFavicon } from "@/lib/step-favicons";
 
 
 const stepMeta = [
