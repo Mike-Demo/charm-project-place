@@ -11,12 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiSketchConceptRouteImport } from './routes/api/sketch-concept'
+import { Route as CheckoutIdRouteImport } from './routes/checkout.$id'
 import { Route as PassTokenRouteImport } from './routes/pass.$token'
+import { Route as ApiPublicMcpRouteImport } from './routes/api/public/mcp'
 import { Route as PassTokenConfirmRouteImport } from './routes/pass_.$token.confirm'
 import { Route as ApiPublicHooksSendRemindersRouteImport } from './routes/api/public/hooks/send-reminders'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -29,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentsRoute = AgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -56,9 +64,19 @@ const ApiSketchConceptRoute = ApiSketchConceptRouteImport.update({
   path: '/api/sketch-concept',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutIdRoute = CheckoutIdRouteImport.update({
+  id: '/checkout/$id',
+  path: '/checkout/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PassTokenRoute = PassTokenRouteImport.update({
   id: '/pass/$token',
   path: '/pass/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMcpRoute = ApiPublicMcpRouteImport.update({
+  id: '/api/public/mcp',
+  path: '/api/public/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PassTokenConfirmRoute = PassTokenConfirmRouteImport.update({
@@ -87,12 +105,15 @@ const LovableEmailTransactionalPreviewRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
+  '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
+  '/api/public/mcp': typeof ApiPublicMcpRoute
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -100,12 +121,15 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
+  '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
+  '/api/public/mcp': typeof ApiPublicMcpRoute
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -115,12 +139,15 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
+  '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
+  '/api/public/mcp': typeof ApiPublicMcpRoute
   '/pass_/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -130,12 +157,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/agents'
     | '/auth'
     | '/licenses'
     | '/sitemap.xml'
     | '/admin'
     | '/api/sketch-concept'
+    | '/checkout/$id'
     | '/pass/$token'
+    | '/api/public/mcp'
     | '/pass/$token/confirm'
     | '/api/public/hooks/send-reminders'
     | '/api/public/payments/webhook'
@@ -143,12 +173,15 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/agents'
     | '/auth'
     | '/licenses'
     | '/sitemap.xml'
     | '/admin'
     | '/api/sketch-concept'
+    | '/checkout/$id'
     | '/pass/$token'
+    | '/api/public/mcp'
     | '/pass/$token/confirm'
     | '/api/public/hooks/send-reminders'
     | '/api/public/payments/webhook'
@@ -157,12 +190,15 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/agents'
     | '/auth'
     | '/licenses'
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/api/sketch-concept'
+    | '/checkout/$id'
     | '/pass/$token'
+    | '/api/public/mcp'
     | '/pass_/$token/confirm'
     | '/api/public/hooks/send-reminders'
     | '/api/public/payments/webhook'
@@ -172,11 +208,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AgentsRoute: typeof AgentsRoute
   AuthRoute: typeof AuthRoute
   LicensesRoute: typeof LicensesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiSketchConceptRoute: typeof ApiSketchConceptRoute
+  CheckoutIdRoute: typeof CheckoutIdRoute
   PassTokenRoute: typeof PassTokenRoute
+  ApiPublicMcpRoute: typeof ApiPublicMcpRoute
   PassTokenConfirmRoute: typeof PassTokenConfirmRoute
   ApiPublicHooksSendRemindersRoute: typeof ApiPublicHooksSendRemindersRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -197,6 +236,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agents': {
+      id: '/agents'
+      path: '/agents'
+      fullPath: '/agents'
+      preLoaderRoute: typeof AgentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -234,11 +280,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSketchConceptRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/$id': {
+      id: '/checkout/$id'
+      path: '/checkout/$id'
+      fullPath: '/checkout/$id'
+      preLoaderRoute: typeof CheckoutIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pass/$token': {
       id: '/pass/$token'
       path: '/pass/$token'
       fullPath: '/pass/$token'
       preLoaderRoute: typeof PassTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/mcp': {
+      id: '/api/public/mcp'
+      path: '/api/public/mcp'
+      fullPath: '/api/public/mcp'
+      preLoaderRoute: typeof ApiPublicMcpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pass_/$token/confirm': {
@@ -286,11 +346,14 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AgentsRoute: AgentsRoute,
   AuthRoute: AuthRoute,
   LicensesRoute: LicensesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiSketchConceptRoute: ApiSketchConceptRoute,
+  CheckoutIdRoute: CheckoutIdRoute,
   PassTokenRoute: PassTokenRoute,
+  ApiPublicMcpRoute: ApiPublicMcpRoute,
   PassTokenConfirmRoute: PassTokenConfirmRoute,
   ApiPublicHooksSendRemindersRoute: ApiPublicHooksSendRemindersRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,

@@ -14,6 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_hold_log: {
+        Row: {
+          appointment_id: string | null
+          caller_hash: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          caller_hash: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          caller_hash?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_hold_log_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           access_token: string | null
@@ -42,6 +71,7 @@ export type Database = {
           sms_reminder_at: string | null
           sms_reminder_status: string | null
           social_sent_at: string | null
+          source: string
           status: string
           time_slot: string
         }
@@ -72,6 +102,7 @@ export type Database = {
           sms_reminder_at?: string | null
           sms_reminder_status?: string | null
           social_sent_at?: string | null
+          source?: string
           status?: string
           time_slot: string
         }
@@ -102,6 +133,7 @@ export type Database = {
           sms_reminder_at?: string | null
           sms_reminder_status?: string | null
           social_sent_at?: string | null
+          source?: string
           status?: string
           time_slot?: string
         }
@@ -302,6 +334,17 @@ export type Database = {
           id: string
           phone: string
           pronouns: string
+          status: string
+          time_slot: string
+        }[]
+      }
+      get_hold_for_checkout: {
+        Args: { p_id: string; p_secret: string }
+        Returns: {
+          booking_date: string
+          client_name: string
+          email: string
+          hold_expires_at: string
           status: string
           time_slot: string
         }[]

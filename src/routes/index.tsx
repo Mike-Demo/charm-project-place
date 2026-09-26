@@ -1,3 +1,4 @@
+import { OG_IMAGE_URL } from "@/lib/social";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
@@ -75,6 +76,8 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Tattoo Atelier: appointment-only custom linework studio in Saint Paul. Book a session in a few steps — pick a day, lock your slot, and get a session pass." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { name: "twitter:image", content: OG_IMAGE_URL },
       { property: "og:url", content: "https://freshink.art/" },
     ],
     links: [{ rel: "canonical", href: "https://freshink.art/" }],

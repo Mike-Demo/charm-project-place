@@ -1,3 +1,4 @@
+import { OG_IMAGE_URL } from "@/lib/social";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 
@@ -14,7 +15,9 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "Studio Sign In — Fresh Ink: Book your session" },
       { property: "og:description", content: "Studio sign in for Tattoo Atelier: artist access to the booking ledger. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { name: "twitter:image", content: OG_IMAGE_URL },
       { name: "robots", content: "noindex" },
     ],
   }),

@@ -1,0 +1,1 @@
+{ "name": "fresh-ink-booking", "description": "Book tattoo sessions at Fresh Ink, Saint Paul MN.", "transport": "streamable-http", "url": "https://freshink.art/api/public/mcp", "docs": "https://freshink.art/agents" }

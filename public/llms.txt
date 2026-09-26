@@ -1,0 +1,6 @@
+# Fresh Ink — Tattoo Atelier
+> Appointment-only custom linework tattoo studio, 332 Minnesota St Ste N201, Saint Paul, MN 55101.
+
+AI agents can book for their user via the MCP connector (Streamable HTTP): https://freshink.art/api/public/mcp
+Tools: get_studio_info, list_open_times, hold_slot, get_booking_status. The user pays a $1 test deposit via the returned checkout_url.
+Docs: https://freshink.art/agents
