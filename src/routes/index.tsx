@@ -191,7 +191,7 @@ function TattooAtelier() {
     let consecutiveErrors = 0;
     for (let attempt = 0; attempt < 30; attempt += 1) {
       const status = await getBookingStatus(id).catch(() => {
-        setBookingError("We couldn't find that payment yet. If you just paid, give it a minute and reopen the link from your email — or head back to the form and we'll sort it out.");
+        setBookingError("We had trouble checking that booking just now. Give it a minute, or head back to the form and we'll sort it out.");
         return null;
       });
       if (status !== null) consecutiveErrors = 0; else consecutiveErrors += 1;
@@ -207,7 +207,7 @@ function TattooAtelier() {
           void fetchBookingToken(id).then(setPassToken).catch(() => undefined);
         } else {
           setPaymentState("failed");
-          setBookingError("Payment received, but we couldn't load your confirmation pass. We'll email you the details.");
+          setBookingError("Your session is locked in, but we couldn't load the confirmation pass. We'll email you the details.");
         }
         void availabilityQuery.refetch();
         return;
@@ -215,7 +215,7 @@ function TattooAtelier() {
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
     setPaymentState("failed");
-    setBookingError("Payment received, but confirmation is taking a while. We'll email you your session pass once it's locked in.");
+    setBookingError("Your session is locked in, but confirmation is taking a while. We'll email you your session pass.");
   };
 
 
@@ -242,7 +242,6 @@ function TattooAtelier() {
       return id;
     },
     onSuccess: (id) => {
-      heldIdRef.current = null;
       void waitForConfirmation(id);
     },
     onError: (error: Error) => {
