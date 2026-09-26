@@ -95,7 +95,7 @@ export async function idempotencyLookup(key: string, callerHash: string): Promis
 
 export async function idempotencyStore(key: string, callerHash: string, response: unknown): Promise<void> {
   const db = await admin();
-  await db.from("idempotency_keys").upsert({ key, caller_hash: callerHash, response: response as Record<string, unknown> });
+  await db.from("idempotency_keys").upsert({ key, caller_hash: callerHash, response: response as Json });
 }
 
 export type WebhookEvent = "hold.created" | "booking.confirmed" | "hold.expired";
