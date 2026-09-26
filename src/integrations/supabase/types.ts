@@ -280,6 +280,10 @@ export type Database = {
       check_reminder_cron_token: { Args: { p_token: string }; Returns: boolean }
       claim_admin: { Args: never; Returns: boolean }
       confirm_attendance: { Args: { p_token: string }; Returns: string }
+      confirm_free_hold: {
+        Args: { p_id: string; p_secret: string }
+        Returns: string
+      }
       consume_sketch_quota: {
         Args: { p_key: string; p_limit: number }
         Returns: boolean
