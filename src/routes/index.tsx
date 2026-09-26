@@ -127,6 +127,12 @@ function BoilRule({ tone = "text-ink-dim/50" }: { tone?: string }) {
 
 function TattooAtelier() {
   const today = useMemo(() => startOfDay(new Date()), []);
+  // Ticks every minute so same-day slots disappear the moment they pass.
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const [name, setName] = useState("");
