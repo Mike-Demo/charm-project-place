@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import { z } from "zod";
 import { TIME_SLOTS } from "@/lib/atelier";
 import { APP_ORIGIN, STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
+import { idempotencyLookup, idempotencyStore, notifyWebhooks } from "@/lib/public-api.server";
 
 const HOLDS_PER_CALLER_PER_HOUR = 5;
 const MAX_ACTIVE_AGENT_HOLDS = 20;
@@ -150,13 +151,16 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
         if (!row) return text({ error: "Could not hold that slot." }, true);
         await db.from("appointments").update({ source: "agent", ...(input.idea ? { idea_description: input.idea } : {}) }).eq("id", row.id);
         await db.from("agent_hold_log").insert({ caller_hash: callerId, appointment_id: row.id });
-        return text({
+        const result = text({
           booking_id: row.id,
           status: "pending",
           hold_expires_in_minutes: 15,
           checkout_url: `${APP_ORIGIN}/checkout/${row.id}?s=${encodeURIComponent(row.hold_secret)}`,
           next_step: "Send checkout_url to the user. The slot is released if they don't lock in within 15 minutes.",
         });
+        if (input.idempotency_key) await idempotencyStore(input.idempotency_key, callerId, result);
+        await notifyWebhooks("hold.created", { booking_id: row.id, date: input.date, time_slot: input.time_slot });
+        return result;
       }
       case "get_booking_status": {
         const { booking_id } = z.object({ booking_id: z.string().uuid() }).parse(args);
