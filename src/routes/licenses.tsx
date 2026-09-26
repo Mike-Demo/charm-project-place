@@ -114,7 +114,7 @@ const GROUPS: readonly LicenseGroup[] = [
         author: "Paddle.com Market Ltd.",
         license: "Hosted checkout",
         url: "https://www.paddle.com",
-        note: "Runs the $1 test checkout that locks in a slot.",
+        note: "Wired for the $1 slot-lock checkout; booking is currently free during the proof of concept.",
       },
     ],
   },
@@ -235,13 +235,13 @@ function Licenses(): ReactElement {
               </p>
             </article>
             <article className="sketch-card p-4">
-              <h3 className="font-hand text-xl font-bold text-foreground">$1 donation checkout</h3>
+              <h3 className="font-hand text-xl font-bold text-foreground">No-payment booking</h3>
               <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink-dim">
-                Test mode · no money moves
+                Proof of concept · no money moves
               </p>
               <p className="mt-2 font-hand text-base text-ink-pencil">
-                Checkout runs in test mode with test card numbers only. No real card is charged and
-                no donation is collected yet.
+                Slots lock in for free right now — no card and no checkout step. The $1 donation to
+                A Thousand Pansies returns when real payments switch on.
               </p>
             </article>
             <article className="sketch-card p-4 sm:col-span-2">

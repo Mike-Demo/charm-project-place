@@ -21,7 +21,7 @@ const EXAMPLE = `curl -s ${MCP_URL} \\
 const TOOLS = [
   ["get_studio_info", "Address, hours, session times, and how booking works."],
   ["list_open_times", "Open times between two dates (up to 31 days)."],
-  ["hold_slot", "Holds a time for 15 minutes and returns a checkout link for the client."],
+  ["hold_slot", "Holds a time for 15 minutes and returns a lock-in link for the client."],
   ["get_booking_status", "Pending, confirmed, expired, or cancelled."],
 ] as const;
 
@@ -67,7 +67,7 @@ function AgentsPage(): ReactElement {
       <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Field notes // agents</p>
       <h1 className="mt-2 font-hand text-4xl font-bold text-foreground">Book through your AI assistant</h1>
       <p className="mt-3 max-w-prose text-sm text-muted-foreground">
-        Assistants like ChatGPT and Claude can check open times and hold a session for their user through our MCP connector. The client always pays the $1 deposit themselves through the checkout link, then gets their private session pass by email.
+        Assistants like ChatGPT and Claude can check open times and hold a session for their user through our MCP connector. The client locks the session in themselves through the hold link (free while in proof of concept), then gets their private session pass by email.
       </p>
 
       <section className="mt-8 rounded-sm border border-ink-dim/30 bg-card p-5">
@@ -93,8 +93,8 @@ function AgentsPage(): ReactElement {
         <h2 className="font-hand text-2xl font-bold">Rules</h2>
         <ul className="mt-3 list-disc space-y-1 pl-5">
           <li>Confirm name, email, phone, date, and time with the user before holding.</li>
-          <li>Holds expire after 15 minutes if unpaid. Up to 5 holds per hour per agent.</li>
-          <li>Proof of concept: the checkout is test mode — no real charge.</li>
+          <li>Holds expire after 15 minutes if not locked in. Up to 5 holds per hour per agent.</li>
+          <li>Proof of concept: booking is free — there is no payment step right now.</li>
         </ul>
         <p className="mt-4">Prefer the regular way? <Link className="underline" to="/">Book on the site</Link>.</p>
       </section>
