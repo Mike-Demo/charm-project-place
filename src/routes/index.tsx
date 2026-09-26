@@ -186,9 +186,6 @@ function TattooAtelier() {
   const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming" | "failed">("idle");
 
 
-  const heldIdRef = useRef<string | null>(null);
-  const paidRef = useRef(false);
-
   const waitForConfirmation = async (id: string) => {
     setPaymentState("confirming");
     let consecutiveErrors = 0;
