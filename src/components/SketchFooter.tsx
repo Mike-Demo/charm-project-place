@@ -86,6 +86,12 @@ export function SketchFooter(): ReactElement {
             </span>
             Open Source
           </Link>
+          <Link
+            to="/agents"
+            className="ml-4 inline-flex items-center gap-1.5 font-hand text-sm text-ink-pencil underline decoration-ink-dim/40 underline-offset-4 transition-colors hover:text-foreground"
+          >
+            For AI agents
+          </Link>
         </nav>
 
         <nav aria-label="Social links" className="flex flex-wrap items-center gap-3">
