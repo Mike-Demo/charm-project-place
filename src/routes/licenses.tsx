@@ -1,3 +1,4 @@
+import { OG_IMAGE_URL } from "@/lib/social";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ReactElement } from "react";
 
@@ -181,7 +182,9 @@ export const Route = createFileRoute("/licenses")({
       { property: "og:title", content: "Open Source & Credits — Fresh Ink: Book your session" },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { name: "twitter:image", content: OG_IMAGE_URL },
     ],
   }),
   component: Licenses,
