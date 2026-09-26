@@ -278,7 +278,7 @@ function AdminPage() {
                 <div className="divide-y divide-dashed divide-ink-dim/40 border-y border-ink-dim/50">
                   {bookingPageQuery.data.bookings.map((booking) => (
                     <Button key={booking.id} variant="ghost" aria-pressed={selectedId === booking.id} onClick={() => setSelectedId(booking.id)} className={`h-auto min-h-19 w-full justify-between gap-3 rounded-none px-2 py-3 text-left font-hand hover:bg-paper-line/40 ${selectedId === booking.id ? "bg-cyan-soft" : ""}`}>
-                      <span className="min-w-0 flex-1"><span className="block truncate text-lg text-foreground">{booking.client_name}</span><span className="block truncate text-sm font-normal text-ink-pencil">{booking.pronouns || "Pronouns not provided"} · {booking.idea_description || booking.reference_image_path || booking.concept_sketch_path ? "Idea attached" : "No idea"}</span></span>
+                      <span className="min-w-0 flex-1"><span className="block truncate text-lg text-foreground">{booking.client_name}</span><span className="block truncate text-sm font-normal text-ink-pencil">{booking.pronouns || "Pronouns not provided"} · {booking.idea_description || booking.reference_image_path || booking.concept_sketch_path ? "Idea attached" : "No idea"}{booking.source === "agent" ? " · Booked via agent" : ""}</span></span>
                       <span className="shrink-0 text-right font-mono text-xs font-normal text-ink-pencil"><span className="block">{booking.booking_date}</span><span className="block">{booking.time_slot}</span></span>
                     </Button>
                   ))}
