@@ -73,9 +73,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Fresh Ink: Book your session" },
-      { name: "description", content: "Tattoo Atelier: appointment-only custom linework studio in Saint Paul. Book a session in a few steps — pick a day, lock your slot, and get a session pass." },
+      { name: "description", content: "Fresh Ink: appointment-only custom linework studio in Saint Paul. Book a session in a few steps — pick a day, lock your slot, and get a session pass." },
       { property: "og:title", content: "Fresh Ink: Book your session" },
-      { property: "og:description", content: "Tattoo Atelier: appointment-only custom linework studio in Saint Paul. Book a session in a few steps — pick a day, lock your slot, and get a session pass." },
+      { property: "og:description", content: "Fresh Ink: appointment-only custom linework studio in Saint Paul. Book a session in a few steps — pick a day, lock your slot, and get a session pass." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: OG_IMAGE_URL },
@@ -89,7 +89,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "TattooParlor",
-          name: "Tattoo Atelier",
+          name: "Fresh Ink",
           url: "https://freshink.art/",
           description: "Appointment-only custom linework tattoo studio in Saint Paul, Minnesota.",
           address: {
@@ -511,7 +511,7 @@ function TattooAtelier() {
       </header>
 
       <main ref={paperRef} className="relative z-10 mx-auto w-full max-w-2xl pb-8 sm:pb-12">
-        <h1 className="mb-6 text-center font-hand text-2xl font-bold text-foreground sm:text-3xl">Tattoo Atelier <span className="block font-mono text-xs font-normal uppercase tracking-widest text-ink-pencil">Custom linework tattoos · Saint Paul, MN</span></h1>
+        <h1 className="mb-6 text-center font-hand text-2xl font-bold text-foreground sm:text-3xl">Fresh Ink <span className="block font-mono text-xs font-normal uppercase tracking-widest text-ink-pencil">Custom linework tattoos · Saint Paul, MN</span></h1>
         {confirmed ? <ConfirmedPass booking={confirmed} token={passToken} onReset={resetFlow} onRescheduled={() => { if (passToken) void fetchBookingByToken(passToken).then((b) => b && setConfirmed(b)); }} /> : paymentState === "confirming" || paymentState === "failed" ? (
           <div className="flex flex-col items-center">
             <ConfirmingSketch note={paymentState === "failed" ? bookingError ?? undefined : undefined} />

@@ -73,9 +73,9 @@ export function LifecycleLayout({ preview, eyebrow, heading, showLocation, date,
         <Container style={{ width: "100%", maxWidth: "560px", margin: "0 auto", padding: "24px 12px 40px" }}>
           <Section style={{ border: "1px solid #d5d1c8", backgroundColor: paper, padding: "28px 24px 22px" }}>
             <Text style={{ margin: "0 0 18px", color: graphite, fontFamily: mono, fontSize: "11px", lineHeight: "18px" }}>
-              TATTOO ATELIER <span style={{ color: cyan }}>✦</span> {eyebrow}
+              FRESH INK <span style={{ color: cyan }}>✦</span> {eyebrow}
             </Text>
-            <Img src={needleUrl} width="64" height="64" alt="Tattoo Atelier needle illustration" style={{ display: "block", width: "64px", height: "64px", margin: "0 auto 12px" }} />
+            <Img src={needleUrl} width="64" height="64" alt="Fresh Ink needle illustration" style={{ display: "block", width: "64px", height: "64px", margin: "0 auto 12px" }} />
             <Heading as="h1" style={{ margin: "0 0 18px", textAlign: "center", color: ink, fontFamily: hand, fontWeight: "normal", fontSize: "25px", lineHeight: "33px" }}>
               {heading}
             </Heading>

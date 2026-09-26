@@ -8,9 +8,9 @@ export const Route = createFileRoute("/pass_/$token/confirm")({
   head: () => ({
     meta: [
       { title: "Confirm Attendance — Fresh Ink: Book your session" },
-      { name: "description", content: "Confirm you'll be at your Tattoo Atelier session in Saint Paul." },
+      { name: "description", content: "Confirm you'll be at your Fresh Ink session in Saint Paul." },
       { property: "og:title", content: "Confirm Attendance — Fresh Ink: Book your session" },
-      { property: "og:description", content: "Confirm you'll be at your Tattoo Atelier session in Saint Paul." },
+      { property: "og:description", content: "Confirm you'll be at your Fresh Ink session in Saint Paul." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },

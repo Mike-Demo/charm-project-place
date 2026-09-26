@@ -11,9 +11,9 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Studio Sign In — Fresh Ink: Book your session" },
-      { name: "description", content: "Studio sign in for Tattoo Atelier: artist access to the booking ledger. Appointment-only custom linework studio in Saint Paul." },
+      { name: "description", content: "Studio sign in for Fresh Ink: artist access to the booking ledger. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:title", content: "Studio Sign In — Fresh Ink: Book your session" },
-      { property: "og:description", content: "Studio sign in for Tattoo Atelier: artist access to the booking ledger. Appointment-only custom linework studio in Saint Paul." },
+      { property: "og:description", content: "Studio sign in for Fresh Ink: artist access to the booking ledger. Appointment-only custom linework studio in Saint Paul." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: OG_IMAGE_URL },
@@ -122,7 +122,7 @@ function AuthPage() {
       <div aria-hidden="true" className="paper-fiber" />
       <div className="relative z-10 w-full max-w-md rounded-2xl border border-ink-dim/30 bg-paper-deep/60 p-6 sm:p-8">
         <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">
-          Tattoo Atelier // Studio Access
+          Fresh Ink // Studio Access
         </p>
         <h1 className="mt-2 text-3xl font-normal sm:text-4xl">
           {mode === "signin" ? "Sign in to the ledger" : "Create a studio login"}

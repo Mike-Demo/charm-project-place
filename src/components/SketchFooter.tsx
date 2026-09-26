@@ -56,7 +56,7 @@ export function SketchFooter(): ReactElement {
     <footer className="relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-4 border-t border-ink-dim/20 px-4 pb-6 pt-5 text-xs text-ink-pencil">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <span className="font-mono text-[11px] uppercase tracking-wider text-ink-dim">
-          Tattoo Atelier // Novo // P. 02
+          Fresh Ink // Novo // P. 02
         </span>
         <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-ink-pencil/70">
           Atelier Session Protocol // Ink &amp; Needle

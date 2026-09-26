@@ -30,7 +30,7 @@ export function buildIcs(appointments: readonly Appointment[]): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Tattoo Atelier//Booking//EN",
+    "PRODID:-//Fresh Ink//Booking//EN",
     "CALSCALE:GREGORIAN",
   ];
   for (const appointment of appointments) {

@@ -16,7 +16,7 @@ interface LicenseGroup {
 }
 
 const DESCRIPTION =
-  "Licenses and credits for the open-source libraries, typefaces, and services used by Tattoo Atelier. Appointment-only custom linework studio in Saint Paul.";
+  "Licenses and credits for the open-source libraries, typefaces, and services used by Fresh Ink. Appointment-only custom linework studio in Saint Paul.";
 
 const GROUPS: readonly LicenseGroup[] = [
   {
@@ -130,7 +130,7 @@ const GROUPS: readonly LicenseGroup[] = [
       },
       {
         name: "Needle logo & step sketches",
-        author: "Drawn for Tattoo Atelier",
+        author: "Drawn for Fresh Ink",
         license: "All rights reserved",
         url: "/",
         note: "The boiling needle mark and the field-note drawings above each step.",

@@ -81,7 +81,7 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
     switch (name) {
       case "get_studio_info":
         return text({
-          studio: "Fresh Ink — Tattoo Atelier",
+          studio: "Fresh Ink",
           address: STUDIO_ADDRESS,
           map: STUDIO_MAP_URL,
           hours: STUDIO_HOURS,

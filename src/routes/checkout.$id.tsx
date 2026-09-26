@@ -11,7 +11,7 @@ export const Route = createFileRoute("/checkout/$id")({
   head: () => ({
     meta: [
       { title: "Checkout — Fresh Ink: Book your session" },
-      { name: "description", content: "Finish locking in the tattoo session your assistant held for you at Tattoo Atelier." },
+      { name: "description", content: "Finish locking in the tattoo session your assistant held for you at Fresh Ink." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

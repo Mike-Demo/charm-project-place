@@ -3,7 +3,7 @@ import type { TemplateEntry } from "./registry";
 import { EmailButton, LifecycleLayout, SectionLabel, bodyText, hand, ink, type LifecycleProps } from "./lifecycle-layout";
 
 const SITE = "https://freshink.art";
-export const SHARE_CAPTION = "Fresh ink from Tattoo Atelier in Saint Paul ✦ #freshink #tattooatelier #saintpaultattoo";
+export const SHARE_CAPTION = "Fresh ink from Fresh Ink in Saint Paul ✦ #freshink #tattooatelier #saintpaultattoo";
 
 const SessionShareEmail = ({ name }: LifecycleProps) => (
   <LifecycleLayout preview="Healed up? We'd love to see it." eyebrow="SHOW IT OFF" heading={`Show off your new ink${name ? `, ${name}` : ""}!`}>
