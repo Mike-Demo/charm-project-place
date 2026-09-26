@@ -76,6 +76,25 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+const APPLE_SPLASH_DEVICES: ReadonlyArray<{ width: number; height: number; ratio: number }> = [
+  { width: 375, height: 667, ratio: 2 },
+  { width: 414, height: 896, ratio: 2 },
+  { width: 375, height: 812, ratio: 3 },
+  { width: 390, height: 844, ratio: 3 },
+  { width: 393, height: 852, ratio: 3 },
+  { width: 402, height: 874, ratio: 3 },
+  { width: 414, height: 896, ratio: 3 },
+  { width: 428, height: 926, ratio: 3 },
+  { width: 430, height: 932, ratio: 3 },
+  { width: 440, height: 956, ratio: 3 },
+];
+
+const appleStartupImageLinks = APPLE_SPLASH_DEVICES.map(({ width, height, ratio }) => ({
+  rel: "apple-touch-startup-image",
+  href: `/splash/splash-${width * ratio}x${height * ratio}.png`,
+  media: `(device-width: ${width}px) and (device-height: ${height}px) and (-webkit-device-pixel-ratio: ${ratio}) and (orientation: portrait)`,
+}));
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   staticData: { sitemap: false },
   head: () => ({
