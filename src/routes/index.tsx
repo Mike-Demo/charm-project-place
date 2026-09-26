@@ -320,6 +320,14 @@ function TattooAtelier() {
     if (step === TOTAL_STEPS) staggerRows(paneRef.current);
   }, [step, direction]);
 
+  // Tab icon follows the current booking step; restore the studio mark on exit.
+  useEffect(() => {
+    setFavicon(faviconForStep(step));
+    return () => setFavicon(DEFAULT_FAVICON);
+  }, [step]);
+
+
+
   // Demo SMS: mint a studio pass when the verification step opens, focus the first box.
   useEffect(() => {
     if (step !== 6) return;
