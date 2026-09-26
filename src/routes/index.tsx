@@ -28,8 +28,8 @@ import { ConfirmingSketch } from "@/components/ConfirmingSketch";
 import { PRELOADER_COMPLETE_EVENT } from "@/components/SitePreloader";
 import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
 
-import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
-import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
+import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, confirmFreeHold, type BookingInput } from "@/lib/atelier-service";
+import { sendFreePassEmail } from "@/lib/free-booking.functions";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
 import { DEFAULT_FAVICON, faviconForStep, setFavicon } from "@/lib/step-favicons";
 
@@ -225,25 +225,11 @@ function TattooAtelier() {
 
 
   useEffect(() => {
-    setPaddleEventListener((event) => {
-      const id = heldIdRef.current;
-      if (!id) return;
-      if (event.name === "checkout.completed") {
-        paidRef.current = true;
-        void waitForConfirmation(id);
-      } else if (event.name === "checkout.closed" && !paidRef.current) {
-        heldIdRef.current = null;
-        setPaymentState("idle");
-        setBookingError("Checkout closed — your slot hold was released. Try again whenever you're ready.");
-        void releaseAppointment(id).finally(() => void availabilityQuery.refetch());
-      }
-    });
     const paidId = new URLSearchParams(window.location.search).get("paid");
     if (paidId) {
       window.history.replaceState(null, "", window.location.pathname);
       void waitForConfirmation(paidId);
     }
-    return () => setPaddleEventListener(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
