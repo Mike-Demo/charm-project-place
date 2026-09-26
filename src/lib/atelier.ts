@@ -110,6 +110,12 @@ export function slotMinutes(slot: string): number {
   return (hour + (isPm ? 12 : 0)) * 60 + minute;
 }
 
+/** True when a slot on `date` is already in the past (today only). */
+export function isSlotPast(date: Date, slot: string, now: Date = new Date()): boolean {
+  if (!sameDay(date, now)) return date < startOfDay(now);
+  return slotMinutes(slot) <= now.getHours() * 60 + now.getMinutes();
+}
+
 export interface Availability {
   /** date key -> set of unavailable slot labels */
   slots: Map<string, Set<string>>;

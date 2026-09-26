@@ -45,6 +45,12 @@ export async function holdAppointment(input: BookingInput): Promise<AppointmentH
   return { id: row.id, holdSecret: row.hold_secret };
 }
 
+/** Proof-of-concept: locks in a held slot with no payment ($0). */
+export async function confirmFreeHold(id: string, holdSecret: string): Promise<void> {
+  const { error } = await supabase.rpc("confirm_free_hold", { p_id: id, p_secret: holdSecret });
+  if (error) throw new Error(error.message);
+}
+
 export async function releaseAppointment(id: string): Promise<void> {
   const { error } = await supabase.rpc("release_pending_appointment", { p_id: id });
   if (error) throw new Error(error.message);
