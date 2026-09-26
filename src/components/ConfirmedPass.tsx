@@ -64,7 +64,7 @@ export function ConfirmedPass({ booking, token, onReset, onRescheduled }: Confir
           You&apos;re on the books{firstName ? `, ${firstName}` : ""}!
         </h2>
         <span aria-hidden="true" className="absolute -right-8 -top-6 hidden rotate-12 rounded-lg border-2 border-pencil-green px-3 py-1 font-mono text-xs font-bold uppercase tracking-widest text-pencil-green sm:inline-block">
-          ✦ Paid ✦
+          ✦ Booked ✦
         </span>
       </div>
 
@@ -75,7 +75,7 @@ export function ConfirmedPass({ booking, token, onReset, onRescheduled }: Confir
         <PassRow label="Client:" value={<span className="inline-flex flex-wrap items-center gap-2">{booking.client_name}{booking.pronouns ? <span className="rounded-full border border-ink-dim/30 px-2 py-0.5 text-xs text-ink-pencil">{booking.pronouns}</span> : null}</span>} />
         <PassRow label="SMS Reminder:" value={formatPhone(booking.phone)} />
         <PassRow label="Linework & Stencil:" value={booking.email} />
-        <PassRow label="Donation:" value={<span className="text-pencil-green">$1 to A Thousand Pansies — received, thank you ✦</span>} last />
+        <PassRow label="Session cost:" value={<span className="text-pencil-green">Free while in proof of concept ✦</span>} last />
       </div>
 
       {passUrl && (

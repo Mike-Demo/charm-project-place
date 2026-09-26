@@ -34,7 +34,7 @@ export const AGENT_TOOLS = [
   {
     name: "hold_slot",
     description:
-      "Hold an open time for 15 minutes on behalf of the user. Returns a checkout_url the USER must open to pay the $1 test deposit; the booking is only confirmed after payment. Confirm the details with the user before calling.",
+      "Hold an open time for 15 minutes on behalf of the user. Returns a checkout_url the USER must open to lock the session in (free while in proof of concept — no payment). Confirm the details with the user before calling.",
     inputSchema: {
       type: "object",
       properties: {
@@ -87,8 +87,8 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
           hours: STUDIO_HOURS,
           timezone: "America/Chicago",
           session_times: TIME_SLOTS,
-          deposit: "$1 donation to A Thousand Pansies (test mode, no real charge)",
-          how_it_works: "list_open_times → confirm details with the user → hold_slot → give the user the checkout_url → poll get_booking_status. After payment the user gets a private session pass by email.",
+          deposit: "Free while in proof of concept — the $1 donation to A Thousand Pansies returns at launch",
+          how_it_works: "list_open_times → confirm details with the user → hold_slot → give the user the checkout_url to lock in → poll get_booking_status. Once confirmed the user gets a private session pass by email.",
           website: APP_ORIGIN,
         });
       case "list_open_times": {
@@ -149,7 +149,7 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
           status: "pending",
           hold_expires_in_minutes: 15,
           checkout_url: `${APP_ORIGIN}/checkout/${row.id}?s=${encodeURIComponent(row.hold_secret)}`,
-          next_step: "Send checkout_url to the user. The slot is released if they don't pay within 15 minutes.",
+          next_step: "Send checkout_url to the user. The slot is released if they don't lock in within 15 minutes.",
         });
       }
       case "get_booking_status": {

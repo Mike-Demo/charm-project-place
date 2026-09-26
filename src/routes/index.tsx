@@ -16,6 +16,7 @@ import {
 
   generateVerificationCode,
   isDayFull,
+  isSlotPast,
   isSlotTaken,
   sameDay,
   startOfDay,
@@ -27,8 +28,8 @@ import { ConfirmingSketch } from "@/components/ConfirmingSketch";
 import { PRELOADER_COMPLETE_EVENT } from "@/components/SitePreloader";
 import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
 
-import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
-import { openSlotCheckout, setPaddleEventListener } from "@/lib/paddle";
+import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, confirmFreeHold, type BookingInput } from "@/lib/atelier-service";
+import { sendFreePassEmail } from "@/lib/free-booking.functions";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
 import { DEFAULT_FAVICON, faviconForStep, setFavicon } from "@/lib/step-favicons";
 
@@ -126,6 +127,12 @@ function BoilRule({ tone = "text-ink-dim/50" }: { tone?: string }) {
 
 function TattooAtelier() {
   const today = useMemo(() => startOfDay(new Date()), []);
+  // Ticks every minute so same-day slots disappear the moment they pass.
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const [name, setName] = useState("");
@@ -182,18 +189,15 @@ function TattooAtelier() {
     [availabilityQuery.data],
   );
 
-  const [paymentState, setPaymentState] = useState<"idle" | "checkout" | "confirming" | "failed">("idle");
+  const [paymentState, setPaymentState] = useState<"idle" | "confirming" | "failed">("idle");
 
-
-  const heldIdRef = useRef<string | null>(null);
-  const paidRef = useRef(false);
 
   const waitForConfirmation = async (id: string) => {
     setPaymentState("confirming");
     let consecutiveErrors = 0;
     for (let attempt = 0; attempt < 30; attempt += 1) {
       const status = await getBookingStatus(id).catch(() => {
-        setBookingError("We couldn't find that payment yet. If you just paid, give it a minute and reopen the link from your email — or head back to the form and we'll sort it out.");
+        setBookingError("We had trouble checking that booking just now. Give it a minute, or head back to the form and we'll sort it out.");
         return null;
       });
       if (status !== null) consecutiveErrors = 0; else consecutiveErrors += 1;
@@ -203,14 +207,13 @@ function TattooAtelier() {
       }
       if (status === "confirmed") {
         const booking = await fetchConfirmedBooking(id).catch(() => null);
-        heldIdRef.current = null;
         if (booking) {
           setPaymentState("idle");
           setConfirmed(booking);
           void fetchBookingToken(id).then(setPassToken).catch(() => undefined);
         } else {
           setPaymentState("failed");
-          setBookingError("Payment received, but we couldn't load your confirmation pass. We'll email you the details.");
+          setBookingError("Your session is locked in, but we couldn't load the confirmation pass. We'll email you the details.");
         }
         void availabilityQuery.refetch();
         return;
@@ -218,31 +221,17 @@ function TattooAtelier() {
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
     setPaymentState("failed");
-    setBookingError("Payment received, but confirmation is taking a while. We'll email you your session pass once it's locked in.");
+    setBookingError("Your session is locked in, but confirmation is taking a while. We'll email you your session pass.");
   };
 
 
 
   useEffect(() => {
-    setPaddleEventListener((event) => {
-      const id = heldIdRef.current;
-      if (!id) return;
-      if (event.name === "checkout.completed") {
-        paidRef.current = true;
-        void waitForConfirmation(id);
-      } else if (event.name === "checkout.closed" && !paidRef.current) {
-        heldIdRef.current = null;
-        setPaymentState("idle");
-        setBookingError("Checkout closed — your slot hold was released. Try again whenever you're ready.");
-        void releaseAppointment(id).finally(() => void availabilityQuery.refetch());
-      }
-    });
     const paidId = new URLSearchParams(window.location.search).get("paid");
     if (paidId) {
       window.history.replaceState(null, "", window.location.pathname);
       void waitForConfirmation(paidId);
     }
-    return () => setPaddleEventListener(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -250,20 +239,17 @@ function TattooAtelier() {
   const bookingMutation = useMutation({
     mutationFn: async (input: BookingInput) => {
       const { id, holdSecret } = await holdAppointment(input);
-      heldIdRef.current = id;
-      paidRef.current = false;
+      // Proof-of-concept: slots lock in for free — no checkout step.
+      await confirmFreeHold(id, holdSecret);
       if (idea.description.trim() || idea.referenceImage) {
         await attachIdea({ data: { appointmentId: id, holdSecret, ...idea } }).catch(() => undefined);
       }
-      try {
-        await openSlotCheckout({ appointmentId: id, email: input.email });
-      } catch (error) {
-        heldIdRef.current = null;
-        await releaseAppointment(id).catch(() => undefined);
-        throw error;
-      }
+      await sendFreePassEmail({ data: { appointmentId: id, holdSecret } }).catch(() => undefined);
+      return id;
     },
-    onSuccess: () => setPaymentState("checkout"),
+    onSuccess: (id) => {
+      void waitForConfirmation(id);
+    },
     onError: (error: Error) => {
       setBookingError(error.message);
       void availabilityQuery.refetch();
@@ -654,7 +640,7 @@ function TattooAtelier() {
                     const isToday = sameDay(cell, today);
                     return (
                       <button key={cell.toISOString()} type="button" disabled={disabled}
-                        onClick={() => { setSelectedDate(cell); setSelectedTime(null); }}
+                        onClick={() => { setSelectedDate(cell); setSelectedTime(null); setBookingError(null); }}
                         aria-label={formatLongDate(cell)} aria-pressed={active}
                         className={`relative aspect-square rounded-full text-base transition-all sm:text-lg ${
                           disabled ? "cursor-not-allowed text-ink-dim/40 line-through" :
@@ -675,12 +661,13 @@ function TattooAtelier() {
                     {TIME_SLOTS.map((slot) => {
                       const active = selectedTime === slot;
                       const taken = selectedDate !== null && isSlotTaken(availability, selectedDate, slot);
-                      const disabled = selectedDate === null || taken;
+                      const past = selectedDate !== null && isSlotPast(selectedDate, slot, now);
+                      const disabled = selectedDate === null || taken || past;
                       return (
-                        <button key={slot} type="button" disabled={disabled} onClick={() => setSelectedTime(slot)} aria-pressed={active}
-                          title={taken ? "Already taken" : undefined}
+                        <button key={slot} type="button" disabled={disabled} onClick={() => { setSelectedTime(slot); setBookingError(null); }} aria-pressed={active}
+                          title={taken ? "Already taken" : past ? "Already passed" : undefined}
                           className={`rounded-full border px-3 py-1.5 text-base transition-all ${
-                            taken ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50 line-through" :
+                            taken || past ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50 line-through" :
                             selectedDate === null ? "cursor-not-allowed border-ink-dim/20 text-ink-dim/50" :
                             active ? "ink-bloom border-foreground bg-foreground font-bold text-background" :
                             "border-ink-dim/40 text-foreground hover:-translate-y-0.5 hover:border-foreground"}`}>
@@ -790,7 +777,7 @@ function TattooAtelier() {
                 </div>
               )}
               {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
-              <p className="mt-3 text-sm text-ink-dim">Test mode: use card 4242 4242 4242 4242, any future date, CVC 123. Your slot is held for 15 minutes while you pay.</p>
+              <p className="mt-3 text-sm text-ink-dim">Proof of concept: no payment needed — your slot locks in right away.</p>
               {bookingError !== null && <p role="alert" className="mt-3 text-pencil-red">{bookingError}</p>}
             </section>
           )}
@@ -805,12 +792,12 @@ function TattooAtelier() {
             <span aria-hidden="true" className="hidden sm:block" />
           )}
           <Button aria-disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { if (bookingMutation.isPending) return; stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""} ${!currentValid || bookingMutation.isPending ? "opacity-60" : ""}`}>
-            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
+            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Locking in your slot…" : "Lock In My Slot") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
 
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />$1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies<span className="sr-only"> (opens in a new tab)</span></a> locks in your slot</span>
+          <span className="flex items-center gap-1.5">Free booking while in proof of concept — the $1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies<span className="sr-only"> (opens in a new tab)</span></a> returns at launch</span>
           <span>Free rescheduling up to 24h prior</span>
         </div>
         </>

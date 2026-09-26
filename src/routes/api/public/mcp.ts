@@ -27,7 +27,7 @@ async function handle(msg: RpcRequest, caller: string): Promise<unknown | null> 
         protocolVersion: msg.params?.protocolVersion ?? "2025-06-18",
         capabilities: { tools: {} },
         serverInfo: { name: "fresh-ink-booking", version: "1.0.0" },
-        instructions: "Book tattoo sessions at Fresh Ink (Saint Paul, MN) for your user. The user must pay the $1 test deposit via the checkout_url themselves.",
+        instructions: "Book tattoo sessions at Fresh Ink (Saint Paul, MN) for your user. The user must open the checkout_url themselves to lock the session in (free while in proof of concept).",
       });
     case "ping":
       return ok({});
