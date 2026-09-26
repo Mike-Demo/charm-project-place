@@ -1,4 +1,5 @@
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "crypto";
+import type { Json } from "@/integrations/supabase/types";
 
 export const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -64,7 +65,7 @@ const LIMITS: Record<string, { anonymous: number; keyed: number; windowSec: numb
  * Sliding-window rate limit. Returns null when allowed, or a 429 Response with Retry-After.
  */
 export async function rateLimit(caller: Caller, bucket: keyof typeof LIMITS): Promise<Response | null> {
-  const config = LIMITS[bucket];
+  const config = LIMITS[bucket] ?? LIMITS.read;
   const limit = caller.viaApiKey ? config.keyed : config.anonymous;
   const db = await admin();
   const since = new Date(Date.now() - config.windowSec * 1000).toISOString();

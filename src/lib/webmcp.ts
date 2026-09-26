@@ -27,7 +27,7 @@ const OPEN_TIMES_TOOL: WebMcpToolInput = {
   name: "list_open_times",
   description: "List open appointment times between two dates. Input: { from, to } as YYYY-MM-DD.",
   execute: async (input) => {
-    const params = new URLSearchParams({ from: String(input.from ?? ""), to: String(input.to ?? "") });
+    const params = new URLSearchParams({ from: String(input["from"] ?? ""), to: String(input["to"] ?? "") });
     const response = await fetch(`/api/public/availability?${params}`);
     return response.text();
   },
@@ -51,7 +51,7 @@ const STATUS_TOOL: WebMcpToolInput = {
   name: "get_booking_status",
   description: "Check a held booking: pending, confirmed, expired or cancelled. Input: { booking_id }.",
   execute: async (input) => {
-    const response = await fetch(`/api/public/bookings/${encodeURIComponent(String(input.booking_id ?? ""))}`);
+    const response = await fetch(`/api/public/bookings/${encodeURIComponent(String(input["booking_id"] ?? ""))}`);
     return response.text();
   },
 };
