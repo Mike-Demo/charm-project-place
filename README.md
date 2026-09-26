@@ -26,3 +26,9 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+## Environment & secret handling
+
+- Do not commit `.env` files with real credentials. Use `.env.example` as the template for local setup.
+- Local secrets should be stored in an untracked `.env` file; deployment secrets should be configured in your hosting/platform secret manager.
+- The previously committed live payment client token must be manually rotated or revoked in the payment provider outside this repository.
+
