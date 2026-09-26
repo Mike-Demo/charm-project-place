@@ -45,6 +45,7 @@ export const AGENT_TOOLS = [
         phone: { type: "string", description: "US phone, 10 digits" },
         pronouns: { type: "string", description: "Optional, e.g. she/her" },
         idea: { type: "string", description: "Optional short description of the tattoo idea" },
+        idempotency_key: { type: "string", description: "Optional unique key so retrying the same hold never books twice" },
       },
       required: ["date", "time_slot", "name", "email", "phone"],
       additionalProperties: false,
@@ -122,8 +123,13 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
             phone: z.string().trim().max(30),
             pronouns: z.string().trim().max(40).optional(),
             idea: z.string().trim().max(2000).optional(),
+            idempotency_key: z.string().trim().min(8).max(120).optional(),
           })
           .parse(args);
+        if (input.idempotency_key) {
+          const replayed = await idempotencyLookup(input.idempotency_key, callerId);
+          if (replayed) return replayed as ToolResult;
+        }
         const db = await admin();
         const hourAgo = new Date(Date.now() - 3600000).toISOString();
         const { count: recent } = await db.from("agent_hold_log").select("id", { count: "exact", head: true }).eq("caller_hash", callerId).gte("created_at", hourAgo);
