@@ -123,7 +123,7 @@ function AdminPage() {
 
   const blockMutation = useMutation({
     mutationFn: ({ date, slot }: { date: Date; slot: string | null }) =>
-      blockSlot(date, slot, slot === null ? "Atelier closed" : "Artist hold"),
+      blockSlot(date, slot, slot === null ? "Studio closed" : "Artist hold"),
     onSuccess: refresh,
     onError: (error: Error) => setActionError(error.message),
   });

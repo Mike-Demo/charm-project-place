@@ -88,7 +88,7 @@ export function ConfirmedPass({ booking, token, onReset, onRescheduled }: Confir
             </Button>
           </div>
           <p className="mt-2 text-xs text-ink-pencil">
-            ✉ Demo text to {formatPhone(booking.phone)}: &ldquo;Your Atelier pass: {passUrl}&rdquo;
+            ✉ Demo text to {formatPhone(booking.phone)}: &ldquo;Your Fresh Ink pass: {passUrl}&rdquo;
           </p>
         </div>
       )}

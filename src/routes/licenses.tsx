@@ -211,7 +211,7 @@ function Licenses(): ReactElement {
             Open source &amp; credits
           </h1>
           <p className="mt-3 max-w-xl font-hand text-lg text-ink-pencil">
-            This atelier is built on freely licensed software and typefaces.
+            This studio is built on freely licensed software and typefaces.
             Every library and service it relies on is credited below.
           </p>
         </header>
