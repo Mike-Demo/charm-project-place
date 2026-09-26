@@ -36,8 +36,11 @@ const STEP_MARKS: ReadonlyArray<string> = [
 
 export const DEFAULT_FAVICON = "/favicon.png";
 
-export const faviconForStep = (step: number): string =>
-  STEP_MARKS[step - 1] ?? STEP_MARKS[0];
+export const faviconForStep = (step: number): string => {
+  const mark = STEP_MARKS[step - 1] ?? STEP_MARKS[0];
+  return mark;
+};
+
 
 /** Swap the document favicon; returns nothing on the server. */
 export const setFavicon = (href: string): void => {
