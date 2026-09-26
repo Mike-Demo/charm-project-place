@@ -26,6 +26,7 @@ const TOOLS = [
 ] as const;
 
 export const Route = createFileRoute("/agents")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "For AI agents — Fresh Ink: Book your session" },

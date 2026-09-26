@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { openSlotCheckout } from "@/lib/paddle";
 
 export const Route = createFileRoute("/checkout/$id")({
+  staticData: { sitemap: false },
   validateSearch: z.object({ s: z.string().optional() }),
   head: () => ({
     meta: [
