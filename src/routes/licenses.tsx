@@ -97,6 +97,27 @@ const GROUPS: readonly LicenseGroup[] = [
         url: "https://github.com/juliangarnier/anime/blob/master/LICENSE.md",
         note: "The line-boil, sketch-draw, and step-artwork animations.",
       },
+      {
+        name: "Radix UI",
+        author: "WorkOS",
+        license: "MIT",
+        url: "https://github.com/radix-ui/primitives/blob/main/LICENSE",
+        note: "Unstyled primitives under the sketchbook controls.",
+      },
+      {
+        name: "lucide-react",
+        author: "Lucide contributors",
+        license: "ISC",
+        url: "https://github.com/lucide-icons/lucide/blob/main/LICENSE",
+        note: "Icon components.",
+      },
+      {
+        name: "Sonner",
+        author: "Emil Kowalski",
+        license: "MIT",
+        url: "https://github.com/emilkowalski/sonner",
+        note: "Toast notifications.",
+      },
     ],
   },
   {
