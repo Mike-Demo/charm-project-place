@@ -15,6 +15,12 @@ interface SocialLink {
 
 const SOCIAL_LINKS: readonly SocialLink[] = [
   {
+    label: "MikeDemo on GitHub",
+    href: "https://github.com/Mike-Demo",
+    text: "GitHub",
+    glyph: "⎇",
+  },
+  {
     label: "MikeDemo on LinkedIn",
     href: "https://www.linkedin.com/in/mikedemopoulos",
     text: "LinkedIn",
