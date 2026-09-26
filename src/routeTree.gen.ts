@@ -14,13 +14,13 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LicensesRouteImport } from './routes/licenses'
-import { Route as ProjectsFreshInkRouteImport } from './routes/projects.fresh-ink'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiSketchConceptRouteImport } from './routes/api/sketch-concept'
 import { Route as CheckoutIdRouteImport } from './routes/checkout.$id'
 import { Route as PassTokenRouteImport } from './routes/pass.$token'
+import { Route as ProjectsFreshInkRouteImport } from './routes/projects.fresh-ink'
 import { Route as ApiPublicMcpRouteImport } from './routes/api/public/mcp'
 import { Route as PassTokenConfirmRouteImport } from './routes/pass_.$token.confirm'
 import { Route as ApiPublicHooksSendRemindersRouteImport } from './routes/api/public/hooks/send-reminders'
@@ -49,11 +49,6 @@ const AuthRoute = AuthRouteImport.update({
 const LicensesRoute = LicensesRouteImport.update({
   id: '/licenses',
   path: '/licenses',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProjectsFreshInkRoute = ProjectsFreshInkRouteImport.update({
-  id: '/projects/fresh-ink',
-  path: '/projects/fresh-ink',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsRoute = ProjectsRouteImport.update({
@@ -85,6 +80,11 @@ const PassTokenRoute = PassTokenRouteImport.update({
   id: '/pass/$token',
   path: '/pass/$token',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsFreshInkRoute = ProjectsFreshInkRouteImport.update({
+  id: '/fresh-ink',
+  path: '/fresh-ink',
+  getParentRoute: () => ProjectsRoute,
 } as any)
 const ApiPublicMcpRoute = ApiPublicMcpRouteImport.update({
   id: '/api/public/mcp',
@@ -120,13 +120,13 @@ export interface FileRoutesByFullPath {
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
-  '/projects/fresh-ink': typeof ProjectsFreshInkRoute
-  '/projects': typeof ProjectsRoute
+  '/projects': typeof ProjectsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
+  '/projects/fresh-ink': typeof ProjectsFreshInkRoute
   '/api/public/mcp': typeof ApiPublicMcpRoute
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
@@ -138,13 +138,13 @@ export interface FileRoutesByTo {
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
-  '/projects/fresh-ink': typeof ProjectsFreshInkRoute
-  '/projects': typeof ProjectsRoute
+  '/projects': typeof ProjectsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
+  '/projects/fresh-ink': typeof ProjectsFreshInkRoute
   '/api/public/mcp': typeof ApiPublicMcpRoute
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
@@ -158,13 +158,13 @@ export interface FileRoutesById {
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
-  '/projects/fresh-ink': typeof ProjectsFreshInkRoute
-  '/projects': typeof ProjectsRoute
+  '/projects': typeof ProjectsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
+  '/projects/fresh-ink': typeof ProjectsFreshInkRoute
   '/api/public/mcp': typeof ApiPublicMcpRoute
   '/pass_/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
@@ -178,13 +178,13 @@ export interface FileRouteTypes {
     | '/agents'
     | '/auth'
     | '/licenses'
-    | '/projects/fresh-ink'
     | '/projects'
     | '/sitemap.xml'
     | '/admin'
     | '/api/sketch-concept'
     | '/checkout/$id'
     | '/pass/$token'
+    | '/projects/fresh-ink'
     | '/api/public/mcp'
     | '/pass/$token/confirm'
     | '/api/public/hooks/send-reminders'
@@ -196,13 +196,13 @@ export interface FileRouteTypes {
     | '/agents'
     | '/auth'
     | '/licenses'
-    | '/projects/fresh-ink'
     | '/projects'
     | '/sitemap.xml'
     | '/admin'
     | '/api/sketch-concept'
     | '/checkout/$id'
     | '/pass/$token'
+    | '/projects/fresh-ink'
     | '/api/public/mcp'
     | '/pass/$token/confirm'
     | '/api/public/hooks/send-reminders'
@@ -215,13 +215,13 @@ export interface FileRouteTypes {
     | '/agents'
     | '/auth'
     | '/licenses'
-    | '/projects/fresh-ink'
     | '/projects'
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/api/sketch-concept'
     | '/checkout/$id'
     | '/pass/$token'
+    | '/projects/fresh-ink'
     | '/api/public/mcp'
     | '/pass_/$token/confirm'
     | '/api/public/hooks/send-reminders'
@@ -235,8 +235,7 @@ export interface RootRouteChildren {
   AgentsRoute: typeof AgentsRoute
   AuthRoute: typeof AuthRoute
   LicensesRoute: typeof LicensesRoute
-  ProjectsFreshInkRoute: typeof ProjectsFreshInkRoute
-  ProjectsRoute: typeof ProjectsRoute
+  ProjectsRoute: typeof ProjectsRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiSketchConceptRoute: typeof ApiSketchConceptRoute
   CheckoutIdRoute: typeof CheckoutIdRoute
@@ -285,13 +284,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LicensesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects/fresh-ink': {
-      id: '/projects/fresh-ink'
-      path: '/projects/fresh-ink'
-      fullPath: '/projects/fresh-ink'
-      preLoaderRoute: typeof ProjectsFreshInkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/projects': {
       id: '/projects'
       path: '/projects'
@@ -333,6 +325,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/pass/$token'
       preLoaderRoute: typeof PassTokenRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/projects/fresh-ink': {
+      id: '/projects/fresh-ink'
+      path: '/fresh-ink'
+      fullPath: '/projects/fresh-ink'
+      preLoaderRoute: typeof ProjectsFreshInkRouteImport
+      parentRoute: typeof ProjectsRoute
     }
     '/api/public/mcp': {
       id: '/api/public/mcp'
@@ -383,14 +382,25 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface ProjectsRouteChildren {
+  ProjectsFreshInkRoute: typeof ProjectsFreshInkRoute
+}
+
+const ProjectsRouteChildren: ProjectsRouteChildren = {
+  ProjectsFreshInkRoute: ProjectsFreshInkRoute,
+}
+
+const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
+  ProjectsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AgentsRoute: AgentsRoute,
   AuthRoute: AuthRoute,
   LicensesRoute: LicensesRoute,
-  ProjectsFreshInkRoute: ProjectsFreshInkRoute,
-  ProjectsRoute: ProjectsRoute,
+  ProjectsRoute: ProjectsRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiSketchConceptRoute: ApiSketchConceptRoute,
   CheckoutIdRoute: CheckoutIdRoute,
