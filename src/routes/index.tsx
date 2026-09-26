@@ -237,20 +237,18 @@ function TattooAtelier() {
   const bookingMutation = useMutation({
     mutationFn: async (input: BookingInput) => {
       const { id, holdSecret } = await holdAppointment(input);
-      heldIdRef.current = id;
-      paidRef.current = false;
+      // Proof-of-concept: slots lock in for free — no checkout step.
+      await confirmFreeHold(id, holdSecret);
       if (idea.description.trim() || idea.referenceImage) {
         await attachIdea({ data: { appointmentId: id, holdSecret, ...idea } }).catch(() => undefined);
       }
-      try {
-        await openSlotCheckout({ appointmentId: id, email: input.email });
-      } catch (error) {
-        heldIdRef.current = null;
-        await releaseAppointment(id).catch(() => undefined);
-        throw error;
-      }
+      await sendFreePassEmail({ data: { appointmentId: id, holdSecret } }).catch(() => undefined);
+      return id;
     },
-    onSuccess: () => setPaymentState("checkout"),
+    onSuccess: (id) => {
+      heldIdRef.current = null;
+      void waitForConfirmation(id);
+    },
     onError: (error: Error) => {
       setBookingError(error.message);
       void availabilityQuery.refetch();
