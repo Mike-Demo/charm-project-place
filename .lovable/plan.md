@@ -3,7 +3,7 @@
 ## Goal
 Run the current $0 proof-of-concept booking flow from start to confirmation on mobile, tablet, and desktop, saving a screenshot after each completed step.
 
-## Capture set
+## Booking, simulated email, and simulated SMS capture set
 For each device size, capture:
 1. Name filled out
 2. Pronouns selected
