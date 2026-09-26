@@ -777,7 +777,7 @@ function TattooAtelier() {
                 </div>
               )}
               {!allValid && <p className="mt-4 text-pencil-red">Please revisit the marked details before locking in.</p>}
-              <p className="mt-3 text-sm text-ink-dim">Test mode: use card 4242 4242 4242 4242, any future date, CVC 123. Your slot is held for 15 minutes while you pay.</p>
+              <p className="mt-3 text-sm text-ink-dim">Proof of concept: no payment needed — your slot locks in right away.</p>
               {bookingError !== null && <p role="alert" className="mt-3 text-pencil-red">{bookingError}</p>}
             </section>
           )}
@@ -792,12 +792,12 @@ function TattooAtelier() {
             <span aria-hidden="true" className="hidden sm:block" />
           )}
           <Button aria-disabled={!currentValid || bookingMutation.isPending} onClick={(event) => { if (bookingMutation.isPending) return; stampPress(event.currentTarget); continueFlow(); }} className={`ink-stamp-btn h-auto w-full rounded-2xl px-8 py-3.5 font-hand text-xl font-bold sm:w-auto sm:text-2xl ${step === TOTAL_STEPS ? "final-stamp" : ""} ${!currentValid || bookingMutation.isPending ? "opacity-60" : ""}`}>
-            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Holding your slot…" : paymentState === "checkout" ? "Finish checkout…" : "Donate $1 & Lock In") : "Continue →"}<span className="text-cyan-draft">✦</span>
+            {step === TOTAL_STEPS ? (bookingMutation.isPending ? "Locking in your slot…" : "Lock In My Slot") : "Continue →"}<span className="text-cyan-draft">✦</span>
           </Button>
 
         </div>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-center font-mono text-xs text-ink-pencil/80 sm:justify-between sm:text-left sm:text-sm">
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-pencil-green" />$1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies<span className="sr-only"> (opens in a new tab)</span></a> locks in your slot</span>
+          <span className="flex items-center gap-1.5">Free booking while in proof of concept — the $1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies<span className="sr-only"> (opens in a new tab)</span></a> returns at launch</span>
           <span>Free rescheduling up to 24h prior</span>
         </div>
         </>
