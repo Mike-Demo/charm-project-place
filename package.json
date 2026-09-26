@@ -12,7 +12,8 @@
     "format": "prettier --write ."
   },
   "overrides": {
-    "rolldown": "1.2.1"
+    "rolldown": "1.2.1",
+    "seroval": "https://npm.aikido.io/259bdd65156c8f75910de/seroval@1.5.6-aikido.1"
   },
   "dependencies": {
     "@eslint/eslintrc": "^3.3.7",
@@ -81,7 +82,7 @@
     "vaul": "^1.1.2",
     "vite-tsconfig-paths": "^6.0.2",
     "xmlbuilder2": "^4.0.3",
-    "zod": "^3.25.76"
+    "zod": "https://npm.aikido.io/259bdd65156c8f75910de/zod@3.25.76-aikido.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
