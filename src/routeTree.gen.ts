@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LicensesRouteImport } from './routes/licenses'
+import { Route as ProjectsFreshInkRouteImport } from './routes/projects.fresh-ink'
+import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiSketchConceptRouteImport } from './routes/api/sketch-concept'
@@ -47,6 +49,16 @@ const AuthRoute = AuthRouteImport.update({
 const LicensesRoute = LicensesRouteImport.update({
   id: '/licenses',
   path: '/licenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsFreshInkRoute = ProjectsFreshInkRouteImport.update({
+  id: '/projects/fresh-ink',
+  path: '/projects/fresh-ink',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -108,6 +120,8 @@ export interface FileRoutesByFullPath {
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
+  '/projects/fresh-ink': typeof ProjectsFreshInkRoute
+  '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
@@ -124,6 +138,8 @@ export interface FileRoutesByTo {
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
+  '/projects/fresh-ink': typeof ProjectsFreshInkRoute
+  '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
@@ -142,6 +158,8 @@ export interface FileRoutesById {
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/licenses': typeof LicensesRoute
+  '/projects/fresh-ink': typeof ProjectsFreshInkRoute
+  '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
@@ -160,6 +178,8 @@ export interface FileRouteTypes {
     | '/agents'
     | '/auth'
     | '/licenses'
+    | '/projects/fresh-ink'
+    | '/projects'
     | '/sitemap.xml'
     | '/admin'
     | '/api/sketch-concept'
@@ -176,6 +196,8 @@ export interface FileRouteTypes {
     | '/agents'
     | '/auth'
     | '/licenses'
+    | '/projects/fresh-ink'
+    | '/projects'
     | '/sitemap.xml'
     | '/admin'
     | '/api/sketch-concept'
@@ -193,6 +215,8 @@ export interface FileRouteTypes {
     | '/agents'
     | '/auth'
     | '/licenses'
+    | '/projects/fresh-ink'
+    | '/projects'
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/api/sketch-concept'
@@ -211,6 +235,8 @@ export interface RootRouteChildren {
   AgentsRoute: typeof AgentsRoute
   AuthRoute: typeof AuthRoute
   LicensesRoute: typeof LicensesRoute
+  ProjectsFreshInkRoute: typeof ProjectsFreshInkRoute
+  ProjectsRoute: typeof ProjectsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiSketchConceptRoute: typeof ApiSketchConceptRoute
   CheckoutIdRoute: typeof CheckoutIdRoute
@@ -257,6 +283,20 @@ declare module '@tanstack/react-router' {
       path: '/licenses'
       fullPath: '/licenses'
       preLoaderRoute: typeof LicensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/fresh-ink': {
+      id: '/projects/fresh-ink'
+      path: '/projects/fresh-ink'
+      fullPath: '/projects/fresh-ink'
+      preLoaderRoute: typeof ProjectsFreshInkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -349,6 +389,8 @@ const rootRouteChildren: RootRouteChildren = {
   AgentsRoute: AgentsRoute,
   AuthRoute: AuthRoute,
   LicensesRoute: LicensesRoute,
+  ProjectsFreshInkRoute: ProjectsFreshInkRoute,
+  ProjectsRoute: ProjectsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiSketchConceptRoute: ApiSketchConceptRoute,
   CheckoutIdRoute: CheckoutIdRoute,
