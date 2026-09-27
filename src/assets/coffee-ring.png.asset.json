@@ -2,10 +2,10 @@
   "version": 1,
   "asset_id": "b7303f90-455d-4860-830d-fa04e525a3c0",
   "project_id": "32bdc8d3-4ce3-43ea-9a80-fe1034eda005",
-  "url": "/__l5e/assets-v1/b7303f90-455d-4860-830d-fa04e525a3c0/coffee-ring.png",
+  "url": "/textures/coffee-ring.webp",
   "r2_key": "a/v1/32bdc8d3-4ce3-43ea-9a80-fe1034eda005/b7303f90-455d-4860-830d-fa04e525a3c0/coffee-ring.png",
-  "original_filename": "coffee-ring.png",
-  "size": 302723,
-  "content_type": "image/png",
+  "original_filename": "coffee-ring.webp",
+  "size": 167770,
+  "content_type": "image/webp",
   "created_at": "2026-09-25T19:51:54Z"
 }
