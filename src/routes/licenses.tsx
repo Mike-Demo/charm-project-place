@@ -207,6 +207,7 @@ export const Route = createFileRoute("/licenses")({
       { property: "og:image", content: OG_IMAGE_URL },
       { name: "twitter:image", content: OG_IMAGE_URL },
     ],
+    links: [{ rel: "canonical", href: "https://freshink.art/licenses" }],
   }),
   component: Licenses,
 });
