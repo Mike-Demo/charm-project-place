@@ -515,7 +515,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="sketchbook-canvas relative min-h-dvh px-5 py-8 font-hand text-foreground sm:px-10">
       <div aria-hidden="true" className="paper-fiber" />
-      <div className="relative z-10 mx-auto w-full max-w-5xl">{children}</div>
+      <main className="relative z-10 mx-auto w-full max-w-5xl">{children}</main>
     </div>
   );
 }
