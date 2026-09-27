@@ -111,11 +111,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         httpEquiv: "Content-Security-Policy",
         content: [
           "default-src 'self'",
-          "script-src 'self' 'unsafe-inline' https://cdn.paddle.com",
+          "script-src 'self' 'unsafe-inline' https://cdn.paddle.com https://umami-lite.view.fast",
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "font-src 'self' data: https://fonts.gstatic.com",
           "img-src 'self' data: blob: https:",
-          "connect-src 'self' https: wss:",
+          "connect-src 'self' https://umami-lite.view.fast https: wss:",
           "frame-src https://*.paddle.com",
           "object-src 'none'",
           "base-uri 'self'",
@@ -127,6 +127,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "preconnect", href: "https://umami-lite.view.fast" },
       {
         rel: "stylesheet",
         href: appCss,
@@ -136,6 +137,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "manifest", href: "/manifest.webmanifest" },
       ...appleStartupImageLinks,
+    ],
+    scripts: [
+      {
+        src: "https://umami-lite.view.fast/tracker.js",
+        defer: true,
+        "data-website-id": "4279bc58-7721-43b7-888f-cfe27ec530d0",
+      },
     ],
   }),
   shellComponent: RootShell,
