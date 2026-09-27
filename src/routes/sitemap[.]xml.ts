@@ -17,7 +17,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           });
         }
         const router = await getRouterInstance();
-        const entries: SitemapEntry[] = sitemapStaticPaths(router).map((path) => ({ path }));
+        const entries: SitemapEntry[] = sitemapStaticPaths(router).map((path) => ({ path, lastmod: "2026-09-27" }));
         // Add queries for dynamic pages selected for SEO, using sitemapPathForLocation.
         if (entries.length === 0) {
           return new Response(
