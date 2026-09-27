@@ -49,6 +49,8 @@ export function DeskAtmosphere() {
           src={mark.src}
           alt=""
           draggable={false}
+          loading="lazy"
+          decoding="async"
           className={`absolute mix-blend-multiply ${mark.className}`}
           style={mark.style}
         />
