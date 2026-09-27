@@ -102,6 +102,36 @@ export const Route = createFileRoute("/")({
             postalCode: "55101",
             addressCountry: "US",
           },
+          sameAs: [
+            "https://github.com/Mike-Demo",
+            "https://www.linkedin.com/in/mikedemopoulos",
+            "https://x.com/mike_demo",
+            "https://www.threads.com/@mdemop",
+          ],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Fresh Ink",
+          alternateName: "Fresh Ink Tattoo Studio",
+          url: "https://freshink.art/",
+          description:
+            "Appointment-only custom linework tattoo studio in Saint Paul, Minnesota. Book a session in a few steps — pick a day, lock your slot, and get a session pass. AI assistants can book via MCP.",
+          publisher: {
+            "@type": "Organization",
+            name: "Fresh Ink",
+            url: "https://freshink.art/",
+            logo: "https://freshink.art/icon-512.png",
+            sameAs: [
+              "https://github.com/Mike-Demo",
+              "https://www.linkedin.com/in/mikedemopoulos",
+              "https://x.com/mike_demo",
+              "https://www.threads.com/@mdemop",
+            ],
+          },
         }),
       },
     ],
