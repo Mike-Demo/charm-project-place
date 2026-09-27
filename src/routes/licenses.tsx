@@ -422,7 +422,7 @@ function Licenses(): ReactElement {
             Digital carbon
           </h2>
           <p className="mt-3 max-w-xl font-hand text-lg text-ink-pencil">
-            Homepage transfer is about 1105.5 KB, roughly 0.168 g of CO2 per visit. Estimated with CO2.js using the Sustainable Web Design Model v4, measured 2026-09-27. Hosting: Cloudflare, verified as green hosting by the Green Web Foundation. Machine-readable disclosure:{" "}
+            Homepage transfer is about 1105.5 KB, roughly 0.168 g of CO2 per visit. Estimated with CO2.js using the Sustainable Web Design Model v4, measured 2026-09-27. Hosting: delivered via Cloudflare (verified green hosting by the Green Web Foundation); origin hosting on Lovable Cloud. Machine-readable disclosure:{" "}
             <a
               href="/carbon.txt"
               className="font-mono text-sm text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
