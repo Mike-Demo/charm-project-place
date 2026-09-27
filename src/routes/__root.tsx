@@ -107,6 +107,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      {
+        httpEquiv: "Content-Security-Policy",
+        content: [
+          "default-src 'self'",
+          "script-src 'self' 'unsafe-inline' https://cdn.paddle.com",
+          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+          "font-src 'self' data: https://fonts.gstatic.com",
+          "img-src 'self' data: blob: https:",
+          "connect-src 'self' https: wss:",
+          "frame-src https://*.paddle.com",
+          "object-src 'none'",
+          "base-uri 'self'",
+          "form-action 'self'",
+          "frame-ancestors 'self'",
+        ].join("; "),
+      },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
