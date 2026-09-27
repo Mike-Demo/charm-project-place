@@ -391,6 +391,28 @@ function Licenses(): ReactElement {
             </section>
           );
         })}
+
+        <section className="mt-10" aria-labelledby="open-source">
+          <h2
+            id="open-source"
+            className="font-hand text-2xl font-bold text-foreground underline decoration-cyan-draft/50 decoration-wavy underline-offset-8"
+          >
+            Open source
+          </h2>
+          <p className="mt-3 max-w-xl font-hand text-lg text-ink-pencil">
+            This site's source code is on{" "}
+            <a
+              href="https://github.com/Mike-Demo/charm-project-place"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Source code on GitHub (opens in new tab)"
+              className="font-mono text-sm text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
+            >
+              GitHub ↗<span className="sr-only"> (opens in a new tab)</span>
+            </a>
+            .
+          </p>
+        </section>
       </main>
     </div>
   );
