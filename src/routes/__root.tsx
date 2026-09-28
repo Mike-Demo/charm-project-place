@@ -116,7 +116,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "font-src 'self' data: https://fonts.gstatic.com",
           "img-src 'self' data: blob: https:",
           "connect-src 'self' https://umami-lite.view.fast https: wss:",
-          "frame-src https://*.paddle.com",
           "object-src 'none'",
           "base-uri 'self'",
           "form-action 'self'",
