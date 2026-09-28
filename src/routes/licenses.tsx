@@ -130,13 +130,6 @@ const GROUPS: readonly LicenseGroup[] = [
         url: "https://lovable.dev",
         note: "Database, authentication, and transactional email behind the booking ledger.",
       },
-      {
-        name: "Paddle",
-        author: "Paddle.com Market Ltd.",
-        license: "Hosted checkout",
-        url: "https://www.paddle.com",
-        note: "Wired for the $1 slot-lock checkout; booking is currently free during the proof of concept.",
-      },
     ],
   },
   {

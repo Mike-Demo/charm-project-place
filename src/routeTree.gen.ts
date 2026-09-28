@@ -34,7 +34,6 @@ import { Route as ApiPublicWebhooksRouteImport } from './routes/api/public/webho
 import { Route as PassTokenConfirmRouteImport } from './routes/pass_.$token.confirm'
 import { Route as ApiPublicBookingsIdRouteImport } from './routes/api/public/bookings.$id'
 import { Route as ApiPublicHooksSendRemindersRouteImport } from './routes/api/public/hooks/send-reminders'
-import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
 const IndexRoute = IndexRouteImport.update({
@@ -162,12 +161,6 @@ const ApiPublicHooksSendRemindersRoute =
     path: '/api/public/hooks/send-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicPaymentsWebhookRoute =
-  ApiPublicPaymentsWebhookRouteImport.update({
-    id: '/api/public/payments/webhook',
-    path: '/api/public/payments/webhook',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
@@ -200,7 +193,6 @@ export interface FileRoutesByFullPath {
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/bookings/$id': typeof ApiPublicBookingsIdRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
-  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
@@ -228,7 +220,6 @@ export interface FileRoutesByTo {
   '/pass/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/bookings/$id': typeof ApiPublicBookingsIdRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
-  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
@@ -258,7 +249,6 @@ export interface FileRoutesById {
   '/pass_/$token/confirm': typeof PassTokenConfirmRoute
   '/api/public/bookings/$id': typeof ApiPublicBookingsIdRoute
   '/api/public/hooks/send-reminders': typeof ApiPublicHooksSendRemindersRoute
-  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
@@ -288,7 +278,6 @@ export interface FileRouteTypes {
     | '/pass/$token/confirm'
     | '/api/public/bookings/$id'
     | '/api/public/hooks/send-reminders'
-    | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -316,7 +305,6 @@ export interface FileRouteTypes {
     | '/pass/$token/confirm'
     | '/api/public/bookings/$id'
     | '/api/public/hooks/send-reminders'
-    | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
   id:
     | '__root__'
@@ -345,7 +333,6 @@ export interface FileRouteTypes {
     | '/pass_/$token/confirm'
     | '/api/public/bookings/$id'
     | '/api/public/hooks/send-reminders'
-    | '/api/public/payments/webhook'
     | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
@@ -373,7 +360,6 @@ export interface RootRouteChildren {
   PassTokenConfirmRoute: typeof PassTokenConfirmRoute
   ApiPublicBookingsIdRoute: typeof ApiPublicBookingsIdRoute
   ApiPublicHooksSendRemindersRoute: typeof ApiPublicHooksSendRemindersRoute
-  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
@@ -554,13 +540,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSendRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/payments/webhook': {
-      id: '/api/public/payments/webhook'
-      path: '/api/public/payments/webhook'
-      fullPath: '/api/public/payments/webhook'
-      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
@@ -618,7 +597,6 @@ const rootRouteChildren: RootRouteChildren = {
   PassTokenConfirmRoute: PassTokenConfirmRoute,
   ApiPublicBookingsIdRoute: ApiPublicBookingsIdRoute,
   ApiPublicHooksSendRemindersRoute: ApiPublicHooksSendRemindersRoute,
-  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
