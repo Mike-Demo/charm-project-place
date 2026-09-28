@@ -24,6 +24,13 @@ const normalizeEnvAccess: Plugin = {
   },
 };
 
+// Public (publishable) backend connection values. These are safe to ship in the
+// client bundle and act as build-time fallbacks when the deploy environment does
+// not provide a .env file, which is what broke the published site.
+const SUPABASE_URL = process.env["VITE_SUPABASE_URL"] ?? "https://xhdnpnmztysdpxuxguww.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY =
+  process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ?? "sb_publishable_AD1SWAemnZo3ImwjXDFtyQ_UFPYFwz7";
+
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
@@ -32,5 +39,11 @@ export default defineConfig({
   },
   vite: {
     plugins: [normalizeEnvAccess],
+    define: {
+      "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(SUPABASE_URL),
+      "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(SUPABASE_PUBLISHABLE_KEY),
+      "process.env.SUPABASE_URL": JSON.stringify(SUPABASE_URL),
+      "process.env.SUPABASE_PUBLISHABLE_KEY": JSON.stringify(SUPABASE_PUBLISHABLE_KEY),
+    },
   },
 });
