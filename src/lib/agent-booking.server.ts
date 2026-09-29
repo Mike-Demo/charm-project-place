@@ -127,6 +127,9 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
             idempotency_key: z.string().trim().min(8).max(120).optional(),
           })
           .parse(args);
+        if (isSlotElapsed(input.date, input.time_slot)) {
+          return text({ error: "That time slot has already passed; please choose a future time." }, true);
+        }
         if (input.idempotency_key) {
           const replayed = await idempotencyLookup(input.idempotency_key, callerId);
           if (replayed) return replayed as ToolResult;
