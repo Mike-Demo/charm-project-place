@@ -253,6 +253,25 @@ function Licenses(): ReactElement {
             Proof of concept
           </h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <article className="sketch-card doodle-hover p-4 sm:col-span-2">
+              <h3 className="font-hand text-xl font-bold text-foreground">Lovable Challenge submission</h3>
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink-dim">
+                Guided Tattoo Intake Clarifies Custom Design Booking Requests
+              </p>
+              <p className="mt-2 font-hand text-base text-ink-pencil">
+                This studio was entered in the Lovable Challenge under the title above. The entry
+                itself is posted on Contra.
+              </p>
+              <a
+                href="https://on.contra.com/FNh6DB"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Lovable Challenge submission on Contra (opens in new tab)"
+                className="mt-3 inline-block font-mono text-xs text-cyan-draft underline decoration-cyan-draft/40 underline-offset-4 transition-colors hover:text-foreground"
+              >
+                Challenge submission on Contra ↗<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </article>
             <article className="sketch-card p-4">
               <h3 className="font-hand text-xl font-bold text-foreground">Phone verification code</h3>
               <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink-dim">
