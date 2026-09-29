@@ -63,8 +63,24 @@ export function IdeaStep({ value, onChange }: IdeaStepProps) {
     onChange({ ...value, referenceImage: url, conceptSketch: null });
   };
 
+  const buildValidatedDataUrl = (dataUrl: string): string => {
+    try {
+      const url = new URL(dataUrl);
+      
+      // Only allow data URLs for security
+      if (url.protocol !== 'data:') {
+        throw new Error('Invalid protocol');
+      }
+      
+      return url.href;
+    } catch {
+      throw new Error('Invalid URL');
+    }
+  };
+
   const dataUrlToFile = async (url: string): Promise<File> => {
-    const blob = await (await fetch(url)).blob();
+    const validatedUrl = buildValidatedDataUrl(url);
+    const blob = await (await fetch(validatedUrl)).blob();
     return new File([blob], "reference", { type: blob.type });
   };
 
