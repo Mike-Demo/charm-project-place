@@ -18,5 +18,6 @@
 - Day-before reminders run from /api/public/hooks/send-reminders, called by pg_cron at 14:00 and 15:00 UTC and gated to 9 AM America/Chicago; the caller is verified against a hashed token in cron_tokens, because this agent can't read vault or LOVABLE_CRON_SECRET.
 - AI agents book via a hand-rolled MCP (JSON-RPC) route at /api/public/mcp (helpers in agent-booking.server.ts); agent holds pay through /checkout/$id?s=<hold secret> so the client, not the agent, completes payment.
 - Public REST API routes reuse `src/lib/public-api.server.ts` for CORS, structured errors, rate limits, idempotency, HMAC webhooks; every confirmation fires notifyWebhooks("booking.confirmed").
-- Share card and PWA icons are static files in public/ referenced by absolute https://freshink.art URLs (OG_IMAGE_URL); manifest-only install, no service worker.
-- Dependencies must resolve from the public npm registry; never pin or override a package to npm.aikido.io (returns 402, breaks installs).
+- Share/PWA icons use public/ and absolute freshink.art URLs; manifest only, no service worker.
+- Use only public npm packages; npm.aikido.io returns 402 and breaks installs.
+- Return 499 when a request's own abort signal causes SSR failure so restart disconnects are not reported as app 500s.
