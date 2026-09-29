@@ -116,6 +116,38 @@ export function isSlotPast(date: Date, slot: string, now: Date = new Date()): bo
   return slotMinutes(slot) <= now.getHours() * 60 + now.getMinutes();
 }
 
+export const STUDIO_TIMEZONE = "America/Chicago";
+
+/** YYYY-MM-DD in the studio's timezone. */
+export function studioTodayKey(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: STUDIO_TIMEZONE }).format(now);
+}
+
+/** Current wall-clock minutes since midnight in the studio's timezone. */
+export function studioNowMinutes(now: Date = new Date()): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: STUDIO_TIMEZONE,
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  }).formatToParts(now);
+  const hour = Number(parts.find((p) => p.type === "hour")?.value ?? 0) % 24;
+  const minute = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
+  return hour * 60 + minute;
+}
+
+/**
+ * Server-side elapsed-slot check in America/Chicago wall-clock time.
+ * Same rule as the booking UI's isSlotPast: past dates are elapsed, and on
+ * today's date a slot is elapsed once its start time is at or before now.
+ */
+export function isSlotElapsed(dateKey: string, slot: string, now: Date = new Date()): boolean {
+  const today = studioTodayKey(now);
+  if (dateKey < today) return true;
+  if (dateKey > today) return false;
+  return slotMinutes(slot) <= studioNowMinutes(now);
+}
+
 export interface Availability {
   /** date key -> set of unavailable slot labels */
   slots: Map<string, Set<string>>;
