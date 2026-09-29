@@ -20,7 +20,19 @@ async function getServerEntry(): Promise<ServerEntry> {
 
 // h3 swallows in-handler throws into a normal 500 Response with body
 // {"unhandled":true,"message":"HTTPError"} — try/catch alone never fires for those.
-async function normalizeCatastrophicSsrResponse(response: Response): Promise<Response> {
+async function normalizeCatastrophicSsrResponse(
+  request: Request,
+  response: Response,
+): Promise<Response> {
+  // TanStack Start currently lets a browser disconnect during SSR surface as a
+  // generic h3 500. Classify only requests whose own signal was aborted so real
+  // application failures still reach the error page and server logs.
+  if (request.signal.aborted && response.status >= 500) {
+    return new Response(null, {
+      status: 499,
+      statusText: "Client Closed Request",
+    });
+  }
   if (response.status < 500) return response;
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) return response;
@@ -49,8 +61,14 @@ export default {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      return await normalizeCatastrophicSsrResponse(request, response);
     } catch (error) {
+      if (request.signal.aborted && error === request.signal.reason) {
+        return new Response(null, {
+          status: 499,
+          statusText: "Client Closed Request",
+        });
+      }
       console.error(error);
       return new Response(renderErrorPage(), {
         status: 500,
