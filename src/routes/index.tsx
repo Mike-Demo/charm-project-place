@@ -270,11 +270,12 @@ function TattooAtelier() {
   const bookingMutation = useMutation({
     mutationFn: async (input: BookingInput) => {
       const { id, holdSecret } = await holdAppointment(input);
-      // Proof-of-concept: slots lock in for free — no checkout step.
-      await confirmFreeHold(id, holdSecret);
+      // Attach the idea while the hold is still pending — attachIdea only accepts a live hold.
       if (idea.description.trim() || idea.referenceImage) {
         await attachIdea({ data: { appointmentId: id, holdSecret, ...idea } }).catch(() => undefined);
       }
+      // Proof-of-concept: slots lock in for free — no checkout step.
+      await confirmFreeHold(id, holdSecret);
       await sendFreePassEmail({ data: { appointmentId: id, holdSecret } }).catch(() => undefined);
       return id;
     },
