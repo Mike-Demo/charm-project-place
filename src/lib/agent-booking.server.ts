@@ -1,6 +1,6 @@
 import { createHash } from "crypto";
 import { z } from "zod";
-import { TIME_SLOTS } from "@/lib/atelier";
+import { TIME_SLOTS, isSlotElapsed, studioTodayKey } from "@/lib/atelier";
 import { APP_ORIGIN, STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
 import { idempotencyLookup, idempotencyStore, notifyWebhooks } from "@/lib/public-api.server";
 
@@ -104,12 +104,12 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
         if (error) throw new Error(error.message);
         const taken = new Set((data ?? []).map((r) => `${r.slot_date}|${r.time_slot}`));
         const blockedDays = new Set((data ?? []).filter((r) => r.kind === "blocked" && !r.time_slot).map((r) => r.slot_date));
-        const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Chicago" }).format(new Date());
+        const today = studioTodayKey();
         const open: Array<{ date: string; times: string[] }> = [];
         for (let i = 0; i <= days; i += 1) {
           const d = new Date(start.getTime() + i * 86400000).toISOString().slice(0, 10);
           if (d < today || blockedDays.has(d)) continue;
-          const times = TIME_SLOTS.filter((t) => !taken.has(`${d}|${t}`));
+          const times = TIME_SLOTS.filter((t) => !taken.has(`${d}|${t}`) && !isSlotElapsed(d, t));
           if (times.length) open.push({ date: d, times });
         }
         return text({ timezone: "America/Chicago", open });
@@ -127,6 +127,9 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
             idempotency_key: z.string().trim().min(8).max(120).optional(),
           })
           .parse(args);
+        if (isSlotElapsed(input.date, input.time_slot)) {
+          return text({ error: "That time slot has already passed; please choose a future time." }, true);
+        }
         if (input.idempotency_key) {
           const replayed = await idempotencyLookup(input.idempotency_key, callerId);
           if (replayed) return replayed as ToolResult;
