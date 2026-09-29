@@ -3,7 +3,7 @@
   "description": "Appointment-only custom linework tattoo studio in Saint Paul, MN. AI agents can check availability, hold a slot, and hand the user a checkout link.",
   "url": "https://freshink.art",
   "version": "2.0.0",
-  "protocols": ["MCP", "REST", "SSE", "Webhooks", "WebMCP", "llms.txt"],
+  "protocols": ["MCP", "REST", "SSE", "Webhooks", "llms.txt"],
   "capabilities": [
     "studio.info",
     "availability.search",
