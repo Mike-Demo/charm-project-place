@@ -14,3 +14,16 @@ User-agent: *
 Allow: /
 
 Sitemap: https://freshink.art/sitemap.xml
+schemamap: https://freshink.art/schema-map.xml
+
+# Agent-readable site summary: https://freshink.art/llms.txt
+# Agent card: https://freshink.art/.well-known/agent-card.json
+# Agent skills index: https://freshink.art/.well-known/agent-skills/index.json
+# API spec: https://freshink.art/api/public/openapi.json
+# Capabilities: https://freshink.art/api/public/capabilities
+# MCP server: https://freshink.art/api/public/mcp
+# MCP server card: https://freshink.art/.well-known/mcp/server-card.json
+# Agentic Resource Discovery: https://freshink.art/.well-known/ard.json
+# API catalog (RFC 9727): https://freshink.art/.well-known/api-catalog
+# Auth model: https://freshink.art/auth.md
+# Pricing: https://freshink.art/pricing.md

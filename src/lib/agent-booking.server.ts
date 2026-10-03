@@ -21,6 +21,7 @@ export const AGENT_TOOLS = [
     name: "get_studio_info",
     description: "Studio name, address, hours, prices and how booking works. Call first.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   },
   {
     name: "list_open_times",
@@ -31,6 +32,7 @@ export const AGENT_TOOLS = [
       required: ["from", "to"],
       additionalProperties: false,
     },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   },
   {
     name: "hold_slot",
@@ -51,6 +53,7 @@ export const AGENT_TOOLS = [
       required: ["date", "time_slot", "name", "email", "phone"],
       additionalProperties: false,
     },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   },
   {
     name: "get_booking_status",
@@ -61,6 +64,7 @@ export const AGENT_TOOLS = [
       required: ["booking_id"],
       additionalProperties: false,
     },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   },
 ] as const;
 

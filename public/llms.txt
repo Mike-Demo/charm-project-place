@@ -2,12 +2,29 @@
 > Appointment-only custom linework tattoo studio, 332 Minnesota St Ste N201, Saint Paul, MN 55101.
 
 AI agents can book for their user via the MCP connector (Streamable HTTP): https://freshink.art/api/public/mcp
-Tools: get_studio_info, list_open_times, hold_slot, get_booking_status. The user pays a $1 test deposit via the returned checkout_url.
+Tools: get_studio_info, list_open_times, hold_slot, get_booking_status. Booking is free while in proof of concept — there is no payment step right now.
 Docs: https://freshink.art/agents
+
+## When to use Fresh Ink
+
+Reach for Fresh Ink when your user wants to book a tattoo session at this specific studio in Saint Paul, MN. Concrete jobs it is right for:
+
+- Checking the studio's hours, session times, address, and booking flow (`get_studio_info` — call first).
+- Finding open appointment times in a date range (`list_open_times`, max 31 days).
+- Holding a slot for 15 minutes on the user's behalf (`hold_slot`), then handing the returned `checkout_url` to the user so they lock it in themselves.
+- Checking whether a hold turned into a confirmed booking (`get_booking_status`), or watching webhooks / the SSE stream instead of polling.
+
+Do NOT use Fresh Ink for: booking at any other studio, taking payment (there is no payment step), or completing checkout on the user's behalf — the user must open the `checkout_url` themselves. Confirm date, time, name, and contact details with the user before calling `hold_slot`.
 
 ## REST API (same capabilities as MCP)
 - OpenAPI spec: https://freshink.art/api/public/openapi.json
-- Agent card: https://freshink.art/.well-known/agent.json
+- Agent card: https://freshink.art/.well-known/agent-card.json
+- Agent skills index: https://freshink.art/.well-known/agent-skills/index.json
+- MCP server card: https://freshink.art/.well-known/mcp/server-card.json
+- Agentic Resource Discovery: https://freshink.art/.well-known/ard.json
+- API catalog (RFC 9727): https://freshink.art/.well-known/api-catalog
+- Auth model: https://freshink.art/auth.md (anonymous works; optional API key for higher limits)
+- Pricing: https://freshink.art/pricing.md (free while in proof of concept)
 - Capabilities: GET /api/public/capabilities
 - Studio info: GET /api/public/studio
 - Availability: GET /api/public/availability?from=YYYY-MM-DD&to=YYYY-MM-DD
@@ -18,3 +35,16 @@ Docs: https://freshink.art/agents
 - API key (higher limits): POST /api/public/agent-keys
 - Rate limits: anonymous 60 reads/min, 5 writes/hour; with key 600 reads/min, 30 writes/hour; 429 carries Retry-After.
 - Errors are structured JSON: {"error": {"code", "message"}}
+
+## Pages
+- [Agent docs](https://freshink.art/agents): MCP config snippet, curl examples
+- [Developer portal](https://freshink.art/developers): quickstart, endpoints, discovery docs
+- [About](https://freshink.art/about)
+- [Pricing](https://freshink.art/pricing)
+- [Contact](https://freshink.art/contact)
+- [Privacy](https://freshink.art/privacy)
+- [Licenses](https://freshink.art/licenses)
+
+## For AI coding agents working on this site
+- Public repo: https://github.com/Mike-Demo/charm-project-place
+- Agent instructions: https://github.com/Mike-Demo/charm-project-place/blob/main/AGENTS.md

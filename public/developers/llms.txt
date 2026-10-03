@@ -1,0 +1,27 @@
+# Fresh Ink — developer docs
+
+Scoped agent context for building on Fresh Ink's booking API.
+
+## Endpoints
+
+- `GET /api/public/studio` — studio info
+- `GET /api/public/availability?from=YYYY-MM-DD&to=YYYY-MM-DD` — open slots (max 31 days)
+- `POST /api/public/holds` — create a hold; idempotent via `Idempotency-Key` header
+- `GET /api/public/bookings/{id}` — booking status
+- `POST /api/public/agent-keys` — mint an API key (`{email, label?}`), shown once
+- `POST /api/public/webhooks` — subscribe to signed events (hold.created, booking.confirmed, hold.expired)
+- `GET /api/public/events` — SSE stream
+- `GET /api/public/capabilities` — versioned capability list
+
+## MCP
+
+`https://freshink.art/api/public/mcp` (Streamable HTTP, no auth). Tools: `get_studio_info`, `list_open_times`, `hold_slot`, `get_booking_status`.
+
+## Rules that matter
+
+- Booking is free while in proof of concept — no payment step right now.
+- The agent never completes checkout: hand the `checkout_url` to the user.
+- Rate limits: anonymous 60 reads/min + 5 writes/hour; keyed 600/min + 30/hour. `429` carries `Retry-After`.
+- Errors are structured JSON: `{"error": {"code", "message"}}`.
+- Full spec: https://freshink.art/api/public/openapi.json
+- Auth model: https://freshink.art/auth.md
