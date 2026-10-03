@@ -1,6 +1,6 @@
 import { OG_IMAGE_URL } from "@/lib/social";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { StepArtwork } from "@/components/StepArtwork";
@@ -125,6 +125,13 @@ export const Route = createFileRoute("/")({
             name: "Fresh Ink",
             url: "https://freshink.art/",
             logo: "https://freshink.art/icon-512.png",
+            description:
+              "Appointment-only custom linework tattoo studio in Saint Paul, Minnesota. Book a session online or via an AI agent.",
+            contactPoint: {
+              "@type": "ContactPoint",
+              email: "studio@freshink.art",
+              contactType: "customer support",
+            },
             sameAs: [
               "https://github.com/Mike-Demo",
               "https://www.linkedin.com/in/mikedemopoulos",
@@ -837,6 +844,16 @@ function TattooAtelier() {
           <span className="flex items-center gap-1.5">Free booking while in proof of concept — the $1 donation to <a href="https://www.npr.org/2022/11/25/1138996633/pansy-tattoos-nonbinary-artist-trans-activism" target="_blank" rel="noreferrer" className="underline decoration-cyan-draft/60 underline-offset-2 hover:text-foreground">A Thousand Pansies<span className="sr-only"> (opens in a new tab)</span></a> returns at launch</span>
           <span>Free rescheduling up to 24h prior</span>
         </div>
+        <footer className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-dashed border-ink-dim/30 pt-5 font-mono text-xs text-ink-pencil/70">
+          <Link to="/agents" className="underline decoration-ink-dim/40 underline-offset-4 hover:text-foreground">For AI agents</Link>
+          <Link to="/developers" className="underline decoration-ink-dim/40 underline-offset-4 hover:text-foreground">Developers</Link>
+          <a href="/api/public/openapi.json" className="underline decoration-ink-dim/40 underline-offset-4 hover:text-foreground">API spec</a>
+          <Link to="/about" className="underline decoration-ink-dim/40 underline-offset-4 hover:text-foreground">About</Link>
+          <Link to="/pricing" className="underline decoration-ink-dim/40 underline-offset-4 hover:text-foreground">Pricing</Link>
+          <Link to="/contact" className="underline decoration-ink-dim/40 underline-offset-4 hover:text-foreground">Contact</Link>
+          <Link to="/privacy" className="underline decoration-ink-dim/40 underline-offset-4 hover:text-foreground">Privacy</Link>
+          <Link to="/licenses" className="underline decoration-ink-dim/40 underline-offset-4 hover:text-foreground">Licenses</Link>
+        </footer>
         </>
         )}
       </main>

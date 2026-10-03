@@ -16,6 +16,7 @@ const spec = {
   paths: {
     "/api/public/studio": {
       get: {
+        operationId: "getStudioInfo",
         summary: "Studio info: address, hours, session times, booking flow.",
         tags: ["studio"],
         responses: {
@@ -26,6 +27,7 @@ const spec = {
     },
     "/api/public/availability": {
       get: {
+        operationId: "listAvailability",
         summary: "List open appointment times between two dates.",
         tags: ["availability"],
         parameters: [
@@ -42,6 +44,7 @@ const spec = {
     },
     "/api/public/holds": {
       post: {
+        operationId: "createHold",
         summary: "Hold an open time for 15 minutes on behalf of the user.",
         description: "Idempotent via the Idempotency-Key header: duplicate requests replay the original response. Returns a checkout_url the USER must open to lock the session in (free while in proof of concept).",
         tags: ["booking"],
@@ -80,6 +83,7 @@ const spec = {
     },
     "/api/public/bookings/{id}": {
       get: {
+        operationId: "getBookingStatus",
         summary: "Check a held booking: pending, confirmed, expired or cancelled.",
         tags: ["booking"],
         parameters: [{ name: "id", in: "path", required: true, schema: { type: "string", format: "uuid" } }],
@@ -92,6 +96,7 @@ const spec = {
     },
     "/api/public/agent-keys": {
       post: {
+        operationId: "mintAgentKey",
         summary: "Mint an agent API key (email required). The key is shown once.",
         tags: ["auth"],
         requestBody: {
@@ -103,6 +108,7 @@ const spec = {
     },
     "/api/public/webhooks": {
       post: {
+        operationId: "createWebhookSubscription",
         summary: "Register a webhook. We POST signed events (hold.created, booking.confirmed, hold.expired) to your URL.",
         tags: ["events"],
         requestBody: {
@@ -120,12 +126,14 @@ const spec = {
         responses: { "201": { description: "Subscription created; returns signing_secret and manage_token, shown once" } },
       },
       get: {
+        operationId: "getWebhookSubscription",
         summary: "Get your subscription. Send the manage_token as Bearer.",
         tags: ["events"],
         security: [{ manageToken: [] }],
         responses: { "200": { description: "Subscription details" }, "401": { $ref: "#/components/responses/NotFound" } },
       },
       delete: {
+        operationId: "deleteWebhookSubscription",
         summary: "Delete your subscription. Send the manage_token as Bearer.",
         tags: ["events"],
         security: [{ manageToken: [] }],
@@ -134,6 +142,7 @@ const spec = {
     },
     "/api/public/events": {
       get: {
+        operationId: "streamEvents",
         summary: "Server-sent events stream: availability snapshot, studio pulse, heartbeat.",
         tags: ["events"],
         responses: { "200": { description: "text/event-stream" }, "429": { $ref: "#/components/responses/RateLimited" } },
@@ -141,6 +150,7 @@ const spec = {
     },
     "/api/public/capabilities": {
       get: {
+        operationId: "getCapabilities",
         summary: "Versioned capability list for agent negotiation.",
         tags: ["discovery"],
         responses: { "200": { description: "Capabilities" } },
@@ -148,6 +158,7 @@ const spec = {
     },
     "/api/public/mcp": {
       post: {
+        operationId: "mcpJsonRpc",
         summary: "MCP connector (Streamable HTTP, JSON-RPC): initialize, tools/list, tools/call.",
         description: "Tools: get_studio_info, list_open_times, hold_slot (accepts idempotency_key), get_booking_status.",
         tags: ["discovery"],

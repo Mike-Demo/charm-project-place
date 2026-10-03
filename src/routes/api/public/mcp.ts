@@ -33,8 +33,13 @@ async function handle(msg: RpcRequest, caller: string): Promise<unknown | null> 
       return ok({});
     case "tools/list":
       return ok({ tools: AGENT_TOOLS });
-    case "tools/call":
-      return ok(await callAgentTool(msg.params?.name ?? "", msg.params?.arguments ?? {}, caller));
+    case "tools/call": {
+      const toolName = msg.params?.name ?? "";
+      if (!AGENT_TOOLS.some((t) => t.name === toolName)) {
+        return { jsonrpc: "2.0", id, error: { code: -32602, message: `Unknown tool: ${toolName}. Available tools: ${AGENT_TOOLS.map((t) => t.name).join(", ")}` } };
+      }
+      return ok(await callAgentTool(toolName, msg.params?.arguments ?? {}, caller));
+    }
     default:
       if (msg.method?.startsWith("notifications/")) return null;
       return { jsonrpc: "2.0", id, error: { code: -32601, message: "Method not found" } };
