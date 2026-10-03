@@ -1,0 +1,19 @@
+# llms.txt — Fresh Ink docs section
+
+This file orients an LLM agent to the documentation resources for Fresh Ink's booking platform.
+
+## What this section covers
+
+- REST API endpoint reference with request/response shapes and the envelope format
+- Error codes and rate-limit behavior
+- MCP tool reference (get_studio_info, list_open_times, hold_slot, get_booking_status)
+
+## Key links
+
+- [OpenAPI spec](https://freshink.art/api/public/openapi.json)
+- [MCP server card](https://freshink.art/.well-known/mcp/server-card.json)
+- [Authentication walkthrough](https://freshink.art/auth.md) (anonymous + optional API key)
+
+## When to use this section
+
+Use it when the agent needs endpoint-level detail beyond the overview in /llms.txt — parameter shapes, error codes, or the MCP tool schemas.

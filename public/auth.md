@@ -1,10 +1,3 @@
----
-title: "Authentication — Fresh Ink"
-description: "How AI agents authenticate with the Fresh Ink booking API and MCP server."
-canonical: "https://freshink.art/auth.md"
-last-updated: "2026-10-03"
----
-
 # Authentication — Fresh Ink
 
 Fresh Ink's agent surfaces work without OAuth, OpenID Connect, or mandatory API keys. There are two access levels: anonymous, and keyed (higher rate limits).

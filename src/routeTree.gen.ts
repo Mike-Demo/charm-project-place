@@ -21,7 +21,9 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as Char91DotwellKnownChar93ApiCatalogRouteImport } from './routes/[.well-known]/api-catalog'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiSplatRouteImport } from './routes/api/$'
 import { Route as ApiSketchConceptRouteImport } from './routes/api/sketch-concept'
 import { Route as CheckoutIdRouteImport } from './routes/checkout.$id'
 import { Route as PassTokenRouteImport } from './routes/pass.$token'
@@ -100,10 +102,21 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93ApiCatalogRoute =
+  Char91DotwellKnownChar93ApiCatalogRouteImport.update({
+    id: '/.well-known/api-catalog',
+    path: '/.well-known/api-catalog',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiSplatRoute = ApiSplatRouteImport.update({
+  id: '/api/$',
+  path: '/api/$',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSketchConceptRoute = ApiSketchConceptRouteImport.update({
   id: '/api/sketch-concept',
@@ -210,7 +223,9 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.well-known/api-catalog': typeof Char91DotwellKnownChar93ApiCatalogRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/$': typeof ApiSplatRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
@@ -242,7 +257,9 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.well-known/api-catalog': typeof Char91DotwellKnownChar93ApiCatalogRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/$': typeof ApiSplatRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
@@ -276,7 +293,9 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.well-known/api-catalog': typeof Char91DotwellKnownChar93ApiCatalogRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/api/$': typeof ApiSplatRoute
   '/api/sketch-concept': typeof ApiSketchConceptRoute
   '/checkout/$id': typeof CheckoutIdRoute
   '/pass/$token': typeof PassTokenRoute
@@ -310,7 +329,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/projects'
     | '/sitemap.xml'
+    | '/.well-known/api-catalog'
     | '/admin'
+    | '/api/$'
     | '/api/sketch-concept'
     | '/checkout/$id'
     | '/pass/$token'
@@ -342,7 +363,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/projects'
     | '/sitemap.xml'
+    | '/.well-known/api-catalog'
     | '/admin'
+    | '/api/$'
     | '/api/sketch-concept'
     | '/checkout/$id'
     | '/pass/$token'
@@ -375,7 +398,9 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/projects'
     | '/sitemap.xml'
+    | '/.well-known/api-catalog'
     | '/_authenticated/admin'
+    | '/api/$'
     | '/api/sketch-concept'
     | '/checkout/$id'
     | '/pass/$token'
@@ -409,6 +434,8 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  Char91DotwellKnownChar93ApiCatalogRoute: typeof Char91DotwellKnownChar93ApiCatalogRoute
+  ApiSplatRoute: typeof ApiSplatRoute
   ApiSketchConceptRoute: typeof ApiSketchConceptRoute
   CheckoutIdRoute: typeof CheckoutIdRoute
   PassTokenRoute: typeof PassTokenRoute
@@ -514,12 +541,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/api-catalog': {
+      id: '/.well-known/api-catalog'
+      path: '/.well-known/api-catalog'
+      fullPath: '/.well-known/api-catalog'
+      preLoaderRoute: typeof Char91DotwellKnownChar93ApiCatalogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/$': {
+      id: '/api/$'
+      path: '/api/$'
+      fullPath: '/api/$'
+      preLoaderRoute: typeof ApiSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/sketch-concept': {
       id: '/api/sketch-concept'
@@ -686,6 +727,9 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProjectsRoute: ProjectsRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  Char91DotwellKnownChar93ApiCatalogRoute:
+    Char91DotwellKnownChar93ApiCatalogRoute,
+  ApiSplatRoute: ApiSplatRoute,
   ApiSketchConceptRoute: ApiSketchConceptRoute,
   CheckoutIdRoute: CheckoutIdRoute,
   PassTokenRoute: PassTokenRoute,

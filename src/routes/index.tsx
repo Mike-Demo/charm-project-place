@@ -127,6 +127,14 @@ export const Route = createFileRoute("/")({
             logo: "https://freshink.art/icon-512.png",
             description:
               "Appointment-only custom linework tattoo studio in Saint Paul, Minnesota. Book a session online or via an AI agent.",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "332 Minnesota St Ste N201",
+              addressLocality: "Saint Paul",
+              addressRegion: "MN",
+              postalCode: "55101",
+              addressCountry: "US",
+            },
             contactPoint: {
               "@type": "ContactPoint",
               email: "studio@freshink.art",
@@ -139,6 +147,47 @@ export const Route = createFileRoute("/")({
               "https://www.threads.com/@mdemop",
             ],
           },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            {
+              "@type": "Question",
+              name: "How do I book a tattoo session at Fresh Ink?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Pick a day and time from the open slots, hold it, and lock it in through the checkout link. AI assistants can check availability and hold a slot for you via the MCP connector, then hand you the link to confirm.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "How much does it cost to book right now?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Booking is currently free while Fresh Ink is in proof of concept. Holds lock in free and confirmed bookings carry no charge.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Where is Fresh Ink located?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "332 Minnesota St Ste N201, Saint Paul, MN 55101. The studio is appointment only — book online before visiting.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Can an AI agent book for me?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Connect any MCP-capable assistant to https://freshink.art/api/public/mcp. It can look up studio info, list open times, and hold a slot; you complete the booking yourself through the link it gives you.",
+              },
+            },
+          ],
         }),
       },
     ],
