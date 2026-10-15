@@ -73,8 +73,8 @@ export function SketchFooter(): ReactElement {
         if (cancelled || typeof performance.getEntriesByType !== "function") return;
 
         const entries: readonly PerformanceResourceTiming[] = [
-          ...(performance.getEntriesByType("navigation") as readonly PerformanceResourceTiming[]),
-          ...(performance.getEntriesByType("resource") as readonly PerformanceResourceTiming[]),
+          ...(performance.getEntriesByType("navigation") as unknown as readonly PerformanceResourceTiming[]),
+          ...(performance.getEntriesByType("resource") as unknown as readonly PerformanceResourceTiming[]),
         ];
         const totalBytes = entries.reduce((sum, entry) => sum + (entry.transferSize || 0), 0);
         if (cancelled || totalBytes <= 0) return;
