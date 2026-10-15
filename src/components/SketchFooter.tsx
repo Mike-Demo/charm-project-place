@@ -53,9 +53,47 @@ const SOCIAL_LINKS: readonly SocialLink[] = [
  */
 export function SketchFooter(): ReactElement {
   const [year, setYear] = useState<number | undefined>(undefined);
+  const [visitCarbonGrams, setVisitCarbonGrams] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     setYear(new Date().getFullYear());
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const computeVisitCarbon = async (): Promise<void> => {
+      try {
+        // Wait for the page to finish loading so resource transfer sizes are final.
+        if (document.readyState !== "complete") {
+          await new Promise<void>((resolve) => {
+            window.addEventListener("load", () => resolve(), { once: true });
+          });
+        }
+        if (cancelled || typeof performance.getEntriesByType !== "function") return;
+
+        const entries: readonly PerformanceResourceTiming[] = [
+          ...(performance.getEntriesByType("navigation") as unknown as readonly PerformanceResourceTiming[]),
+          ...(performance.getEntriesByType("resource") as unknown as readonly PerformanceResourceTiming[]),
+        ];
+        const totalBytes = entries.reduce((sum, entry) => sum + (entry.transferSize || 0), 0);
+        if (cancelled || totalBytes <= 0) return;
+
+        const { co2: CO2 } = await import("@tgwf/co2");
+        const estimate = new CO2({ model: "swd", version: 4 }).perByte(totalBytes, false);
+        const grams = typeof estimate === "number" ? estimate : estimate.total;
+        if (!cancelled && typeof grams === "number" && Number.isFinite(grams)) {
+          setVisitCarbonGrams(grams);
+        }
+      } catch {
+        // Estimation is best-effort; leave the line unrendered when it fails.
+      }
+    };
+
+    void computeVisitCarbon();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -118,6 +156,12 @@ export function SketchFooter(): ReactElement {
           ))}
         </nav>
       </div>
+
+      {visitCarbonGrams !== undefined ? (
+        <p className="font-mono text-[10px] leading-relaxed text-ink-pencil/50">
+          This visit ≈ {visitCarbonGrams.toFixed(2)} g CO₂e · estimated with CO2.js (The Green Web Foundation)
+        </p>
+      ) : null}
     </footer>
   );
 }
