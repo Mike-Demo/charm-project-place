@@ -156,6 +156,12 @@ export function SketchFooter(): ReactElement {
           ))}
         </nav>
       </div>
+
+      {visitCarbonGrams !== undefined ? (
+        <p className="font-mono text-[10px] leading-relaxed text-ink-pencil/50">
+          This visit ≈ {visitCarbonGrams.toFixed(2)} g CO₂e · estimated with CO2.js (The Green Web Foundation)
+        </p>
+      ) : null}
     </footer>
   );
 }
