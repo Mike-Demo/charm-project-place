@@ -1,7 +1,12 @@
-import coffeeRing from "@/assets/coffee-ring.png.asset.json";
-import inkSmudge from "@/assets/ink-smudge.png.asset.json";
-import inkSplatter from "@/assets/ink-splatter.png.asset.json";
-import warmWash from "@/assets/warm-wash.png.asset.json";
+import coffeeRingUrl from "@/assets/textures/coffee-ring.webp";
+import inkSmudgeUrl from "@/assets/textures/ink-smudge.webp";
+import inkSplatterUrl from "@/assets/textures/ink-splatter.webp";
+import warmWashUrl from "@/assets/textures/warm-wash.webp";
+
+const coffeeRing = { url: coffeeRingUrl };
+const inkSmudge = { url: inkSmudgeUrl };
+const inkSplatter = { url: inkSplatterUrl };
+const warmWash = { url: warmWashUrl };
 
 type DeskMark = {
   readonly src: string;
