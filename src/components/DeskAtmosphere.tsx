@@ -7,6 +7,7 @@ type DeskMark = {
   readonly src: string;
   readonly className: string;
   readonly style: React.CSSProperties;
+  readonly eager?: boolean;
 };
 
 /**
