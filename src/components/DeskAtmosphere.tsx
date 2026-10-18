@@ -20,6 +20,8 @@ const MARKS: readonly DeskMark[] = [
     src: coffeeRing.url,
     className: "w-[150px] sm:w-[220px] -top-8 -left-10 sm:-top-10 sm:-left-14",
     style: { opacity: 0.32, transform: "rotate(-12deg)" },
+    // Top of the page: load eagerly so it is not the LCP straggler.
+    eager: true,
   },
   {
     src: inkSplatter.url,
