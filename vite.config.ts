@@ -42,18 +42,6 @@ export default defineConfig({
     pages: [{ path: "/" }, { path: "/licenses" }, { path: "/agents" }],
     prerender: { enabled: true, autoStaticPathsDiscovery: false },
   },
-  nitro: {
-    routeRules: {
-      // Immutable hashed build assets: cache forever at the edge and in browsers.
-      "/assets/**": { headers: { "cache-control": "public, max-age=31536000, immutable" } },
-      // Public textures/icons: cache for a week, revalidate in the background.
-      "/textures/**": { headers: { "cache-control": "public, max-age=604800, stale-while-revalidate=86400" } },
-      "/*.webp": { headers: { "cache-control": "public, max-age=604800, stale-while-revalidate=86400" } },
-      "/*.png": { headers: { "cache-control": "public, max-age=604800, stale-while-revalidate=86400" } },
-      "/*.jpg": { headers: { "cache-control": "public, max-age=604800, stale-while-revalidate=86400" } },
-      "/manifest.webmanifest": { headers: { "cache-control": "public, max-age=86400" } },
-    },
-  },
   vite: {
     plugins: [normalizeEnvAccess],
     define: {
