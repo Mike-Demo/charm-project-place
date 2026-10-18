@@ -36,6 +36,11 @@ export default defineConfig({
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    // Prerender the homepage and key static routes at build time so they skip
+    // per-request SSR. Only routes whose HTML is identical for every visitor
+    // are listed; autoStaticPathsDiscovery is off so nothing else is captured.
+    pages: [{ path: "/" }, { path: "/licenses" }, { path: "/agents" }],
+    prerender: { enabled: true, autoStaticPathsDiscovery: false },
   },
   vite: {
     plugins: [normalizeEnvAccess],
