@@ -279,7 +279,7 @@ function TattooAtelier() {
   const [paymentState, setPaymentState] = useState<"idle" | "confirming" | "failed">("idle");
 
 
-  const waitForConfirmation = async (id: string) => {
+  const waitForConfirmation = async (id: string, holdSecret: string | null = null) => {
     setPaymentState("confirming");
     let consecutiveErrors = 0;
     for (let attempt = 0; attempt < 30; attempt += 1) {
@@ -293,7 +293,7 @@ function TattooAtelier() {
         return;
       }
       if (status === "confirmed") {
-        const booking = await fetchConfirmedBooking(id).catch(() => null);
+        const booking = holdSecret ? await fetchConfirmedBooking(id, holdSecret).catch(() => null) : null;
         if (booking) {
           setPaymentState("idle");
           setConfirmed(booking);
@@ -336,7 +336,7 @@ function TattooAtelier() {
       return id;
     },
     onSuccess: (id) => {
-      void waitForConfirmation(id);
+      void waitForConfirmation(id, holdSecret);
     },
     onError: (error: Error) => {
       setBookingError(error.message);
