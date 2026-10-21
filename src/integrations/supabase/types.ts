@@ -95,6 +95,7 @@ export type Database = {
         Row: {
           access_token: string | null
           aftercare_sent_at: string | null
+          agent_owner_hash: string | null
           booking_date: string
           client_confirmed_at: string | null
           client_name: string
@@ -126,6 +127,7 @@ export type Database = {
         Insert: {
           access_token?: string | null
           aftercare_sent_at?: string | null
+          agent_owner_hash?: string | null
           booking_date: string
           client_confirmed_at?: string | null
           client_name: string
@@ -157,6 +159,7 @@ export type Database = {
         Update: {
           access_token?: string | null
           aftercare_sent_at?: string | null
+          agent_owner_hash?: string | null
           booking_date?: string
           client_confirmed_at?: string | null
           client_name?: string
@@ -325,6 +328,7 @@ export type Database = {
           events: string[]
           id: string
           manage_token: string
+          owner_hash: string | null
           secret: string
           url: string
         }
@@ -333,6 +337,7 @@ export type Database = {
           events?: string[]
           id?: string
           manage_token: string
+          owner_hash?: string | null
           secret: string
           url: string
         }
@@ -341,6 +346,7 @@ export type Database = {
           events?: string[]
           id?: string
           manage_token?: string
+          owner_hash?: string | null
           secret?: string
           url?: string
         }
