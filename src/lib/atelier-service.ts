@@ -71,8 +71,8 @@ export async function fetchConfirmedBooking(id: string, holdSecret: string): Pro
   return { ...row, notes: null } as Appointment;
 }
 
-export async function fetchBookingToken(id: string): Promise<string | null> {
-  const { data, error } = await supabase.rpc("get_booking_token", { p_id: id });
+export async function fetchBookingToken(id: string, holdSecret: string): Promise<string | null> {
+  const { data, error } = await supabase.rpc("get_booking_token", { p_id: id, p_secret: holdSecret });
   if (error) throw new Error(error.message);
   return (data as string | null) ?? null;
 }

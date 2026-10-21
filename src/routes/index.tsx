@@ -294,10 +294,10 @@ function TattooAtelier() {
       }
       if (status === "confirmed") {
         const booking = holdSecret ? await fetchConfirmedBooking(id, holdSecret).catch(() => null) : null;
-        if (booking) {
+        if (booking && holdSecret) {
           setPaymentState("idle");
           setConfirmed(booking);
-          void fetchBookingToken(id).then(setPassToken).catch(() => undefined);
+          void fetchBookingToken(id, holdSecret).then(setPassToken).catch(() => undefined);
         } else {
           setPaymentState("failed");
           setBookingError("Your session is locked in, but we couldn't load the confirmation pass. We'll email you the details.");
