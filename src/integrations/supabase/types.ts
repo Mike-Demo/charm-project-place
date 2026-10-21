@@ -386,6 +386,10 @@ export type Database = {
         Args: { p_id: string; p_secret: string }
         Returns: string
       }
+      consume_hold_sketch: {
+        Args: { p_id: string; p_limit: number; p_secret: string }
+        Returns: boolean
+      }
       consume_sketch_quota: {
         Args: { p_key: string; p_limit: number }
         Returns: boolean

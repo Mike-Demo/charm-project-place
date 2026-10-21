@@ -120,6 +120,13 @@
       "when": 1792621209574,
       "tag": "0016_scope_webhooks_to_owner",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792621365044,
+      "tag": "0017_hold_scoped_sketch_quota",
+      "breakpoints": true
     }
   ]
 }
