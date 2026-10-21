@@ -32,12 +32,19 @@ function readAsDataUrl(file: File): Promise<string> {
   });
 }
 
+export interface SketchHold {
+  id: string;
+  holdSecret: string;
+}
+
 interface IdeaStepProps {
   value: IdeaDraft;
   onChange: (next: IdeaDraft) => void;
+  /** Holds the chosen slot (or reuses the current hold) so the sketch is tied to a real booking. */
+  ensureHold: () => Promise<SketchHold>;
 }
 
-export function IdeaStep({ value, onChange }: IdeaStepProps) {
+export function IdeaStep({ value, onChange, ensureHold }: IdeaStepProps) {
   const fileRef = useRef<File | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -72,11 +79,21 @@ export function IdeaStep({ value, onChange }: IdeaStepProps) {
     if (!value.referenceImage || working || value.sketchAttempts >= MAX_SKETCH_ATTEMPTS) return;
     setWorking(true);
     setError(null);
+    let hold: SketchHold;
+    try {
+      hold = await ensureHold();
+    } catch (caught) {
+      setWorking(false);
+      setError(caught instanceof Error ? caught.message : "We couldn't hold that time. Go back and pick another, or skip the sketch.");
+      return;
+    }
     const attempts = value.sketchAttempts + 1;
     onChange({ ...value, sketchAttempts: attempts, conceptSketch: null });
     const form = new FormData();
     form.append("image", fileRef.current ?? (await dataUrlToFile(value.referenceImage)));
     form.append("description", value.description);
+    form.append("appointmentId", hold.id);
+    form.append("holdSecret", hold.holdSecret);
     let latest: string | null = null;
     try {
       await streamImage("/api/sketch-concept", form, (src, final) => {

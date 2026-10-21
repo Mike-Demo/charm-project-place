@@ -4,7 +4,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { StepArtwork } from "@/components/StepArtwork";
-import { EMPTY_IDEA, IdeaStep, type IdeaDraft } from "@/components/IdeaStep";
+import { EMPTY_IDEA, IdeaStep, type IdeaDraft, type SketchHold } from "@/components/IdeaStep";
 import { attachIdea } from "@/lib/idea.functions";
 import {
   PRONOUN_OPTIONS,
@@ -28,7 +28,7 @@ import { ConfirmingSketch } from "@/components/ConfirmingSketch";
 import { PRELOADER_COMPLETE_EVENT } from "@/components/SitePreloader";
 import { STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
 
-import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, confirmFreeHold, type BookingInput } from "@/lib/atelier-service";
+import { fetchUnavailableSlots, fetchConfirmedBooking, fetchBookingByToken, fetchBookingToken, getBookingStatus, holdAppointment, confirmFreeHold, releaseAppointment, type BookingInput } from "@/lib/atelier-service";
 import { sendFreePassEmail } from "@/lib/free-booking.functions";
 import { animateSheetIn, animateStudioDraftEntrance, pickPop, prefersReducedMotion, shakeField, stampPill, stampPress, staggerRows } from "@/lib/motion";
 import { registerWebMcpTools } from "@/lib/webmcp";
@@ -323,15 +323,48 @@ function TattooAtelier() {
   }, []);
 
   const [idea, setIdea] = useState<IdeaDraft>(EMPTY_IDEA);
+  // A hold made early (for an AI sketch) is reused at lock-in when the booking details still match.
+  const earlyHoldRef = useRef<{ key: string; hold: SketchHold } | null>(null);
+  const holdKey = (input: BookingInput) =>
+    [input.name, input.phone, input.email, toDateKey(input.date), input.timeSlot, input.pronouns].join("|");
+  const takeHold = async (input: BookingInput): Promise<SketchHold> => {
+    const key = holdKey(input);
+    const existing = earlyHoldRef.current;
+    if (existing?.key === key) return existing.hold;
+    if (existing) {
+      earlyHoldRef.current = null;
+      await releaseAppointment(existing.hold.id).catch(() => undefined);
+    }
+    const hold = await holdAppointment(input);
+    earlyHoldRef.current = { key, hold };
+    return hold;
+  };
+  const currentBookingInput = (): BookingInput | null =>
+    selectedDate === null || selectedTime === null
+      ? null
+      : { name: name.trim(), phone: phone.trim(), email: email.trim(), date: selectedDate, timeSlot: selectedTime, pronouns: pronounsValue };
+  const ensureSketchHold = async (): Promise<SketchHold> => {
+    const input = currentBookingInput();
+    if (!input) throw new Error("Pick a day and time first, then come back for a sketch.");
+    return takeHold(input);
+  };
+
   const bookingMutation = useMutation({
     mutationFn: async (input: BookingInput) => {
-      const { id, holdSecret } = await holdAppointment(input);
+      let { id, holdSecret } = await takeHold(input);
+      const status = await getBookingStatus(id).catch(() => null);
+      if (status !== "pending") {
+        // Early hold lapsed — take a fresh one.
+        earlyHoldRef.current = null;
+        ({ id, holdSecret } = await takeHold(input));
+      }
       // Attach the idea while the hold is still pending — attachIdea only accepts a live hold.
       if (idea.description.trim() || idea.referenceImage) {
         await attachIdea({ data: { appointmentId: id, holdSecret, ...idea } }).catch(() => undefined);
       }
       // Proof-of-concept: slots lock in for free — no checkout step.
       await confirmFreeHold(id, holdSecret);
+      earlyHoldRef.current = null;
       await sendFreePassEmail({ data: { appointmentId: id, holdSecret } }).catch(() => undefined);
       return { id, holdSecret };
     },
@@ -848,7 +881,7 @@ function TattooAtelier() {
             </section>
           )}
 
-          {step === 8 && <IdeaStep value={idea} onChange={setIdea} />}
+          {step === 8 && <IdeaStep value={idea} onChange={setIdea} ensureHold={ensureSketchHold} />}
 
           {step === TOTAL_STEPS && (
             <section className="flex min-h-[280px] flex-col justify-center">
