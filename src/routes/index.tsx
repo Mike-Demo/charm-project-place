@@ -333,9 +333,9 @@ function TattooAtelier() {
       // Proof-of-concept: slots lock in for free — no checkout step.
       await confirmFreeHold(id, holdSecret);
       await sendFreePassEmail({ data: { appointmentId: id, holdSecret } }).catch(() => undefined);
-      return id;
+      return { id, holdSecret };
     },
-    onSuccess: (id) => {
+    onSuccess: ({ id, holdSecret }) => {
       void waitForConfirmation(id, holdSecret);
     },
     onError: (error: Error) => {
