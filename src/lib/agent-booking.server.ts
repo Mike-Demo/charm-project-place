@@ -1,4 +1,3 @@
-import { createHash } from "crypto";
 import { z } from "zod";
 import { TIME_SLOTS, isSlotElapsed, studioTodayKey } from "@/lib/atelier";
 import { APP_ORIGIN, STUDIO_ADDRESS, STUDIO_HOURS, STUDIO_MAP_URL } from "@/lib/studio-location";
@@ -183,9 +182,4 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
     if (err instanceof z.ZodError) return text({ error: "Invalid input", issues: err.issues.map((i) => `${i.path.join(".")}: ${i.message}`) }, true);
     return text({ error: err instanceof Error ? err.message : "Unexpected error" }, true);
   }
-}
-
-export function callerHash(request: Request): string {
-  const ip = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  return createHash("sha256").update(`agent:${ip}`).digest("hex");
 }
