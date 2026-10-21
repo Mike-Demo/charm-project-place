@@ -13,7 +13,7 @@ export const sendFreePassEmail = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row } = await supabaseAdmin
       .from("appointments")
-      .select("client_name,email,booking_date,time_slot,access_token,status,hold_secret")
+      .select("client_name,email,booking_date,time_slot,access_token,status,hold_secret,agent_owner_hash")
       .eq("id", data.appointmentId)
       .maybeSingle();
 
@@ -37,6 +37,6 @@ export const sendFreePassEmail = createServerFn({ method: "POST" })
     } catch (error) {
       console.error("Session pass email failed", error);
     }
-    await notifyWebhooks("booking.confirmed", { booking_id: data.appointmentId, date: row.booking_date, time_slot: row.time_slot }).catch(() => undefined);
+    await notifyWebhooks("booking.confirmed", { booking_id: data.appointmentId, date: row.booking_date, time_slot: row.time_slot }, row.agent_owner_hash).catch(() => undefined);
     return { sent: true };
   });

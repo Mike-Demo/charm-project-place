@@ -88,7 +88,7 @@ export const Route = createFileRoute("/api/public/holds")({
 
         await supabaseAdmin
           .from("appointments")
-          .update({ source: "agent", ...(input.idea ? { idea_description: input.idea } : {}) })
+          .update({ source: "agent", agent_owner_hash: caller.hash, ...(input.idea ? { idea_description: input.idea } : {}) })
           .eq("id", row.id);
         await supabaseAdmin.from("agent_hold_log").insert({ caller_hash: caller.hash, appointment_id: row.id });
 
@@ -105,7 +105,7 @@ export const Route = createFileRoute("/api/public/holds")({
           next_step: "Send checkout_url to the user, then poll GET /api/public/bookings/{booking_id} or subscribe to webhooks for booking.confirmed.",
         };
         if (idemKey) await idempotencyStore(idemKey, caller.hash, response);
-        await notifyWebhooks("hold.created", { booking_id: row.id, date: input.date, time_slot: input.time_slot });
+        await notifyWebhooks("hold.created", { booking_id: row.id, date: input.date, time_slot: input.time_slot }, caller.hash);
         return json(response, 201);
       },
       GET: () => apiError("method_not_allowed", "Use POST to create a hold. See /api/public/openapi.json.", 405, { Allow: "POST" }),

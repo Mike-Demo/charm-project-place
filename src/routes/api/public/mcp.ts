@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AGENT_TOOLS, callAgentTool, callerHash } from "@/lib/agent-booking.server";
+import { AGENT_TOOLS, callAgentTool } from "@/lib/agent-booking.server";
+import { identifyCaller } from "@/lib/public-api.server";
 
 interface RpcRequest {
   jsonrpc?: string;
@@ -59,7 +60,7 @@ export const Route = createFileRoute("/api/public/mcp")({
         } catch {
           return json({ jsonrpc: "2.0", id: null, error: { code: -32700, message: "Parse error" } }, 400);
         }
-        const caller = callerHash(request);
+        const caller = (await identifyCaller(request)).hash;
         if (Array.isArray(body)) {
           const out = (await Promise.all(body.slice(0, 10).map((m) => handle(m, caller)))).filter((r) => r !== null);
           return out.length ? json(out) : new Response(null, { status: 202, headers: CORS });

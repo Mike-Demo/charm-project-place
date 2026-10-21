@@ -156,7 +156,7 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
         if (error) return text({ error: error.message }, true);
         const row = data?.[0];
         if (!row) return text({ error: "Could not hold that slot." }, true);
-        await db.from("appointments").update({ source: "agent", ...(input.idea ? { idea_description: input.idea } : {}) }).eq("id", row.id);
+        await db.from("appointments").update({ source: "agent", agent_owner_hash: callerId, ...(input.idea ? { idea_description: input.idea } : {}) }).eq("id", row.id);
         await db.from("agent_hold_log").insert({ caller_hash: callerId, appointment_id: row.id });
         const result = text({
           booking_id: row.id,
@@ -166,7 +166,7 @@ export async function callAgentTool(name: string, args: unknown, callerId: strin
           next_step: "Send checkout_url to the user. The slot is released if they don't lock in within 15 minutes.",
         });
         if (input.idempotency_key) await idempotencyStore(input.idempotency_key, callerId, result);
-        await notifyWebhooks("hold.created", { booking_id: row.id, date: input.date, time_slot: input.time_slot });
+        await notifyWebhooks("hold.created", { booking_id: row.id, date: input.date, time_slot: input.time_slot }, callerId);
         return result;
       }
       case "get_booking_status": {
