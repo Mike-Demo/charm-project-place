@@ -62,8 +62,8 @@ export async function getBookingStatus(id: string): Promise<string | null> {
   return (data as string | null) ?? null;
 }
 
-export async function fetchConfirmedBooking(id: string): Promise<Appointment | null> {
-  const { data, error } = await supabase.rpc("get_confirmed_booking", { p_id: id });
+export async function fetchConfirmedBooking(id: string, holdSecret: string): Promise<Appointment | null> {
+  const { data, error } = await supabase.rpc("get_confirmed_booking", { p_id: id, p_secret: holdSecret });
   if (error) throw new Error(error.message);
   const rows = (data ?? []) as Array<Omit<Appointment, "notes">>;
   const row = rows[0];
