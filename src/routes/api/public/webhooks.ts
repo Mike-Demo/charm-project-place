@@ -19,6 +19,9 @@ export const Route = createFileRoute("/api/public/webhooks")({
         const caller = await identifyCaller(request);
         const limited = await rateLimit(caller, "write");
         if (limited) return limited;
+        if (!caller.viaApiKey) {
+          return apiError("api_key_required", "Registering a webhook needs Authorization: Bearer <api_key> (mint one at POST /api/public/agent-keys). You only receive events for bookings made with that key.", 401);
+        }
 
         let body: unknown;
         try {
@@ -36,7 +39,7 @@ export const Route = createFileRoute("/api/public/webhooks")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { data, error } = await supabaseAdmin
           .from("webhook_subscriptions")
-          .insert({ url: parsed.data.url, secret, manage_token: manageToken, events: parsed.data.events ?? [...EVENTS] })
+          .insert({ url: parsed.data.url, owner_hash: caller.hash, secret, manage_token: manageToken, events: parsed.data.events ?? [...EVENTS] })
           .select("id, url, events, created_at")
           .single();
         if (error) return apiError("upstream_error", error.message, 502);

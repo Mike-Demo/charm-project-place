@@ -108,11 +108,17 @@ export async function idempotencyStore(key: string, callerHash: string, response
 export type WebhookEvent = "hold.created" | "booking.confirmed" | "hold.expired";
 
 /**
- * Delivers a signed event to every subscribed webhook URL. Best-effort: failures are ignored.
+ * Delivers a signed event to the webhook URLs registered by the API key that created the booking. Best-effort: failures are ignored.
  */
-export async function notifyWebhooks(event: WebhookEvent, payload: Record<string, unknown>): Promise<void> {
+export async function notifyWebhooks(
+  event: WebhookEvent,
+  payload: Record<string, unknown>,
+  ownerHash: string | null | undefined,
+): Promise<void> {
+  // Only API-key callers own subscriptions; bookings without a keyed owner notify nobody.
+  if (!ownerHash || !ownerHash.startsWith("key:")) return;
   const db = await admin();
-  const { data: subs } = await db.from("webhook_subscriptions").select("url, secret, events");
+  const { data: subs } = await db.from("webhook_subscriptions").select("url, secret, events").eq("owner_hash", ownerHash);
   if (!subs?.length) return;
   const body = JSON.stringify({ event, timestamp: new Date().toISOString(), data: payload });
   await Promise.all(
