@@ -249,11 +249,6 @@ function TattooAtelier() {
           setPaymentState("idle");
           setConfirmed(booking);
           void fetchBookingToken(id, holdSecret).then(setPassToken).catch(() => undefined);
-          try {
-            window.sessionStorage.removeItem(`booking-hold:${id}`);
-          } catch {
-            // Confirmation is complete even when browser storage is unavailable.
-          }
         } else {
           setPaymentState("failed");
           setBookingError("Your session is locked in, but we couldn't load the confirmation pass. We'll email you the details.");
@@ -271,10 +266,10 @@ function TattooAtelier() {
 
   useEffect(() => {
     const paidId = new URLSearchParams(window.location.search).get("paid");
+    const holdSecret = new URLSearchParams(window.location.hash.slice(1)).get("s");
     if (paidId) {
       window.history.replaceState(null, "", window.location.pathname);
-      const holdSecret = window.sessionStorage.getItem(`booking-hold:${paidId}`);
-      if (holdSecret) {
+      if (holdSecret && holdSecret.length >= 16) {
         void waitForConfirmation(paidId, holdSecret);
       } else {
         setPaymentState("failed");
@@ -288,11 +283,6 @@ function TattooAtelier() {
   const bookingMutation = useMutation({
     mutationFn: async (input: BookingInput) => {
       const { id, holdSecret } = await holdAppointment(input);
-      try {
-        window.sessionStorage.setItem(`booking-hold:${id}`, holdSecret);
-      } catch {
-        // Confirmation continues even when browser storage is unavailable.
-      }
       // Proof-of-concept: slots lock in for free — no checkout step.
       await confirmFreeHold(id, holdSecret);
       if (idea.description.trim() || idea.referenceImage) {
