@@ -423,9 +423,9 @@ export type Database = {
         }[]
       }
       get_booking_status: { Args: { p_id: string }; Returns: string }
-      get_booking_token: { Args: { p_id: string }; Returns: string }
+      get_booking_token: { Args: { p_id: string; p_secret: string }; Returns: string }
       get_confirmed_booking: {
-        Args: { p_id: string }
+        Args: { p_id: string; p_secret: string }
         Returns: {
           booking_date: string
           client_name: string
@@ -465,7 +465,7 @@ export type Database = {
         Returns: boolean
       }
       release_pending_appointment: {
-        Args: { p_id: string }
+        Args: { p_id: string; p_secret: string }
         Returns: undefined
       }
       reschedule_booking: {

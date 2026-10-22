@@ -230,7 +230,7 @@ function TattooAtelier() {
   const [paymentState, setPaymentState] = useState<"idle" | "confirming" | "failed">("idle");
 
 
-  const waitForConfirmation = async (id: string) => {
+  const waitForConfirmation = async (id: string, holdSecret: string) => {
     setPaymentState("confirming");
     let consecutiveErrors = 0;
     for (let attempt = 0; attempt < 30; attempt += 1) {
@@ -244,11 +244,11 @@ function TattooAtelier() {
         return;
       }
       if (status === "confirmed") {
-        const booking = await fetchConfirmedBooking(id).catch(() => null);
+        const booking = await fetchConfirmedBooking(id, holdSecret).catch(() => null);
         if (booking) {
           setPaymentState("idle");
           setConfirmed(booking);
-          void fetchBookingToken(id).then(setPassToken).catch(() => undefined);
+          void fetchBookingToken(id, holdSecret).then(setPassToken).catch(() => undefined);
         } else {
           setPaymentState("failed");
           setBookingError("Your session is locked in, but we couldn't load the confirmation pass. We'll email you the details.");
@@ -266,9 +266,15 @@ function TattooAtelier() {
 
   useEffect(() => {
     const paidId = new URLSearchParams(window.location.search).get("paid");
+    const holdSecret = new URLSearchParams(window.location.hash.slice(1)).get("s");
     if (paidId) {
       window.history.replaceState(null, "", window.location.pathname);
-      void waitForConfirmation(paidId);
+      if (holdSecret && holdSecret.length >= 16) {
+        void waitForConfirmation(paidId, holdSecret);
+      } else {
+        setPaymentState("failed");
+        setBookingError("Your session is locked in, but we couldn't load the confirmation pass. We'll email you the details.");
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -283,10 +289,10 @@ function TattooAtelier() {
         await attachIdea({ data: { appointmentId: id, holdSecret, ...idea } }).catch(() => undefined);
       }
       await sendFreePassEmail({ data: { appointmentId: id, holdSecret } }).catch(() => undefined);
-      return id;
+      return { id, holdSecret };
     },
-    onSuccess: (id) => {
-      void waitForConfirmation(id);
+    onSuccess: ({ id, holdSecret }) => {
+      void waitForConfirmation(id, holdSecret);
     },
     onError: (error: Error) => {
       setBookingError(error.message);
